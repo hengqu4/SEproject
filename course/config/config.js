@@ -307,6 +307,25 @@ export default defineConfig({
               ],
             },
             {
+              name: '实验',
+              icon: 'smile',
+              path: '/labs',
+              routes: [
+                {
+                  name: '实验列表',
+                  icon: 'smile',
+                  path: '/labs/list',
+                  component: './labs/LabList',
+                },
+                {
+                  name: '实验1',
+                  icon: 'smile',
+                  path: '/labs/lab',
+                  component: './labs/Lab',
+                },
+              ]
+            },
+            {
               component: '404',
             },
           ],
