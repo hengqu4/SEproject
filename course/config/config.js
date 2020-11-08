@@ -116,7 +116,7 @@ export default defineConfig({
                   component: './labs/Lab',
                 },
                 {
-                  name: '基础表单',
+                  name: '批改实验',
                   icon: 'smile',
                   path: '/labs/mark-lab',
                   component: './labs/MarkLab',

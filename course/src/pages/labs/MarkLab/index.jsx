@@ -18,7 +18,9 @@ import {
 } from 'antd';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React from 'react';
+import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
+import PDFViewer from './PDFViewer';
 import styles from './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -107,7 +109,6 @@ const MarkLab = props => {
     const { publicType } = changedValues;
     if (publicType) setShowPublicUsers(publicType === '2');
   };
-
   return (
     <PageContainer content="labsandmarklab.basic.description">
       <Card bordered={false}>
@@ -125,6 +126,9 @@ const MarkLab = props => {
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
+          <FormItem {...formItemLayout} name="pdf">
+            <PDFViewer/>
+          </FormItem>
           <FormItem {...formItemLayout} label="下载附件" name="goal">
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
@@ -133,18 +137,21 @@ const MarkLab = props => {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label={
-              <span>
-                labsandmarklab.weight.label
-                <em className={styles.optional}>labsandmarklab.form.optional</em>
-              </span>
-            }
-            name="weight"
+            label="学生成绩"
+            name="labScore"
           >
             <InputNumber placeholder=" " min={0} max={100} />
-            <span className="ant-form-text">%</span>
+            <span className="ant-form-text">/ 100</span>
           </FormItem>
-          <FormItem {...formItemLayout} label="教师评语" name="labReview">
+          <FormItem {...formItemLayout}
+            label={
+              <span>
+                评语
+                <em className={styles.optional}>（选填）</em>
+              </span>
+            }
+            name="labReview"
+          >
             <TextArea
               style={{
                 minHeight: 32,
@@ -168,7 +175,7 @@ const MarkLab = props => {
               htmlType="submit"
               loading={submitting}
             >
-              提交作业
+              发布批改
             </Button>
           </FormItem>
         </Form>
