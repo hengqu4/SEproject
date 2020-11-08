@@ -34,11 +34,10 @@ const Info = ({ title, value, bordered }) => (
 
 const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
   <div className={styles.listContent}>
-  {/*
-    <div className={styles.listContentItem}>
+    {/*<div className={styles.listContentItem}>
       <span>Owner</span>
       <p>{owner}</p>
-    </div>  */}
+    </div>*/}
     <div className={styles.listContentItem}>
       <span>开始时间</span>
       <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
@@ -47,8 +46,7 @@ const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
       <span>结束时间</span>
       <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
     </div>
-    {/*
-    <div className={styles.listContentItem}>
+    {/*<div className={styles.listContentItem}>
       <Progress
         percent={percent}
         status={status}
@@ -57,34 +55,38 @@ const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
           width: 180,
         }}
       />
-    </div>
-    */}
+    </div>*/}
   </div>
 );
 
 export const LabList = (props) => {
+  const addBtn = useRef(null);
   const {
     loading,
     dispatch,
-    lab: { list },
+    labsAndLabList: { list },
   } = props;
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
   useEffect(() => {
     dispatch({
-      type: 'lab/fetch',
-      // payload: {
-      //   count: 5,
-      // },
+      type: 'labsAndLabList/fetch',
+      payload: {
+        count: 5,
+      },
     });
   }, [1]);
-
   const paginationProps = {
     showSizeChanger: true,
     showQuickJumper: true,
     pageSize: 5,
     total: 50,
+  };
+
+  const showModal = () => {
+    setVisible(true);
+    setCurrent(undefined);
   };
 
   const showEditModal = (item) => {
@@ -94,7 +96,7 @@ export const LabList = (props) => {
 
   const deleteItem = (id) => {
     dispatch({
-      type: 'lab/submit',
+      type: 'labsAndLabList/submit',
       payload: {
         id,
       },
@@ -114,16 +116,15 @@ export const LabList = (props) => {
     }
   };
 
-  // const extraContent = (
-  //   <div className={styles.extraContent}>
-  //     <RadioGroup defaultValue="all">
-  //       <RadioButton value="all">全部</RadioButton>
-  //       <RadioButton value="progress">进行中</RadioButton>
-  //       <RadioButton value="waiting">等待中</RadioButton>
-  //     </RadioGroup>
-  //     <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={() => ({})} />
-  //   </div>
-  // );
+  const extraContent = (
+    <div className={styles.extraContent}>
+      <RadioGroup defaultValue="all">
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="progress">进行中</RadioButton>
+        <RadioButton value="waiting">等待中</RadioButton>
+      </RadioGroup>
+    </div>
+  );
 
   const MoreBtn = ({ item }) => (
     <Dropdown
@@ -140,20 +141,31 @@ export const LabList = (props) => {
     </Dropdown>
   );
 
+  const setAddBtnblur = () => {
+    if (addBtn.current) {
+      // eslint-disable-next-line react/no-find-dom-node
+      const addBtnDom = findDOMNode(addBtn.current);
+      setTimeout(() => addBtnDom.blur(), 0);
+    }
+  };
+
   const handleDone = () => {
+    setAddBtnblur();
     setDone(false);
     setVisible(false);
   };
 
   const handleCancel = () => {
+    setAddBtnblur();
     setVisible(false);
   };
 
   const handleSubmit = (values) => {
     const id = current ? current.id : '';
+    setAddBtnblur();
     setDone(true);
     dispatch({
-      type: 'lab/submit',
+      type: 'labsAndLabList/submit',
       payload: {
         id,
         ...values,
@@ -165,19 +177,6 @@ export const LabList = (props) => {
     <div>
       <PageContainer>
         <div className={styles.standardList}>
-          <Card bordered={false}>
-            <Row>
-              <Col sm={8} xs={24}>
-                <Info title="我的待办" value="8个任务" bordered />
-              </Col>
-              <Col sm={8} xs={24}>
-                <Info title="本周任务平均处理时间" value="32分钟" bordered />
-              </Col>
-              <Col sm={8} xs={24}>
-                <Info title="本周完成任务数" value="24个任务" />
-              </Col>
-            </Row>
-          </Card>
 
           <Card
             className={styles.listCard}
@@ -189,36 +188,53 @@ export const LabList = (props) => {
             bodyStyle={{
               padding: '0 32px 40px 32px',
             }}
-            // extra={extraContent}
+            extra={extraContent}
           >
+            <Button
+              type="dashed"
+              style={{
+                width: '100%',
+                marginBottom: 8,
+              }}
+              onClick={showModal}
+              ref={addBtn}
+            >
+              <PlusOutlined />
+              发布实验
+            </Button>
+
             <List
               size="large"
               rowKey="id"
               loading={loading}
-              // pagination={paginationProps}
+              pagination={paginationProps}
               dataSource={list}
               renderItem={(item) => (
                 <List.Item
                   actions={[
                     <a
                       key="complete"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showEditModal(item);
+                      }}
                     >
                       进入实验
                     </a>,
                     <a
                       key="viewScore"
-                      // onClick={(e) => {
-                      //   e.preventDefault();
-                      //   showEditModal(item);
-                      // }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showEditModal(item);
+                      }}
                     >
                       查看成绩
                     </a>,
-                    // <MoreBtn key="more" item={item} />,
+                    <MoreBtn key="more" item={item} />,
                   ]}
                 >
                   <List.Item.Meta
-                    // avatar={<Avatar src={item.logo} shape="square" size="large" />}
+                    avatar={<Avatar src={item.logo} shape="square" size="large" />}
                     title={<a href={item.href}>{item.title}</a>}
                     description={item.subDescription}
                   />
@@ -241,7 +257,7 @@ export const LabList = (props) => {
     </div>
   );
 };
-export default connect(({ lab, loading }) => ({
-  lab,
-  loading: loading.models.lab,
-}))(Lab);
+export default connect(({ labsAndLabList, loading }) => ({
+  labsAndLabList,
+  loading: loading.models.labsAndLabList,
+}))(LabList);

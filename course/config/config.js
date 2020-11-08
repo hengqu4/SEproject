@@ -93,6 +93,37 @@ export default defineConfig({
               ],
             },
             {
+              name: '实验',
+              icon: 'smile',
+              path: '/labs',
+              routes: [
+                {
+                  name: '实验列表',
+                  icon: 'smile',
+                  path: '/labs/list',
+                  component: './labs/LabList',
+                },
+                {
+                  name: '创建实验',
+                  icon: 'smile',
+                  path: '/labs/create_lab',
+                  component: './labs/CreateLab',
+                },
+                {
+                  name: '实验1',
+                  icon: 'smile',
+                  path: '/labs/lab',
+                  component: './labs/Lab',
+                },
+                {
+                  name: '基础表单',
+                  icon: 'smile',
+                  path: '/labs/mark-lab',
+                  component: './labs/MarkLab',
+                },
+              ],
+            },
+            {
               path: '/form',
               icon: 'form',
               name: 'form',
@@ -305,25 +336,6 @@ export default defineConfig({
                   component: './editor/koni',
                 },
               ],
-            },
-            {
-              name: '实验',
-              icon: 'smile',
-              path: '/labs',
-              routes: [
-                {
-                  name: '实验列表',
-                  icon: 'smile',
-                  path: '/labs/list',
-                  component: './labs/LabList',
-                },
-                {
-                  name: '实验1',
-                  icon: 'smile',
-                  path: '/labs/lab',
-                  component: './labs/Lab',
-                },
-              ]
             },
             {
               component: '404',

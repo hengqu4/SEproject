@@ -11,12 +11,7 @@ import data from './worldCup2018.json';
 import styles from './index.less';
 GGEditor.setTrackable(false);
 export default () => (
-  <PageContainer
-    content={formatMessage({
-      id: 'editorandmind.description',
-      defaultMessage: 'description',
-    })}
-  >
+  <PageContainer content="脑图是表达发散性思维的有效图形思维工具 ，它简单却又很有效，是一种实用性的思维工具">
     <GGEditor className={styles.editor}>
       <Row className={styles.editorHd}>
         <Col span={24}>

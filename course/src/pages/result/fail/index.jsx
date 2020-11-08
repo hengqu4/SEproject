@@ -6,12 +6,7 @@ import { GridContent } from '@ant-design/pro-layout';
 import styles from './index.less';
 const Content = (
   <Fragment>
-    <div className={styles.title}>
-      <FormattedMessage
-        id="resultandfail.error.hint-title"
-        defaultMessage="The content you submitted has the following error:"
-      />
-    </div>
+    <div className={styles.title}>您提交的内容有如下错误：</div>
     <div
       style={{
         marginBottom: 16,
@@ -23,16 +18,13 @@ const Content = (
         }}
         className={styles.error_icon}
       />
-      <FormattedMessage
-        id="resultandfail.error.hint-text1"
-        defaultMessage="Your account has been frozen"
-      />
+      您的账户已被冻结
       <a
         style={{
           marginLeft: 16,
         }}
       >
-        <FormattedMessage id="resultandfail.error.hint-btn1" defaultMessage="Thaw immediately" />
+        立即解冻
         <RightOutlined />
       </a>
     </div>
@@ -43,16 +35,13 @@ const Content = (
         }}
         className={styles.error_icon}
       />
-      <FormattedMessage
-        id="resultandfail.error.hint-text2"
-        defaultMessage="Your account is not yet eligible to apply"
-      />
+      您的账户还不具备申请资格
       <a
         style={{
           marginLeft: 16,
         }}
       >
-        <FormattedMessage id="resultandfail.error.hint-btn2" defaultMessage="Upgrade immediately" />
+        立即升级
         <RightOutlined />
       </a>
     </div>
@@ -63,17 +52,9 @@ export default () => (
     <Card bordered={false}>
       <Result
         status="error"
-        title={formatMessage({
-          id: 'resultandfail.error.title',
-        })}
-        subTitle={formatMessage({
-          id: 'resultandfail.error.description',
-        })}
-        extra={
-          <Button type="primary">
-            <FormattedMessage id="resultandfail.error.btn-text" defaultMessage="Return to modify" />
-          </Button>
-        }
+        title="提交失败"
+        subTitle="请核对并修改以下信息后，再重新提交。"
+        extra={<Button type="primary">返回修改</Button>}
         style={{
           marginTop: 48,
           marginBottom: 16,

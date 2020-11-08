@@ -24,10 +24,10 @@ const noMatch = (
     }
   />
 );
-
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
@@ -99,12 +99,11 @@ const BasicLayout = (props) => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  const { formatMessage } = useIntl();
+  const {} = useIntl();
   return (
     <>
       <ProLayout
         logo={logo}
-        formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
@@ -117,9 +116,7 @@ const BasicLayout = (props) => {
         breadcrumbRender={(routers = []) => [
           {
             path: '/',
-            breadcrumbName: formatMessage({
-              id: 'menu.home',
-            }),
+            breadcrumbName: '首页',
           },
           ...routers,
         ]}

@@ -6,21 +6,9 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const InputGroup = Input.Group;
 const passwordStatusMap = {
-  ok: (
-    <div className={styles.success}>
-      <FormattedMessage id="userandregister.strength.strong" />
-    </div>
-  ),
-  pass: (
-    <div className={styles.warning}>
-      <FormattedMessage id="userandregister.strength.medium" />
-    </div>
-  ),
-  poor: (
-    <div className={styles.error}>
-      <FormattedMessage id="userandregister.strength.short" />
-    </div>
-  ),
+  ok: <div className={styles.success}>强度：强</div>,
+  pass: <div className={styles.warning}>强度：中</div>,
+  poor: <div className={styles.error}>强度：太短</div>,
 };
 const passwordProgressMap = {
   ok: 'success',
@@ -98,11 +86,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     const promise = Promise;
 
     if (value && value !== form.getFieldValue('password')) {
-      return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.twice',
-        }),
-      );
+      return promise.reject('两次输入的密码不匹配!');
     }
 
     return promise.resolve();
@@ -113,11 +97,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
     if (!value) {
       setvisible(!!value);
-      return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.required',
-        }),
-      );
+      return promise.reject('请输入密码！');
     } // 有值的情况
 
     if (!visible) {
@@ -159,33 +139,22 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
   return (
     <div className={styles.main}>
-      <h3>
-        <FormattedMessage id="userandregister.register.register" />
-      </h3>
+      <h3>注册</h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
         <FormItem
           name="mail"
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.email.required',
-              }),
+              message: '请输入邮箱地址！',
             },
             {
               type: 'email',
-              message: formatMessage({
-                id: 'userandregister.email.wrong-format',
-              }),
+              message: '邮箱地址格式错误！',
             },
           ]}
         >
-          <Input
-            size="large"
-            placeholder={formatMessage({
-              id: 'userandregister.email.placeholder',
-            })}
-          />
+          <Input size="large" placeholder="邮箱" />
         </FormItem>
         <Popover
           getPopupContainer={(node) => {
@@ -209,7 +178,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
                     marginTop: 10,
                   }}
                 >
-                  <FormattedMessage id="userandregister.strength.msg" />
+                  请至少输入 6 个字符。请不要使用容易被猜到的密码。
                 </div>
               </div>
             )
@@ -233,13 +202,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               },
             ]}
           >
-            <Input
-              size="large"
-              type="password"
-              placeholder={formatMessage({
-                id: 'userandregister.password.placeholder',
-              })}
-            />
+            <Input size="large" type="password" placeholder="至少6位密码，区分大小写" />
           </FormItem>
         </Popover>
         <FormItem
@@ -247,22 +210,14 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.confirm-password.required',
-              }),
+              message: '请确认密码！',
             },
             {
               validator: checkConfirm,
             },
           ]}
         >
-          <Input
-            size="large"
-            type="password"
-            placeholder={formatMessage({
-              id: 'userandregister.confirm-password.placeholder',
-            })}
-          />
+          <Input size="large" type="password" placeholder="确认密码" />
         </FormItem>
         <InputGroup compact>
           <Select
@@ -284,24 +239,15 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             rules={[
               {
                 required: true,
-                message: formatMessage({
-                  id: 'userandregister.phone-number.required',
-                }),
+                message: '请输入手机号！',
               },
               {
                 pattern: /^\d{11}$/,
-                message: formatMessage({
-                  id: 'userandregister.phone-number.wrong-format',
-                }),
+                message: '手机号格式错误！',
               },
             ]}
           >
-            <Input
-              size="large"
-              placeholder={formatMessage({
-                id: 'userandregister.phone-number.placeholder',
-              })}
-            />
+            <Input size="large" placeholder="手机号" />
           </FormItem>
         </InputGroup>
         <Row gutter={8}>
@@ -311,18 +257,11 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               rules={[
                 {
                   required: true,
-                  message: formatMessage({
-                    id: 'userandregister.verification-code.required',
-                  }),
+                  message: '请输入验证码！',
                 },
               ]}
             >
-              <Input
-                size="large"
-                placeholder={formatMessage({
-                  id: 'userandregister.verification-code.placeholder',
-                })}
-              />
+              <Input size="large" placeholder="验证码" />
             </FormItem>
           </Col>
           <Col span={8}>
@@ -332,11 +271,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               className={styles.getCaptcha}
               onClick={onGetCaptcha}
             >
-              {count
-                ? `${count} s`
-                : formatMessage({
-                    id: 'userandregister.register.get-verification-code',
-                  })}
+              {count ? `${count} s` : '获取验证码'}
             </Button>
           </Col>
         </Row>
@@ -348,10 +283,10 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             type="primary"
             htmlType="submit"
           >
-            <FormattedMessage id="userandregister.register.register" />
+            注册
           </Button>
           <Link className={styles.login} to="/user/login">
-            <FormattedMessage id="userandregister.register.sign-in" />
+            使用已有账户登录
           </Link>
         </FormItem>
       </Form>

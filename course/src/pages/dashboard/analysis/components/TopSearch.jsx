@@ -9,35 +9,25 @@ import Trend from './Trend';
 import styles from '../style.less';
 const columns = [
   {
-    title: <FormattedMessage id="dashboardandanalysis.table.rank" defaultMessage="Rank" />,
+    title: '排名',
     dataIndex: 'index',
     key: 'index',
   },
   {
-    title: (
-      <FormattedMessage
-        id="dashboardandanalysis.table.search-keyword"
-        defaultMessage="Search keyword"
-      />
-    ),
+    title: '搜索关键词',
     dataIndex: 'keyword',
     key: 'keyword',
     render: (text) => <a href="/">{text}</a>,
   },
   {
-    title: <FormattedMessage id="dashboardandanalysis.table.users" defaultMessage="Users" />,
+    title: '用户数',
     dataIndex: 'count',
     key: 'count',
     sorter: (a, b) => a.count - b.count,
     className: styles.alignRight,
   },
   {
-    title: (
-      <FormattedMessage
-        id="dashboardandanalysis.table.weekly-range"
-        defaultMessage="Weekly Range"
-      />
-    ),
+    title: '周涨幅',
     dataIndex: 'range',
     key: 'range',
     sorter: (a, b) => a.range - b.range,
@@ -59,12 +49,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
   <Card
     loading={loading}
     bordered={false}
-    title={
-      <FormattedMessage
-        id="dashboardandanalysis.analysis.online-top-search"
-        defaultMessage="Online Top Search"
-      />
-    }
+    title="线上热门搜索"
     extra={dropdownGroup}
     style={{
       height: '100%',
@@ -81,18 +66,8 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
         <NumberInfo
           subTitle={
             <span>
-              <FormattedMessage
-                id="dashboardandanalysis.analysis.search-users"
-                defaultMessage="search users"
-              />
-              <Tooltip
-                title={
-                  <FormattedMessage
-                    id="dashboardandanalysis.analysis.introduce"
-                    defaultMessage="introduce"
-                  />
-                }
-              >
+              搜索用户数
+              <Tooltip title="指标说明">
                 <InfoCircleOutlined
                   style={{
                     marginLeft: 8,
@@ -118,18 +93,8 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
         <NumberInfo
           subTitle={
             <span>
-              <FormattedMessage
-                id="dashboardandanalysis.analysis.per-capita-search"
-                defaultMessage="Per Capita Search"
-              />
-              <Tooltip
-                title={
-                  <FormattedMessage
-                    id="dashboardandanalysis.analysis.introduce"
-                    defaultMessage="introduce"
-                  />
-                }
-              >
+              人均搜索次数
+              <Tooltip title="指标说明">
                 <InfoCircleOutlined
                   style={{
                     marginLeft: 8,

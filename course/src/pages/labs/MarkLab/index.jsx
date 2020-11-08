@@ -1,4 +1,4 @@
-import React from 'react';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   Button,
   Card,
@@ -16,19 +16,16 @@ import {
   PageHeader,
   Typography,
 } from 'antd';
-import { InfoCircleOutlined,EyeOutlined, ClockCircleOutlined,UserOutlined, EditTwoTone } from '@ant-design/icons';
-import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form';
-import { PageContainer } from '@ant-design/pro-layout';
 import { connect, FormattedMessage, formatMessage } from 'umi';
+import React from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
 import styles from './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
-const { Paragraph } = Typography;
-const { TabPane } = Tabs;
 
-const Lab = props => {
+const MarkLab = props => {
   const { submitting } = props;
   const [form] = Form.useForm();
   const [showPublicUsers, setShowPublicUsers] = React.useState(false);
@@ -93,11 +90,10 @@ const Lab = props => {
       fileSize: '167 KB',
     },
   ];
-
   const onFinish = values => {
     const { dispatch } = props;
     dispatch({
-      type: 'labsAndLab/submitRegularForm',
+      type: 'labsAndMarkLab/submitRegularForm',
       payload: values,
     });
   };
@@ -113,37 +109,8 @@ const Lab = props => {
   };
 
   return (
-    <PageContainer content="">、
+    <PageContainer content="labsandmarklab.basic.description">
       <Card bordered={false}>
-        <div>
-          <PageHeader
-            title="实验1"
-            // subTitle="This is a subtitle"
-            extra={[
-              <Button key="3" type="primary" onClick={() => window.history.back()}>返回</Button>,
-            ]}
-            footer={
-              <Tabs defaultActiveKey="1">
-                <TabPane tab="实验内容" key="labContent" style={{wrapperCol: {xs: {span: 21}}}}>
-                  <p>实验内容balabala</p>
-                  <p>实验内容balabala</p>
-                  <p>实验内容balabala</p>
-                  <p>实验内容balabala</p>
-                  <p>实验内容balabala</p>
-                </TabPane>
-              </Tabs>
-            }
-          >
-            <Paragraph>Ant Design interprets </Paragraph>
-            <div>
-              <Tag icon={<EyeOutlined />}>200</Tag>
-              <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
-              <Tag icon={<UserOutlined />}>海纳</Tag>
-              <Button type="link" icon={<EditTwoTone />}>编辑</Button>
-            </div>
-          </PageHeader>
-        </div>
-        
         <Form
           hideRequiredMark
           style={{
@@ -164,8 +131,18 @@ const Lab = props => {
           <FormItem>
             <ProFormUploadDragger {...formItemLayout} max={4} label="提交报告" name="upload" />
           </FormItem>
-          <FormItem {...formItemLayout} label="实验得分" name="labScore">
-            <Statistic value={5} suffix="/ 100" />
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                labsandmarklab.weight.label
+                <em className={styles.optional}>labsandmarklab.form.optional</em>
+              </span>
+            }
+            name="weight"
+          >
+            <InputNumber placeholder=" " min={0} max={100} />
+            <span className="ant-form-text">%</span>
           </FormItem>
           <FormItem {...formItemLayout} label="教师评语" name="labReview">
             <TextArea
@@ -201,5 +178,5 @@ const Lab = props => {
 };
 
 export default connect(({ loading }) => ({
-  submitting: loading.effects['labsAndLab/submitRegularForm'],
-}))(Lab);
+  submitting: loading.effects['labsAndMarkLab/submitRegularForm'],
+}))(MarkLab);

@@ -34,59 +34,24 @@ class Monitor extends Component {
                 marginBottom: 24,
               }}
             >
-              <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.trading-activity"
-                    defaultMessage="Real-Time Trading Activity"
-                  />
-                }
-                bordered={false}
-              >
+              <Card title="活动实时交易情况" bordered={false}>
                 <Row>
                   <Col md={6} sm={12} xs={24}>
                     <Statistic
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.total-transactions"
-                          defaultMessage="Total transactions today"
-                        />
-                      }
+                      title="今日交易总额"
                       suffix="元"
                       value={numeral(124543233).format('0,0')}
                     />
                   </Col>
                   <Col md={6} sm={12} xs={24}>
-                    <Statistic
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.sales-target"
-                          defaultMessage="Sales target completion rate"
-                        />
-                      }
-                      value="92%"
-                    />
+                    <Statistic title="销售目标完成率" value="92%" />
                   </Col>
                   <Col md={6} sm={12} xs={24}>
-                    <Countdown
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.remaining-time"
-                          defaultMessage="Remaining time of activity"
-                        />
-                      }
-                      value={deadline}
-                      format="HH:mm:ss:SSS"
-                    />
+                    <Countdown title="活动剩余时间" value={deadline} format="HH:mm:ss:SSS" />
                   </Col>
                   <Col md={6} sm={12} xs={24}>
                     <Statistic
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.total-transactions-per-second"
-                          defaultMessage="Total transactions per second"
-                        />
-                      }
+                      title="每秒交易总额"
                       suffix="元"
                       value={numeral(234).format('0,0')}
                     />
@@ -99,12 +64,7 @@ class Monitor extends Component {
             </Col>
             <Col xl={6} lg={24} md={24} sm={24} xs={24}>
               <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.activity-forecast"
-                    defaultMessage="Activity forecast"
-                  />
-                }
+                title="活动情况预测"
                 style={{
                   marginBottom: 24,
                 }}
@@ -113,12 +73,7 @@ class Monitor extends Component {
                 <ActiveChart />
               </Card>
               <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.efficiency"
-                    defaultMessage="Efficiency"
-                  />
-                }
+                title="券核效率"
                 style={{
                   marginBottom: 24,
                 }}
@@ -127,14 +82,7 @@ class Monitor extends Component {
                 }}
                 bordered={false}
               >
-                <Gauge
-                  title={formatMessage({
-                    id: 'dashboardandmonitor.monitor.ratio',
-                    defaultMessage: 'Ratio',
-                  })}
-                  height={180}
-                  percent={87}
-                />
+                <Gauge title="跳出率" height={180} percent={87} />
               </Card>
             </Col>
           </Row>
@@ -148,16 +96,7 @@ class Monitor extends Component {
                 marginBottom: 24,
               }}
             >
-              <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.proportion-per-category"
-                    defaultMessage="Proportion Per Category"
-                  />
-                }
-                bordered={false}
-                className={styles.pieCard}
-              >
+              <Card title="各品类占比" bordered={false} className={styles.pieCard}>
                 <Row
                   style={{
                     padding: '16px 0',
@@ -167,12 +106,7 @@ class Monitor extends Component {
                     <Pie
                       animate={false}
                       percent={28}
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.fast-food"
-                          defaultMessage="Fast food"
-                        />
-                      }
+                      title="中式快餐"
                       total="28%"
                       height={128}
                       lineWidth={2}
@@ -183,12 +117,7 @@ class Monitor extends Component {
                       animate={false}
                       color="#5DDECF"
                       percent={22}
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.western-food"
-                          defaultMessage="Western food"
-                        />
-                      }
+                      title="西餐"
                       total="22%"
                       height={128}
                       lineWidth={2}
@@ -199,12 +128,7 @@ class Monitor extends Component {
                       animate={false}
                       color="#2FC25B"
                       percent={32}
-                      title={
-                        <FormattedMessage
-                          id="dashboardandmonitor.monitor.hot-pot"
-                          defaultMessage="Hot pot"
-                        />
-                      }
+                      title="火锅"
                       total="32%"
                       height={128}
                       lineWidth={2}
@@ -223,12 +147,7 @@ class Monitor extends Component {
               }}
             >
               <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.popular-searches"
-                    defaultMessage="Popular Searches"
-                  />
-                }
+                title="热门搜索"
                 loading={loading}
                 bordered={false}
                 bodyStyle={{
@@ -248,28 +167,14 @@ class Monitor extends Component {
               }}
             >
               <Card
-                title={
-                  <FormattedMessage
-                    id="dashboardandmonitor.monitor.resource-surplus"
-                    defaultMessage="Resource Surplus"
-                  />
-                }
+                title="资源剩余"
                 bodyStyle={{
                   textAlign: 'center',
                   fontSize: 0,
                 }}
                 bordered={false}
               >
-                <WaterWave
-                  height={161}
-                  title={
-                    <FormattedMessage
-                      id="dashboardandmonitor.monitor.fund-surplus"
-                      defaultMessage="Fund Surplus"
-                    />
-                  }
-                  percent={34}
-                />
+                <WaterWave height={161} title="补贴资金剩余" percent={34} />
               </Card>
             </Col>
           </Row>

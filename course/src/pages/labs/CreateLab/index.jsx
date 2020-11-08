@@ -1,48 +1,38 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
+import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import styles from './style.less';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-const BasicForm = (props) => {
+const CreateLab = (props) => {
   const { submitting } = props;
   const [form] = Form.useForm();
   const [showPublicUsers, setShowPublicUsers] = React.useState(false);
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 24,
-      },
-      sm: {
-        span: 7,
+        span: 2,
       },
     },
     wrapperCol: {
       xs: {
-        span: 24,
-      },
-      sm: {
-        span: 12,
-      },
-      md: {
-        span: 10,
+        span: 21,
       },
     },
   };
   const submitFormLayout = {
     wrapperCol: {
       xs: {
-        span: 24,
-        offset: 0,
-      },
-      sm: {
-        span: 10,
-        offset: 7,
+        span: 0,
+        offset: 10,
       },
     },
   };
@@ -50,7 +40,7 @@ const BasicForm = (props) => {
   const onFinish = (values) => {
     const { dispatch } = props;
     dispatch({
-      type: 'formAndbasicForm/submitRegularForm',
+      type: 'labsAndCreateLab/submitRegularForm',
       payload: values,
     });
   };
@@ -65,6 +55,25 @@ const BasicForm = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2');
   };
 
+  const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+  ['blockquote', 'code-block'],
+  
+  [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+  [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+  [{ 'direction': 'rtl' }],                         // text direction
+
+  [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+  [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+  [{ 'font': [] }],
+  [{ 'align': [] }],
+
+  ['clean']                                         // remove formatting button
+];
   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <Card bordered={false}>
@@ -84,20 +93,62 @@ const BasicForm = (props) => {
         >
           <FormItem
             {...formItemLayout}
-            label="标题"
+            label={'实验标题'}
             name="title"
             rules={[
               {
                 required: true,
-                message: '请输入标题',
+                message: '请输入实验标题',
               },
             ]}
           >
-            <Input placeholder="给目标起个名字" />
+            <Input placeholder={'请输入实验标题'} />
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="起止日期"
+            label={'实验描述'}
+            name="description"
+            rules={[
+              {
+                required: true,
+                message: '请输入实验描述',
+              },
+            ]}
+          >
+            <TextArea
+              style={{
+                minHeight: 32,
+              }}
+              placeholder={'请输入实验描述'}
+              rows={2}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            style={{height: 350,}}
+            label={'实验内容'}
+            name="content"
+            rules={[
+              {
+                required: true,
+                message: '请输入实验内容',
+              },
+            ]}
+          >
+            <ReactQuill
+              id='labContent'
+              style={{
+                minHeight: 32,
+                height: 300,
+              }}
+              placeholder={'请输入实验内容'} 
+              // onChange={this.handleChange}
+              // formats={'image'}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={'起止日期'}
             name="date"
             rules={[
               {
@@ -115,50 +166,11 @@ const BasicForm = (props) => {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="目标描述"
-            name="goal"
-            rules={[
-              {
-                required: true,
-                message: '请输入目标描述',
-              },
-            ]}
-          >
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              placeholder="请输入你的阶段性工作目标"
-              rows={4}
-            />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="衡量标准"
-            name="standard"
-            rules={[
-              {
-                required: true,
-                message: '请输入衡量标准',
-              },
-            ]}
-          >
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              placeholder="请输入衡量标准"
-              rows={4}
-            />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
             label={
               <span>
-                客户
+                {'是否公开'}
                 <em className={styles.optional}>
-                  （选填）
-                  <Tooltip title="目标的服务对象">
+                  <Tooltip title={'公开则学生可见'}>
                     <InfoCircleOutlined
                       style={{
                         marginRight: 4,
@@ -168,83 +180,40 @@ const BasicForm = (props) => {
                 </em>
               </span>
             }
-            name="client"
-          >
-            <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                邀评人
-                <em className={styles.optional}>（选填）</em>
-              </span>
-            }
-            name="invites"
-          >
-            <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                权重
-                <em className={styles.optional}>（选填）</em>
-              </span>
-            }
-            name="weight"
-          >
-            <InputNumber placeholder="请输入" min={0} max={100} />
-            <span className="ant-form-text">%</span>
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="目标公开"
-            help="客户、邀评人默认被分享"
             name="publicType"
+            rules={[
+              {
+                required: true,
+                message: '请选择是否公开',
+              },
+            ]}
           >
             <div>
               <Radio.Group>
-                <Radio value="1">公开</Radio>
-                <Radio value="2">部分公开</Radio>
-                <Radio value="3">不公开</Radio>
+                <Radio value="yes">{'是'}</Radio>
+                <Radio value="no">{'否'}</Radio>
               </Radio.Group>
-              <FormItem
-                style={{
-                  marginBottom: 0,
-                }}
-                name="publicUsers"
-              >
-                <Select
-                  mode="multiple"
-                  placeholder="公开给"
-                  style={{
-                    margin: '8px 0',
-                    display: showPublicUsers ? 'block' : 'none',
-                  }}
-                >
-                  <Option value="1">同事甲</Option>
-                  <Option value="2">同事乙</Option>
-                  <Option value="3">同事丙</Option>
-                </Select>
-              </FormItem>
             </div>
+          </FormItem>
+          <FormItem>
+            <ProFormUploadDragger {...formItemLayout} max={4} label="上传附件" name="upload" />
           </FormItem>
           <FormItem
             {...submitFormLayout}
             style={{
-              marginTop: 32,
+              marginTop: 48,
             }}
           >
-            <Button type="primary" htmlType="submit" loading={submitting}>
-              提交
-            </Button>
+            <Button>取消创建</Button>
             <Button
               style={{
-                marginLeft: 8,
+                marginLeft: 16,
               }}
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
             >
-              保存
+              创建实验
             </Button>
           </FormItem>
         </Form>
@@ -254,5 +223,5 @@ const BasicForm = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  submitting: loading.effects['formAndbasicForm/submitRegularForm'],
-}))(BasicForm);
+  submitting: loading.effects['labsAndCreateLab/submitRegularForm'],
+}))(CreateLab);
