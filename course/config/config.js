@@ -61,7 +61,7 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/dashboard/analysis',
+              redirect: '/labs/list',
             },
             {
               path: '/dashboard',
@@ -120,6 +120,12 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/labs/mark-lab',
                   component: './labs/MarkLab',
+                },
+                {
+                  name: '分析页',
+                  icon: 'smile',
+                  path: '/labs/statistic',
+                  component: './labs/LabStatistic',
                 },
               ],
             },
