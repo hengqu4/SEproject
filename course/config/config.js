@@ -127,6 +127,12 @@ export default defineConfig({
                   path: '/labs/statistic',
                   component: './labs/LabStatistic',
                 },
+                {
+                  name: '实验表格',
+                  icon: 'smile',
+                  path: '/labs/table',
+                  component: './labs/LabTable',
+                },
               ],
             },
             {

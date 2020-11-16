@@ -77,12 +77,13 @@ export const LabList = (props) => {
       },
     });
   }, [1]);
-  const paginationProps = {
-    showSizeChanger: true,
-    showQuickJumper: true,
-    pageSize: 5,
-    total: 50,
-  };
+  
+  // const paginationProps = {
+  //   showSizeChanger: true,
+  //   showQuickJumper: true,
+  //   pageSize: 5,
+  //   total: 50,
+  // };
 
   const showModal = () => {
     setVisible(true);
@@ -207,7 +208,8 @@ export const LabList = (props) => {
               size="large"
               rowKey="id"
               loading={loading}
-              pagination={paginationProps}
+              // pagination={paginationProps}
+              pagination={false}
               dataSource={list}
               renderItem={(item) => (
                 <List.Item
@@ -234,7 +236,7 @@ export const LabList = (props) => {
                   ]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar src={item.logo} shape="square" size="large" />}
+                    // avatar={<Avatar src={item.logo} shape="square" size="large" />}
                     title={<a href={item.href}>{item.title}</a>}
                     description={item.subDescription}
                   />

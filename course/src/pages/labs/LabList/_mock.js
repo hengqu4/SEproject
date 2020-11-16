@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const titles = [
-  'Alipay',
-  'Angular',
+  '实验1',
+  '实验2',
   'Ant Design',
   'Ant Design Pro',
   'Bootstrap',
@@ -26,7 +26,7 @@ const covers = [
   'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
 ];
 const desc = [
-  '那是一种内在的东西， 他们到达不了，也无法触及的',
+  '这是一段实验描述啊描述啊',
   '希望是一个好东西，也许是最好的，好东西是不会消亡的',
   '生命就像一盒巧克力，结果往往出人意料',
   '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
@@ -60,6 +60,7 @@ function fakeList(count) {
       logo: avatars[i % 8],
       href: 'https://ant.design',
       updatedAt: new Date(new Date().getTime() - 1000 * 60 * 60 * 2 * i).getTime(),
+      // Date.now() - Math.floor(Math.random() * 1000)
       createdAt: new Date(new Date().getTime() - 1000 * 60 * 60 * 2 * i).getTime(),
       subDescription: desc[i % 5],
       description:
@@ -98,7 +99,8 @@ let sourceData = [];
 
 function getFakeList(req, res) {
   const params = req.query;
-  const count = params.count * 1 || 20;
+  // const count = params.count * 1 || 20;
+  const count = 10;
   const result = fakeList(count);
   sourceData = result;
   return res.json(result);
