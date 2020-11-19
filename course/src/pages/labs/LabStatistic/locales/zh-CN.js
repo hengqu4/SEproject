@@ -31,4 +31,4 @@ export default {
   'labsandlabstatistic.table.search-keyword': '搜索关键词',
   'labsandlabstatistic.table.users': '用户数',
   'labsandlabstatistic.table.weekly-range': '周涨幅',
-};
+}

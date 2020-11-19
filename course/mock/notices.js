@@ -95,9 +95,9 @@ const getNotices = (req, res) => {
       status: 'processing',
       type: 'event',
     },
-  ]);
-};
+  ])
+}
 
 export default {
   'GET /api/notices': getNotices,
-};
+}

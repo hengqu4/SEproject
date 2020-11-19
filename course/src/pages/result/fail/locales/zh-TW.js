@@ -7,4 +7,4 @@ export default {
   'resultandfail.error.hint-text2': '您的賬戶還不具備申請資格',
   'resultandfail.error.hint-btn2': '立即升級',
   'resultandfail.error.btn-text': '返回修改',
-};
+}

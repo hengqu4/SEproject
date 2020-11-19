@@ -1,7 +1,7 @@
-import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
-import React from 'react';
-import classNames from 'classnames';
-import styles from './index.less';
+import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
+import React from 'react'
+import classNames from 'classnames'
+import styles from './index.less'
 
 const NumberInfo = ({ theme, title, subTitle, total, subTotal, status, suffix, gap, ...rest }) => (
   <div
@@ -16,10 +16,7 @@ const NumberInfo = ({ theme, title, subTitle, total, subTotal, status, suffix, g
       </div>
     )}
     {subTitle && (
-      <div
-        className={styles.numberInfoSubTitle}
-        title={typeof subTitle === 'string' ? subTitle : ''}
-      >
+      <div className={styles.numberInfoSubTitle} title={typeof subTitle === 'string' ? subTitle : ''}>
         {subTitle}
       </div>
     )}
@@ -45,6 +42,6 @@ const NumberInfo = ({ theme, title, subTitle, total, subTotal, status, suffix, g
       )}
     </div>
   </div>
-);
+)
 
-export default NumberInfo;
+export default NumberInfo

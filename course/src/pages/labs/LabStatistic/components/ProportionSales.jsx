@@ -1,22 +1,16 @@
-import { Card, Radio } from 'antd';
-import { FormattedMessage } from 'umi';
-import React from 'react';
-import { Pie } from './Charts';
-import Yuan from '../utils/Yuan';
-import styles from '../style.less';
+import { Card, Radio } from 'antd'
+import { FormattedMessage } from 'umi'
+import React from 'react'
+import { Pie } from './Charts'
+import Yuan from '../utils/Yuan'
+import styles from '../style.less'
 
-const ProportionSales = ({
-  dropdownGroup,
-  salesType,
-  loading,
-  salesPieData,
-  handleChangeSalesType,
-}) => (
+const ProportionSales = ({ dropdownGroup, salesType, loading, salesPieData, handleChangeSalesType }) => (
   <Card
     loading={loading}
     className={styles.salesCard}
     bordered={false}
-    title="The Proportion of Sales"
+    title='The Proportion of Sales'
     style={{
       height: '100%',
     }}
@@ -25,9 +19,9 @@ const ProportionSales = ({
         {dropdownGroup}
         <div className={styles.salesTypeRadio}>
           <Radio.Group value={salesType} onChange={handleChangeSalesType}>
-            <Radio.Button value="all">ALL</Radio.Button>
-            <Radio.Button value="online">Online</Radio.Button>
-            <Radio.Button value="stores">Stores</Radio.Button>
+            <Radio.Button value='all'>ALL</Radio.Button>
+            <Radio.Button value='online'>Online</Radio.Button>
+            <Radio.Button value='stores'>Stores</Radio.Button>
           </Radio.Group>
         </div>
       </div>
@@ -44,15 +38,15 @@ const ProportionSales = ({
       </h4>
       <Pie
         hasLegend
-        subTitle="Sales"
+        subTitle='Sales'
         total={() => <Yuan>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Yuan>}
         data={salesPieData}
-        valueFormat={value => <Yuan>{value}</Yuan>}
+        valueFormat={(value) => <Yuan>{value}</Yuan>}
         height={248}
         lineWidth={4}
       />
     </div>
   </Card>
-);
+)
 
-export default ProportionSales;
+export default ProportionSales

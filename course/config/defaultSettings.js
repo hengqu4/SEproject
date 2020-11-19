@@ -13,5 +13,5 @@ const proSettings = {
   title: 'Ant Design Pro',
   pwa: false,
   iconfontUrl: '',
-};
-export default proSettings;
+}
+export default proSettings

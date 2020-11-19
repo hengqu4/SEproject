@@ -1,102 +1,106 @@
-import { EllipsisOutlined } from '@ant-design/icons';
-import { Col, Dropdown, Menu, Row } from 'antd';
-import React, { Component, Suspense } from 'react';
-import { GridContent } from '@ant-design/pro-layout';
-import { connect } from 'umi';
-import PageLoading from './components/PageLoading';
-import { getTimeDistance } from './utils/utils';
-import styles from './style.less';
-const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
-const SalesCard = React.lazy(() => import('./components/SalesCard'));
-const TopSearch = React.lazy(() => import('./components/TopSearch'));
-const ProportionSales = React.lazy(() => import('./components/ProportionSales'));
-const OfflineData = React.lazy(() => import('./components/OfflineData'));
+import { EllipsisOutlined } from '@ant-design/icons'
+import { Col, Dropdown, Menu, Row } from 'antd'
+import React, { Component, Suspense } from 'react'
+import { GridContent } from '@ant-design/pro-layout'
+import { connect } from 'umi'
+import PageLoading from './components/PageLoading'
+import { getTimeDistance } from './utils/utils'
+import styles from './style.less'
+
+const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'))
+const SalesCard = React.lazy(() => import('./components/SalesCard'))
+const TopSearch = React.lazy(() => import('./components/TopSearch'))
+const ProportionSales = React.lazy(() => import('./components/ProportionSales'))
+const OfflineData = React.lazy(() => import('./components/OfflineData'))
 
 class LabStatistic extends Component {
   state = {
     salesType: 'all',
     currentTabKey: '',
     rangePickerValue: getTimeDistance('year'),
-  };
-  reqRef = 0;
-  timeoutId = 0;
+  }
+
+  reqRef = 0
+
+  timeoutId = 0
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
         type: 'labsAndLabStatistic/fetch',
-      });
-    });
+      })
+    })
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     dispatch({
       type: 'labsAndLabStatistic/clear',
-    });
-    cancelAnimationFrame(this.reqRef);
-    clearTimeout(this.timeoutId);
+    })
+    cancelAnimationFrame(this.reqRef)
+    clearTimeout(this.timeoutId)
   }
 
   handleChangeSalesType = (e) => {
     this.setState({
       salesType: e.target.value,
-    });
-  };
+    })
+  }
+
   handleTabChange = (key) => {
     this.setState({
       currentTabKey: key,
-    });
-  };
+    })
+  }
+
   handleRangePickerChange = (rangePickerValue) => {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     this.setState({
       rangePickerValue,
-    });
+    })
     dispatch({
       type: 'labsAndLabStatistic/fetchSalesData',
-    });
-  };
+    })
+  }
+
   selectDate = (type) => {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     this.setState({
       rangePickerValue: getTimeDistance(type),
-    });
+    })
     dispatch({
       type: 'labsAndLabStatistic/fetchSalesData',
-    });
-  };
+    })
+  }
+
   isActive = (type) => {
-    const { rangePickerValue } = this.state;
+    const { rangePickerValue } = this.state
 
     if (!rangePickerValue) {
-      return '';
+      return ''
     }
 
-    const value = getTimeDistance(type);
+    const value = getTimeDistance(type)
 
     if (!value) {
-      return '';
+      return ''
     }
 
     if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return '';
+      return ''
     }
 
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate;
+    if (rangePickerValue[0].isSame(value[0], 'day') && rangePickerValue[1].isSame(value[1], 'day')) {
+      return styles.currentDate
     }
 
-    return '';
-  };
+    return ''
+  }
 
   render() {
-    const { rangePickerValue, salesType, currentTabKey } = this.state;
-    const { labsAndLabStatistic, loading } = this.props;
+    const { rangePickerValue, salesType, currentTabKey } = this.state
+    const { labsAndLabStatistic, loading } = this.props
     const {
       visitData,
       visitData2,
@@ -107,13 +111,13 @@ class LabStatistic extends Component {
       salesTypeData,
       salesTypeDataOnline,
       salesTypeDataOffline,
-    } = labsAndLabStatistic;
-    let salesPieData;
+    } = labsAndLabStatistic
+    let salesPieData
 
     if (salesType === 'all') {
-      salesPieData = salesTypeData;
+      salesPieData = salesTypeData
     } else {
-      salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
+      salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline
     }
 
     const menu = (
@@ -121,15 +125,15 @@ class LabStatistic extends Component {
         <Menu.Item>操作一</Menu.Item>
         <Menu.Item>操作二</Menu.Item>
       </Menu>
-    );
+    )
     const dropdownGroup = (
       <span className={styles.iconGroup}>
-        <Dropdown overlay={menu} placement="bottomRight">
+        <Dropdown overlay={menu} placement='bottomRight'>
           <EllipsisOutlined />
         </Dropdown>
       </span>
-    );
-    const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
+    )
+    const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name)
     return (
       <GridContent>
         <React.Fragment>
@@ -185,11 +189,11 @@ class LabStatistic extends Component {
           </Suspense>
         </React.Fragment>
       </GridContent>
-    );
+    )
   }
 }
 
 export default connect(({ labsAndLabStatistic, loading }) => ({
   labsAndLabStatistic,
   loading: loading.effects['labsAndLabStatistic/fetch'],
-}))(LabStatistic);
+}))(LabStatistic)

@@ -1,7 +1,6 @@
 export default {
   'labsandmarklab.basic.title': '基礎表單',
-  'labsandmarklab.basic.description':
-    '表單頁用於向用戶收集或驗證信息，基礎表單常見於數據項較少的表單場景。',
+  'labsandmarklab.basic.description': '表單頁用於向用戶收集或驗證信息，基礎表單常見於數據項較少的表單場景。',
   'labsandmarklab.email.required': '請輸入郵箱地址！',
   'labsandmarklab.email.wrong-format': '郵箱地址格式錯誤！',
   'labsandmarklab.userName.required': '請輸入賬戶!',
@@ -54,4 +53,4 @@ export default {
   'labsandmarklab.option.A': '同事甲',
   'labsandmarklab.option.B': '同事乙',
   'labsandmarklab.option.C': '同事丙',
-};
+}

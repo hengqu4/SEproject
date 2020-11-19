@@ -1,12 +1,13 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Table, Tooltip } from 'antd';
-import { FormattedMessage } from 'umi';
-import React from 'react';
-import numeral from 'numeral';
-import { MiniArea } from './Charts';
-import NumberInfo from './NumberInfo';
-import Trend from './Trend';
-import styles from '../style.less';
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Card, Col, Row, Table, Tooltip } from 'antd'
+import { FormattedMessage } from 'umi'
+import React from 'react'
+import numeral from 'numeral'
+import { MiniArea } from './Charts'
+import NumberInfo from './NumberInfo'
+import Trend from './Trend'
+import styles from '../style.less'
+
 const columns = [
   {
     title: '排名',
@@ -17,7 +18,7 @@ const columns = [
     title: '搜索关键词',
     dataIndex: 'keyword',
     key: 'keyword',
-    render: (text) => <a href="/">{text}</a>,
+    render: (text) => <a href='/'>{text}</a>,
   },
   {
     title: '用户数',
@@ -43,13 +44,13 @@ const columns = [
       </Trend>
     ),
   },
-];
+]
 
 const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
   <Card
     loading={loading}
     bordered={false}
-    title="线上热门搜索"
+    title='线上热门搜索'
     extra={dropdownGroup}
     style={{
       height: '100%',
@@ -67,7 +68,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
           subTitle={
             <span>
               搜索用户数
-              <Tooltip title="指标说明">
+              <Tooltip title='指标说明'>
                 <InfoCircleOutlined
                   style={{
                     marginLeft: 8,
@@ -78,7 +79,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
           }
           gap={8}
           total={numeral(12321).format('0,0')}
-          status="up"
+          status='up'
           subTotal={17.1}
         />
         <MiniArea line height={45} data={visitData2} />
@@ -94,7 +95,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
           subTitle={
             <span>
               人均搜索次数
-              <Tooltip title="指标说明">
+              <Tooltip title='指标说明'>
                 <InfoCircleOutlined
                   style={{
                     marginLeft: 8,
@@ -104,7 +105,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
             </span>
           }
           total={2.7}
-          status="down"
+          status='down'
           subTotal={26.2}
           gap={8}
         />
@@ -113,7 +114,7 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
     </Row>
     <Table
       rowKey={(record) => record.index}
-      size="small"
+      size='small'
       columns={columns}
       dataSource={searchData}
       pagination={{
@@ -124,6 +125,6 @@ const TopSearch = ({ loading, visitData2, searchData, dropdownGroup }) => (
       }}
     />
   </Card>
-);
+)
 
-export default TopSearch;
+export default TopSearch

@@ -1,9 +1,10 @@
-import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons';
-import { Button, Card, Result } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi';
-import React, { Fragment } from 'react';
-import { GridContent } from '@ant-design/pro-layout';
-import styles from './index.less';
+import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons'
+import { Button, Card, Result } from 'antd'
+import { FormattedMessage, formatMessage } from 'umi'
+import React, { Fragment } from 'react'
+import { GridContent } from '@ant-design/pro-layout'
+import styles from './index.less'
+
 const Content = (
   <Fragment>
     <div className={styles.title}>您提交的内容有如下错误：</div>
@@ -46,15 +47,15 @@ const Content = (
       </a>
     </div>
   </Fragment>
-);
+)
 export default () => (
   <GridContent>
     <Card bordered={false}>
       <Result
-        status="error"
-        title="提交失败"
-        subTitle="请核对并修改以下信息后，再重新提交。"
-        extra={<Button type="primary">返回修改</Button>}
+        status='error'
+        title='提交失败'
+        subTitle='请核对并修改以下信息后，再重新提交。'
+        extra={<Button type='primary'>返回修改</Button>}
         style={{
           marginTop: 48,
           marginBottom: 16,
@@ -64,4 +65,4 @@ export default () => (
       </Result>
     </Card>
   </GridContent>
-);
+)

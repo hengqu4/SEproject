@@ -1,9 +1,9 @@
-import { Card, Col, Row, Tabs } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi';
-import React from 'react';
-import { TimelineChart, Pie } from './Charts';
-import NumberInfo from './NumberInfo';
-import styles from '../style.less';
+import { Card, Col, Row, Tabs } from 'antd'
+import { FormattedMessage, formatMessage } from 'umi'
+import React from 'react'
+import { TimelineChart, Pie } from './Charts'
+import NumberInfo from './NumberInfo'
+import styles from '../style.less'
 
 const CustomTab = ({ data, currentTabKey: currentKey }) => (
   <Row
@@ -12,12 +12,12 @@ const CustomTab = ({ data, currentTabKey: currentKey }) => (
       width: 138,
       margin: '8px 0',
     }}
-    type="flex"
+    type='flex'
   >
     <Col span={12}>
       <NumberInfo
         title={data.name}
-        subTitle="Conversion Rate"
+        subTitle='Conversion Rate'
         gap={2}
         total={`${data.cvr * 100}%`}
         theme={currentKey !== data.name ? 'light' : undefined}
@@ -29,19 +29,12 @@ const CustomTab = ({ data, currentTabKey: currentKey }) => (
         paddingTop: 36,
       }}
     >
-      <Pie
-        animate={false}
-        inner={0.55}
-        tooltip={false}
-        margin={[0, 0, 0, 0]}
-        percent={data.cvr * 100}
-        height={64}
-      />
+      <Pie animate={false} inner={0.55} tooltip={false} margin={[0, 0, 0, 0]} percent={data.cvr * 100} height={64} />
     </Col>
   </Row>
-);
+)
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 const OfflineData = ({ activeKey, loading, offlineData, offlineChartData, handleTabChange }) => (
   <Card
@@ -53,7 +46,7 @@ const OfflineData = ({ activeKey, loading, offlineData, offlineChartData, handle
     }}
   >
     <Tabs activeKey={activeKey} onChange={handleTabChange}>
-      {offlineData.map(shop => (
+      {offlineData.map((shop) => (
         <TabPane tab={<CustomTab data={shop} currentTabKey={activeKey} />} key={shop.name}>
           <div
             style={{
@@ -73,6 +66,6 @@ const OfflineData = ({ activeKey, loading, offlineData, offlineChartData, handle
       ))}
     </Tabs>
   </Card>
-);
+)
 
-export default OfflineData;
+export default OfflineData

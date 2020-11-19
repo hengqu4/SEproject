@@ -3,27 +3,28 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
-import { Link, useIntl, connect, history } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
-import Authorized from '@/utils/Authorized';
-import RightContent from '@/components/GlobalHeader/RightContent';
-import { getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
+import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout'
+import React, { useEffect } from 'react'
+import { Link, useIntl, connect, history } from 'umi'
+import { GithubOutlined } from '@ant-design/icons'
+import { Result, Button } from 'antd'
+import Authorized from '@/utils/Authorized'
+import RightContent from '@/components/GlobalHeader/RightContent'
+import { getAuthorityFromRouter } from '@/utils/utils'
+import logo from '../assets/logo.svg'
+
 const noMatch = (
   <Result
     status={403}
-    title="403"
-    subTitle="Sorry, you are not authorized to access this page."
+    title='403'
+    subTitle='Sorry, you are not authorized to access this page.'
     extra={
-      <Button type="primary">
-        <Link to="/user/login">Go Login</Link>
+      <Button type='primary'>
+        <Link to='/user/login'>Go Login</Link>
       </Button>
     }
   />
-);
+)
 /**
  * use Authorized check all menu item
  */
@@ -33,9 +34,9 @@ const menuDataRender = (menuList) =>
     const localItem = {
       ...item,
       children: item.children ? menuDataRender(item.children) : undefined,
-    };
-    return Authorized.check(item.authority, localItem, null);
-  });
+    }
+    return Authorized.check(item.authority, localItem, null)
+  })
 
 const defaultFooterDom = (
   <DefaultFooter
@@ -61,7 +62,7 @@ const defaultFooterDom = (
       },
     ]}
   />
-);
+)
 
 const BasicLayout = (props) => {
   const {
@@ -71,7 +72,7 @@ const BasicLayout = (props) => {
     location = {
       pathname: '/',
     },
-  } = props;
+  } = props
   /**
    * constructor
    */
@@ -80,9 +81,9 @@ const BasicLayout = (props) => {
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
-      });
+      })
     }
-  }, []);
+  }, [])
   /**
    * init variables
    */
@@ -92,14 +93,14 @@ const BasicLayout = (props) => {
       dispatch({
         type: 'global/changeLayoutCollapsed',
         payload,
-      });
+      })
     }
-  }; // get children authority
+  } // get children authority
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
-  };
-  const {} = useIntl();
+  }
+  // const {} = useIntl();
   return (
     <>
       <ProLayout
@@ -108,10 +109,10 @@ const BasicLayout = (props) => {
         onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
-            return defaultDom;
+            return defaultDom
           }
 
-          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+          return <Link to={menuItemProps.path}>{defaultDom}</Link>
         }}
         breadcrumbRender={(routers = []) => [
           {
@@ -121,12 +122,8 @@ const BasicLayout = (props) => {
           ...routers,
         ]}
         itemRender={(route, params, routes, paths) => {
-          const first = routes.indexOf(route) === 0;
-          return first ? (
-            <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-          ) : (
-            <span>{route.breadcrumbName}</span>
-          );
+          const first = routes.indexOf(route) === 0
+          return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>
         }}
         footerRender={() => defaultFooterDom}
         menuDataRender={menuDataRender}
@@ -148,10 +145,10 @@ const BasicLayout = (props) => {
         }
       />
     </>
-  );
-};
+  )
+}
 
 export default connect(({ global, settings }) => ({
   collapsed: global.collapsed,
   settings,
-}))(BasicLayout);
+}))(BasicLayout)

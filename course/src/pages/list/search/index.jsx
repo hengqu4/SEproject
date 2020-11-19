@@ -1,45 +1,47 @@
-import React, { Component } from 'react';
-import { Input } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
-import { history } from 'umi';
+import React, { Component } from 'react'
+import { Input } from 'antd'
+import { PageContainer } from '@ant-design/pro-layout'
+import { history } from 'umi'
 
 class Search extends Component {
   handleTabChange = (key) => {
-    const { match } = this.props;
-    const url = match.url === '/' ? '' : match.url;
+    const { match } = this.props
+    const url = match.url === '/' ? '' : match.url
 
     switch (key) {
       case 'articles':
-        history.push(`${url}/articles`);
-        break;
+        history.push(`${url}/articles`)
+        break
 
       case 'applications':
-        history.push(`${url}/applications`);
-        break;
+        history.push(`${url}/applications`)
+        break
 
       case 'projects':
-        history.push(`${url}/projects`);
-        break;
+        history.push(`${url}/projects`)
+        break
 
       default:
-        break;
+        break
     }
-  };
+  }
+
   handleFormSubmit = (value) => {
     // eslint-disable-next-line no-console
-    console.log(value);
-  };
+    console.log(value)
+  }
+
   getTabKey = () => {
-    const { match, location } = this.props;
-    const url = match.path === '/' ? '' : match.path;
-    const tabKey = location.pathname.replace(`${url}/`, '');
+    const { match, location } = this.props
+    const url = match.path === '/' ? '' : match.path
+    const tabKey = location.pathname.replace(`${url}/`, '')
 
     if (tabKey && tabKey !== '/') {
-      return tabKey;
+      return tabKey
     }
 
-    return 'articles';
-  };
+    return 'articles'
+  }
 
   render() {
     const tabList = [
@@ -55,7 +57,7 @@ class Search extends Component {
         key: 'applications',
         tab: '应用',
       },
-    ];
+    ]
     const mainSearch = (
       <div
         style={{
@@ -63,9 +65,9 @@ class Search extends Component {
         }}
       >
         <Input.Search
-          placeholder="请输入"
-          enterButton="搜索"
-          size="large"
+          placeholder='请输入'
+          enterButton='搜索'
+          size='large'
           onSearch={this.handleFormSubmit}
           style={{
             maxWidth: 522,
@@ -73,8 +75,8 @@ class Search extends Component {
           }}
         />
       </div>
-    );
-    const { children } = this.props;
+    )
+    const { children } = this.props
     return (
       <PageContainer
         content={mainSearch}
@@ -84,8 +86,8 @@ class Search extends Component {
       >
         {children}
       </PageContainer>
-    );
+    )
   }
 }
 
-export default Search;
+export default Search

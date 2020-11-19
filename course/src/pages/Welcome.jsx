@@ -1,7 +1,7 @@
-import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography } from 'antd';
-import styles from './Welcome.less';
+import React from 'react'
+import { PageContainer } from '@ant-design/pro-layout'
+import { Card, Alert, Typography } from 'antd'
+import styles from './Welcome.less'
 
 const CodePreview = ({ children }) => (
   <pre className={styles.pre}>
@@ -9,14 +9,14 @@ const CodePreview = ({ children }) => (
       <Typography.Text copyable>{children}</Typography.Text>
     </code>
   </pre>
-);
+)
 
 export default () => (
   <PageContainer>
     <Card>
       <Alert
-        message="更快更强的重型组件，已经发布。"
-        type="success"
+        message='更快更强的重型组件，已经发布。'
+        type='success'
         showIcon
         banner
         style={{
@@ -26,7 +26,7 @@ export default () => (
       />
       <Typography.Text strong>
         高级表格{' '}
-        <a href="https://protable.ant.design/" rel="noopener noreferrer" target="__blank">
+        <a href='https://protable.ant.design/' rel='noopener noreferrer' target='__blank'>
           欢迎使用
         </a>
       </Typography.Text>
@@ -38,11 +38,11 @@ export default () => (
         }}
       >
         高级布局{' '}
-        <a href="https://prolayout.ant.design/" rel="noopener noreferrer" target="__blank">
+        <a href='https://prolayout.ant.design/' rel='noopener noreferrer' target='__blank'>
           欢迎使用
         </a>
       </Typography.Text>
       <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
     </Card>
   </PageContainer>
-);
+)

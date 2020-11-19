@@ -1,7 +1,8 @@
-import React from 'react';
-import { Form, Alert, Button, Descriptions, Divider, Statistic, Input } from 'antd';
-import { connect } from 'umi';
-import styles from './index.less';
+import React from 'react'
+import { Form, Alert, Button, Descriptions, Divider, Statistic, Input } from 'antd'
+import { connect } from 'umi'
+import styles from './index.less'
+
 const formItemLayout = {
   labelCol: {
     span: 5,
@@ -9,49 +10,49 @@ const formItemLayout = {
   wrapperCol: {
     span: 19,
   },
-};
+}
 
 const Step2 = (props) => {
-  const [form] = Form.useForm();
-  const { data, dispatch, submitting } = props;
+  const [form] = Form.useForm()
+  const { data, dispatch, submitting } = props
 
   if (!data) {
-    return null;
+    return null
   }
 
-  const { validateFields, getFieldsValue } = form;
+  const { validateFields, getFieldsValue } = form
 
   const onPrev = () => {
     if (dispatch) {
-      const values = getFieldsValue();
+      const values = getFieldsValue()
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
         payload: { ...data, ...values },
-      });
+      })
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
         payload: 'info',
-      });
+      })
     }
-  };
+  }
 
   const onValidateForm = async () => {
-    const values = await validateFields();
+    const values = await validateFields()
 
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/submitStepForm',
         payload: { ...data, ...values },
-      });
+      })
     }
-  };
+  }
 
-  const { payAccount, receiverAccount, receiverName, amount } = data;
+  const { payAccount, receiverAccount, receiverName, amount } = data
   return (
     <Form
       {...formItemLayout}
       form={form}
-      layout="horizontal"
+      layout='horizontal'
       className={styles.stepForm}
       initialValues={{
         password: '123456',
@@ -60,17 +61,17 @@ const Step2 = (props) => {
       <Alert
         closable
         showIcon
-        message="确认转账后，资金将直接打入对方账户，无法退回。"
+        message='确认转账后，资金将直接打入对方账户，无法退回。'
         style={{
           marginBottom: 24,
         }}
       />
       <Descriptions column={1}>
-        <Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款账户"> {receiverAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款人姓名"> {receiverName}</Descriptions.Item>
-        <Descriptions.Item label="转账金额">
-          <Statistic value={amount} suffix="元" />
+        <Descriptions.Item label='付款账户'> {payAccount}</Descriptions.Item>
+        <Descriptions.Item label='收款账户'> {receiverAccount}</Descriptions.Item>
+        <Descriptions.Item label='收款人姓名'> {receiverName}</Descriptions.Item>
+        <Descriptions.Item label='转账金额'>
+          <Statistic value={amount} suffix='元' />
         </Descriptions.Item>
       </Descriptions>
       <Divider
@@ -79,8 +80,8 @@ const Step2 = (props) => {
         }}
       />
       <Form.Item
-        label="支付密码"
-        name="password"
+        label='支付密码'
+        name='password'
         required={false}
         rules={[
           {
@@ -90,8 +91,8 @@ const Step2 = (props) => {
         ]}
       >
         <Input
-          type="password"
-          autoComplete="off"
+          type='password'
+          autoComplete='off'
           style={{
             width: '80%',
           }}
@@ -112,7 +113,7 @@ const Step2 = (props) => {
           },
         }}
       >
-        <Button type="primary" onClick={onValidateForm} loading={submitting}>
+        <Button type='primary' onClick={onValidateForm} loading={submitting}>
           提交
         </Button>
         <Button
@@ -125,10 +126,10 @@ const Step2 = (props) => {
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
 export default connect(({ formAndstepForm, loading }) => ({
   submitting: loading.effects['formAndstepForm/submitStepForm'],
   data: formAndstepForm.step,
-}))(Step2);
+}))(Step2)

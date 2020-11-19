@@ -31,4 +31,4 @@ export default {
   'labsandlabstatistic.table.search-keyword': 'Palavra chave',
   'labsandlabstatistic.table.users': 'Usuários',
   'labsandlabstatistic.table.weekly-range': 'Faixa Semanal',
-};
+}

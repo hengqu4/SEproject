@@ -1,11 +1,11 @@
-import React from 'react';
-import { Card, Input, Select, Form } from 'antd';
-import { withPropsAPI } from 'gg-editor';
+import React from 'react'
+import { Card, Input, Select, Form } from 'antd'
+import { withPropsAPI } from 'gg-editor'
 
-const upperFirst = (str) => str.toLowerCase().replace(/( |^)[a-z]/g, (l) => l.toUpperCase());
+const upperFirst = (str) => str.toLowerCase().replace(/( |^)[a-z]/g, (l) => l.toUpperCase())
 
-const { Item } = Form;
-const { Option } = Select;
+const { Item } = Form
+const { Option } = Select
 const inlineFormItemLayout = {
   labelCol: {
     sm: {
@@ -17,51 +17,54 @@ const inlineFormItemLayout = {
       span: 16,
     },
   },
-};
+}
 
 class DetailForm extends React.Component {
   get item() {
-    const { propsAPI } = this.props;
-    return propsAPI.getSelected()[0];
+    const { propsAPI } = this.props
+    return propsAPI.getSelected()[0]
   }
 
   handleFieldChange = (values) => {
-    const { propsAPI } = this.props;
-    const { getSelected, executeCommand, update } = propsAPI;
+    const { propsAPI } = this.props
+    const { getSelected, executeCommand, update } = propsAPI
     setTimeout(() => {
-      const item = getSelected()[0];
+      const item = getSelected()[0]
 
       if (!item) {
-        return;
+        return
       }
 
       executeCommand(() => {
-        update(item, { ...values });
-      });
-    }, 0);
-  };
+        update(item, { ...values })
+      })
+    }, 0)
+  }
+
   handleInputBlur = (type) => (e) => {
-    e.preventDefault();
+    e.preventDefault()
     this.handleFieldChange({
       [type]: e.currentTarget.value,
-    });
-  };
+    })
+  }
+
   renderNodeDetail = () => {
-    const { label } = this.item.getModel();
+    const { label } = this.item.getModel()
     return (
       <Form
         initialValues={{
           label,
         }}
       >
-        <Item label="Label" name="label" {...inlineFormItemLayout}>
+        <Item label='Label' name='label' {...inlineFormItemLayout}>
           <Input onBlur={this.handleInputBlur('label')} />
         </Item>
       </Form>
-    );
-  };
+    )
+  }
+
   renderEdgeDetail = () => {
-    const { label = '', shape = 'flow-smooth' } = this.item.getModel();
+    const { label = '', shape = 'flow-smooth' } = this.item.getModel()
     return (
       <Form
         initialValues={{
@@ -69,10 +72,10 @@ class DetailForm extends React.Component {
           shape,
         }}
       >
-        <Item label="Label" name="label" {...inlineFormItemLayout}>
+        <Item label='Label' name='label' {...inlineFormItemLayout}>
           <Input onBlur={this.handleInputBlur('label')} />
         </Item>
-        <Item label="Shape" name="shape" {...inlineFormItemLayout}>
+        <Item label='Shape' name='shape' {...inlineFormItemLayout}>
           <Select
             onChange={(value) =>
               this.handleFieldChange({
@@ -80,44 +83,45 @@ class DetailForm extends React.Component {
               })
             }
           >
-            <Option value="flow-smooth">Smooth</Option>
-            <Option value="flow-polyline">Polyline</Option>
-            <Option value="flow-polyline-round">Polyline Round</Option>
+            <Option value='flow-smooth'>Smooth</Option>
+            <Option value='flow-polyline'>Polyline</Option>
+            <Option value='flow-polyline-round'>Polyline Round</Option>
           </Select>
         </Item>
       </Form>
-    );
-  };
+    )
+  }
+
   renderGroupDetail = () => {
-    const { label = '新建分组' } = this.item.getModel();
+    const { label = '新建分组' } = this.item.getModel()
     return (
       <Form
         initialValues={{
           label,
         }}
       >
-        <Item label="Label" name="label" {...inlineFormItemLayout}>
+        <Item label='Label' name='label' {...inlineFormItemLayout}>
           <Input onBlur={this.handleInputBlur('label')} />
         </Item>
       </Form>
-    );
-  };
+    )
+  }
 
   render() {
-    const { type } = this.props;
+    const { type } = this.props
 
     if (!this.item) {
-      return null;
+      return null
     }
 
     return (
-      <Card type="inner" size="small" title={upperFirst(type)} bordered={false}>
+      <Card type='inner' size='small' title={upperFirst(type)} bordered={false}>
         {type === 'node' && this.renderNodeDetail()}
         {type === 'edge' && this.renderEdgeDetail()}
         {type === 'group' && this.renderGroupDetail()}
       </Card>
-    );
+    )
   }
 }
 
-export default withPropsAPI(DetailForm);
+export default withPropsAPI(DetailForm)

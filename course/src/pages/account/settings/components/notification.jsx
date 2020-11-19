@@ -1,10 +1,10 @@
-import { List, Switch } from 'antd';
-import React, { Component, Fragment } from 'react';
-import { formatMessage } from 'umi';
+import { List, Switch } from 'antd'
+import React, { Component, Fragment } from 'react'
+import { formatMessage } from 'umi'
 
 class NotificationView extends Component {
   getData = () => {
-    const Action = <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked />;
+    const Action = <Switch checkedChildren='开' unCheckedChildren='关' defaultChecked />
     return [
       {
         title: '账户密码',
@@ -21,15 +21,15 @@ class NotificationView extends Component {
         description: '待办任务将以站内信的形式通知',
         actions: [Action],
       },
-    ];
-  };
+    ]
+  }
 
   render() {
-    const data = this.getData();
+    const data = this.getData()
     return (
       <Fragment>
         <List
-          itemLayout="horizontal"
+          itemLayout='horizontal'
           dataSource={data}
           renderItem={(item) => (
             <List.Item actions={item.actions}>
@@ -38,8 +38,8 @@ class NotificationView extends Component {
           )}
         />
       </Fragment>
-    );
+    )
   }
 }
 
-export default NotificationView;
+export default NotificationView

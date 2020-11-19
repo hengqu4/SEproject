@@ -1,8 +1,7 @@
 export default {
   'userandregister.login.userName': 'userName',
   'userandregister.login.password': 'password',
-  'userandregister.login.message-invalid-credentials':
-    'Invalid username or password（admin/ant.design）',
+  'userandregister.login.message-invalid-credentials': 'Invalid username or password（admin/ant.design）',
   'userandregister.login.message-invalid-verification-code': 'Invalid verification code',
   'userandregister.login.tab-login-credentials': 'Credentials',
   'userandregister.login.tab-login-mobile': 'Mobile number',
@@ -24,8 +23,7 @@ export default {
   'userandregister.userName.required': 'Please enter your userName!',
   'userandregister.password.required': 'Please enter your password!',
   'userandregister.password.twice': 'The passwords entered twice do not match!',
-  'userandregister.strength.msg':
-    "Please enter at least 6 characters and don't use passwords that are easy to guess.",
+  'userandregister.strength.msg': "Please enter at least 6 characters and don't use passwords that are easy to guess.",
   'userandregister.strength.strong': 'Strength: strong',
   'userandregister.strength.medium': 'Strength: medium',
   'userandregister.strength.short': 'Strength: too short',
@@ -61,8 +59,7 @@ export default {
   'userandregister.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'userandregister.invites.label': 'Inviting critics',
-  'userandregister.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'userandregister.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'userandregister.weight.label': 'Weight',
   'userandregister.weight.placeholder': 'Please enter weight',
   'userandregister.public.label': 'Target disclosure',
@@ -75,4 +72,4 @@ export default {
   'userandregister.option.B': 'Colleague B',
   'userandregister.option.C': 'Colleague C',
   'userandregister.navBar.lang': 'Languages',
-};
+}

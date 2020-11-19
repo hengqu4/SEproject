@@ -7,4 +7,4 @@ export default {
   'resultandfail.error.hint-text2': '您的账户还不具备申请资格',
   'resultandfail.error.hint-btn2': '立即升级',
   'resultandfail.error.btn-text': '返回修改',
-};
+}

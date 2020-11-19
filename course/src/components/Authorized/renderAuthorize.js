@@ -1,7 +1,7 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 
 /* eslint-disable import/no-mutable-exports */
-let CURRENT = 'NULL';
+let CURRENT = 'NULL'
 
 /**
  * use  authority or getAuthority
@@ -10,21 +10,18 @@ let CURRENT = 'NULL';
 const renderAuthorize = (Authorized) => (currentAuthority) => {
   if (currentAuthority) {
     if (typeof currentAuthority === 'function') {
-      CURRENT = currentAuthority();
+      CURRENT = currentAuthority()
     }
 
-    if (
-      Object.prototype.toString.call(currentAuthority) === '[object String]' ||
-      Array.isArray(currentAuthority)
-    ) {
-      CURRENT = currentAuthority;
+    if (Object.prototype.toString.call(currentAuthority) === '[object String]' || Array.isArray(currentAuthority)) {
+      CURRENT = currentAuthority
     }
   } else {
-    CURRENT = 'NULL';
+    CURRENT = 'NULL'
   }
 
-  return Authorized;
-};
+  return Authorized
+}
 
-export { CURRENT };
-export default (Authorized) => renderAuthorize(Authorized);
+export { CURRENT }
+export default (Authorized) => renderAuthorize(Authorized)

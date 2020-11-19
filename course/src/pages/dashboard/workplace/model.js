@@ -1,4 +1,5 @@
-import { fakeChartData, queryActivities, queryCurrent, queryProjectNotice } from './service';
+import { fakeChartData, queryActivities, queryCurrent, queryProjectNotice } from './service'
+
 const Model = {
   namespace: 'dashboardAndworkplace',
   state: {
@@ -11,61 +12,61 @@ const Model = {
     *init(_, { put }) {
       yield put({
         type: 'fetchUserCurrent',
-      });
+      })
       yield put({
         type: 'fetchProjectNotice',
-      });
+      })
       yield put({
         type: 'fetchActivitiesList',
-      });
+      })
       yield put({
         type: 'fetchChart',
-      });
+      })
     },
 
     *fetchUserCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      const response = yield call(queryCurrent)
       yield put({
         type: 'save',
         payload: {
           currentUser: response,
         },
-      });
+      })
     },
 
     *fetchProjectNotice(_, { call, put }) {
-      const response = yield call(queryProjectNotice);
+      const response = yield call(queryProjectNotice)
       yield put({
         type: 'save',
         payload: {
           projectNotice: Array.isArray(response) ? response : [],
         },
-      });
+      })
     },
 
     *fetchActivitiesList(_, { call, put }) {
-      const response = yield call(queryActivities);
+      const response = yield call(queryActivities)
       yield put({
         type: 'save',
         payload: {
           activities: Array.isArray(response) ? response : [],
         },
-      });
+      })
     },
 
     *fetchChart(_, { call, put }) {
-      const { radarData } = yield call(fakeChartData);
+      const { radarData } = yield call(fakeChartData)
       yield put({
         type: 'save',
         payload: {
           radarData,
         },
-      });
+      })
     },
   },
   reducers: {
     save(state, { payload }) {
-      return { ...state, ...payload };
+      return { ...state, ...payload }
     },
 
     clear() {
@@ -74,8 +75,8 @@ const Model = {
         projectNotice: [],
         activities: [],
         radarData: [],
-      };
+      }
     },
   },
-};
-export default Model;
+}
+export default Model

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Spin } from 'antd'; // loading components from code split
+import React from 'react'
+import { Spin } from 'antd' // loading components from code split
 // https://umijs.org/plugin/umi-plugin-react.html#dynamicimport
 
 export default () => (
@@ -9,6 +9,6 @@ export default () => (
       textAlign: 'center',
     }}
   >
-    <Spin size="large" />
+    <Spin size='large' />
   </div>
-);
+)

@@ -31,4 +31,4 @@ export default {
   'labsandlabstatistic.table.search-keyword': 'Keyword',
   'labsandlabstatistic.table.users': 'Users',
   'labsandlabstatistic.table.weekly-range': 'Weekly Range',
-};
+}

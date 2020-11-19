@@ -1,8 +1,9 @@
-import React from 'react';
-import { Form, Button, Divider, Input, Select } from 'antd';
-import { connect } from 'umi';
-import styles from './index.less';
-const { Option } = Select;
+import React from 'react'
+import { Form, Button, Divider, Input, Select } from 'antd'
+import { connect } from 'umi'
+import styles from './index.less'
+
+const { Option } = Select
 const formItemLayout = {
   labelCol: {
     span: 5,
@@ -10,46 +11,46 @@ const formItemLayout = {
   wrapperCol: {
     span: 19,
   },
-};
+}
 
 const Step1 = (props) => {
-  const { dispatch, data } = props;
-  const [form] = Form.useForm();
+  const { dispatch, data } = props
+  const [form] = Form.useForm()
 
   if (!data) {
-    return null;
+    return null
   }
 
-  const { validateFields } = form;
+  const { validateFields } = form
 
   const onValidateForm = async () => {
-    const values = await validateFields();
+    const values = await validateFields()
 
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/saveStepFormData',
         payload: values,
-      });
+      })
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
         payload: 'confirm',
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
       <Form
         {...formItemLayout}
         form={form}
-        layout="horizontal"
+        layout='horizontal'
         className={styles.stepForm}
         hideRequiredMark
         initialValues={data}
       >
         <Form.Item
-          label="付款账户"
-          name="payAccount"
+          label='付款账户'
+          name='payAccount'
           rules={[
             {
               required: true,
@@ -57,24 +58,24 @@ const Step1 = (props) => {
             },
           ]}
         >
-          <Select placeholder="test@example.com">
-            <Option value="ant-design@alipay.com">ant-design@alipay.com</Option>
+          <Select placeholder='test@example.com'>
+            <Option value='ant-design@alipay.com'>ant-design@alipay.com</Option>
           </Select>
         </Form.Item>
-        <Form.Item label="收款账户">
+        <Form.Item label='收款账户'>
           <Input.Group compact>
             <Select
-              defaultValue="alipay"
+              defaultValue='alipay'
               style={{
                 width: 100,
               }}
             >
-              <Option value="alipay">支付宝</Option>
-              <Option value="bank">银行账户</Option>
+              <Option value='alipay'>支付宝</Option>
+              <Option value='bank'>银行账户</Option>
             </Select>
             <Form.Item
               noStyle
-              name="receiverAccount"
+              name='receiverAccount'
               rules={[
                 {
                   required: true,
@@ -90,14 +91,14 @@ const Step1 = (props) => {
                 style={{
                   width: 'calc(100% - 100px)',
                 }}
-                placeholder="test@example.com"
+                placeholder='test@example.com'
               />
             </Form.Item>
           </Input.Group>
         </Form.Item>
         <Form.Item
-          label="收款人姓名"
-          name="receiverName"
+          label='收款人姓名'
+          name='receiverName'
           rules={[
             {
               required: true,
@@ -105,11 +106,11 @@ const Step1 = (props) => {
             },
           ]}
         >
-          <Input placeholder="请输入收款人姓名" />
+          <Input placeholder='请输入收款人姓名' />
         </Form.Item>
         <Form.Item
-          label="转账金额"
-          name="amount"
+          label='转账金额'
+          name='amount'
           rules={[
             {
               required: true,
@@ -121,7 +122,7 @@ const Step1 = (props) => {
             },
           ]}
         >
-          <Input prefix="￥" placeholder="请输入金额" />
+          <Input prefix='￥' placeholder='请输入金额' />
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -135,7 +136,7 @@ const Step1 = (props) => {
             },
           }}
         >
-          <Button type="primary" onClick={onValidateForm}>
+          <Button type='primary' onClick={onValidateForm}>
             下一步
           </Button>
         </Form.Item>
@@ -157,9 +158,9 @@ const Step1 = (props) => {
         </p>
       </div>
     </>
-  );
-};
+  )
+}
 
 export default connect(({ formAndstepForm }) => ({
   data: formAndstepForm.step,
-}))(Step1);
+}))(Step1)

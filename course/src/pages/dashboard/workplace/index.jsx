@@ -1,11 +1,12 @@
-import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
-import React, { Component } from 'react';
-import { Link, connect } from 'umi';
-import { PageContainer } from '@ant-design/pro-layout';
-import moment from 'moment';
-import Radar from './components/Radar';
-import EditableLinkGroup from './components/EditableLinkGroup';
-import styles from './style.less';
+import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd'
+import React, { Component } from 'react'
+import { Link, connect } from 'umi'
+import { PageContainer } from '@ant-design/pro-layout'
+import moment from 'moment'
+import Radar from './components/Radar'
+import EditableLinkGroup from './components/EditableLinkGroup'
+import styles from './style.less'
+
 const links = [
   {
     title: '操作一',
@@ -31,10 +32,10 @@ const links = [
     title: '操作六',
     href: '',
   },
-];
+]
 
 const PageHeaderContent = ({ currentUser }) => {
-  const loading = currentUser && Object.keys(currentUser).length;
+  const loading = currentUser && Object.keys(currentUser).length
 
   if (!loading) {
     return (
@@ -45,13 +46,13 @@ const PageHeaderContent = ({ currentUser }) => {
         }}
         active
       />
-    );
+    )
   }
 
   return (
     <div className={styles.pageHeaderContent}>
       <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.avatar} />
+        <Avatar size='large' src={currentUser.avatar} />
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>
@@ -64,36 +65,36 @@ const PageHeaderContent = ({ currentUser }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const ExtraContent = () => (
   <div className={styles.extraContent}>
     <div className={styles.statItem}>
-      <Statistic title="项目数" value={56} />
+      <Statistic title='项目数' value={56} />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="团队内排名" value={8} suffix="/ 24" />
+      <Statistic title='团队内排名' value={8} suffix='/ 24' />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="项目访问" value={2223} />
+      <Statistic title='项目访问' value={2223} />
     </div>
   </div>
-);
+)
 
 class Workplace extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     dispatch({
       type: 'dashboardAndworkplace/init',
-    });
+    })
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     dispatch({
       type: 'dashboardAndworkplace/clear',
-    });
+    })
   }
 
   renderActivities = (item) => {
@@ -103,11 +104,11 @@ class Workplace extends Component {
           <a href={item[key].link} key={item[key].name}>
             {item[key].name}
           </a>
-        );
+        )
       }
 
-      return key;
-    });
+      return key
+    })
     return (
       <List.Item key={item.id}>
         <List.Item.Meta
@@ -126,28 +127,18 @@ class Workplace extends Component {
           }
         />
       </List.Item>
-    );
-  };
+    )
+  }
 
   render() {
-    const {
-      currentUser,
-      activities,
-      projectNotice,
-      projectLoading,
-      activitiesLoading,
-      radarData,
-    } = this.props;
+    const { currentUser, activities, projectNotice, projectLoading, activitiesLoading, radarData } = this.props
 
     if (!currentUser || !currentUser.userid) {
-      return null;
+      return null
     }
 
     return (
-      <PageContainer
-        content={<PageHeaderContent currentUser={currentUser} />}
-        extraContent={<ExtraContent />}
-      >
+      <PageContainer content={<PageHeaderContent currentUser={currentUser} />} extraContent={<ExtraContent />}>
         <Row gutter={24}>
           <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
@@ -155,9 +146,9 @@ class Workplace extends Component {
               style={{
                 marginBottom: 24,
               }}
-              title="进行中的项目"
+              title='进行中的项目'
               bordered={false}
-              extra={<Link to="/">全部项目</Link>}
+              extra={<Link to='/'>全部项目</Link>}
               loading={projectLoading}
               bodyStyle={{
                 padding: 0,
@@ -174,7 +165,7 @@ class Workplace extends Component {
                     <Card.Meta
                       title={
                         <div className={styles.cardTitle}>
-                          <Avatar size="small" src={item.logo} />
+                          <Avatar size='small' src={item.logo} />
                           <Link to={item.href}>{item.title}</Link>
                         </div>
                       }
@@ -198,7 +189,7 @@ class Workplace extends Component {
               }}
               bordered={false}
               className={styles.activeCard}
-              title="动态"
+              title='动态'
               loading={activitiesLoading}
             >
               <List
@@ -206,7 +197,7 @@ class Workplace extends Component {
                 renderItem={(item) => this.renderActivities(item)}
                 dataSource={activities}
                 className={styles.activitiesList}
-                size="large"
+                size='large'
               />
             </Card>
           </Col>
@@ -215,7 +206,7 @@ class Workplace extends Component {
               style={{
                 marginBottom: 24,
               }}
-              title="快速开始 / 便捷导航"
+              title='快速开始 / 便捷导航'
               bordered={false}
               bodyStyle={{
                 padding: 0,
@@ -228,7 +219,7 @@ class Workplace extends Component {
                 marginBottom: 24,
               }}
               bordered={false}
-              title="XX 指数"
+              title='XX 指数'
               loading={radarData.length === 0}
             >
               <div className={styles.chart}>
@@ -241,7 +232,7 @@ class Workplace extends Component {
                 paddingBottom: 12,
               }}
               bordered={false}
-              title="团队"
+              title='团队'
               loading={projectLoading}
             >
               <div className={styles.members}>
@@ -249,7 +240,7 @@ class Workplace extends Component {
                   {projectNotice.map((item) => (
                     <Col span={12} key={`members-item-${item.id}`}>
                       <Link to={item.href}>
-                        <Avatar src={item.logo} size="small" />
+                        <Avatar src={item.logo} size='small' />
                         <span className={styles.member}>{item.member}</span>
                       </Link>
                     </Col>
@@ -260,18 +251,16 @@ class Workplace extends Component {
           </Col>
         </Row>
       </PageContainer>
-    );
+    )
   }
 }
 
-export default connect(
-  ({ dashboardAndworkplace: { currentUser, projectNotice, activities, radarData }, loading }) => ({
-    currentUser,
-    projectNotice,
-    activities,
-    radarData,
-    currentUserLoading: loading.effects['dashboardAndworkplace/fetchUserCurrent'],
-    projectLoading: loading.effects['dashboardAndworkplace/fetchProjectNotice'],
-    activitiesLoading: loading.effects['dashboardAndworkplace/fetchActivitiesList'],
-  }),
-)(Workplace);
+export default connect(({ dashboardAndworkplace: { currentUser, projectNotice, activities, radarData }, loading }) => ({
+  currentUser,
+  projectNotice,
+  activities,
+  radarData,
+  currentUserLoading: loading.effects['dashboardAndworkplace/fetchUserCurrent'],
+  projectLoading: loading.effects['dashboardAndworkplace/fetchProjectNotice'],
+  activitiesLoading: loading.effects['dashboardAndworkplace/fetchActivitiesList'],
+}))(Workplace)

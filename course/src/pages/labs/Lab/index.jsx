@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Button,
   Card,
@@ -10,28 +10,29 @@ import {
   Select,
   Statistic,
   Tooltip,
-  Table, 
-  Tabs, 
+  Table,
+  Tabs,
   Tag,
   PageHeader,
   Typography,
-} from 'antd';
-import { InfoCircleOutlined,EyeOutlined, ClockCircleOutlined,UserOutlined, EditTwoTone } from '@ant-design/icons';
-import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form';
-import { PageContainer } from '@ant-design/pro-layout';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import styles from './style.less';
-const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
-const { Paragraph } = Typography;
-const { TabPane } = Tabs;
+} from 'antd'
+import { InfoCircleOutlined, EyeOutlined, ClockCircleOutlined, UserOutlined, EditTwoTone } from '@ant-design/icons'
+import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
+import { PageContainer } from '@ant-design/pro-layout'
+import { connect, FormattedMessage, formatMessage } from 'umi'
+import styles from './style.less'
 
-const Lab = props => {
-  const { submitting } = props;
-  const [form] = Form.useForm();
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
+const FormItem = Form.Item
+const { Option } = Select
+const { RangePicker } = DatePicker
+const { TextArea } = Input
+const { Paragraph } = Typography
+const { TabPane } = Tabs
+
+const Lab = (props) => {
+  const { submitting } = props
+  const [form] = Form.useForm()
+  const [showPublicUsers, setShowPublicUsers] = React.useState(false)
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -43,7 +44,7 @@ const Lab = props => {
         span: 21,
       },
     },
-  };
+  }
   const submitFormLayout = {
     wrapperCol: {
       xs: {
@@ -51,13 +52,13 @@ const Lab = props => {
         offset: 10,
       },
     },
-  };
+  }
   const columns = [
     {
       title: '名称',
       dataIndex: 'fileName',
       key: 'fileName',
-      render: text => <a>{text}</a>,
+      render: (text) => <a>{text}</a>,
     },
     {
       title: '日期',
@@ -84,7 +85,7 @@ const Lab = props => {
         </span>
       ),
     },
-  ];
+  ]
   const data = [
     {
       key: '1',
@@ -92,39 +93,42 @@ const Lab = props => {
       fileDate: '2020-5-7',
       fileSize: '167 KB',
     },
-  ];
+  ]
 
-  const onFinish = values => {
-    const { dispatch } = props;
+  const onFinish = (values) => {
+    const { dispatch } = props
     dispatch({
       type: 'labsAndLab/submitRegularForm',
       payload: values,
-    });
-  };
+    })
+  }
 
-  const onFinishFailed = errorInfo => {
+  const onFinishFailed = (errorInfo) => {
     // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
-  const onValuesChange = changedValues => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
-  };
+  const onValuesChange = (changedValues) => {
+    const { publicType } = changedValues
+    if (publicType) setShowPublicUsers(publicType === '2')
+  }
 
   return (
-    <PageContainer content="">、
+    <PageContainer content=''>
+      、
       <Card bordered={false}>
         <div>
           <PageHeader
-            title="实验1"
+            title='实验1'
             // subTitle="This is a subtitle"
             extra={[
-              <Button key="3" type="primary" onClick={() => window.history.back()}>返回</Button>,
+              <Button key='3' type='primary' onClick={() => window.history.back()}>
+                返回
+              </Button>,
             ]}
             footer={
-              <Tabs defaultActiveKey="1">
-                <TabPane tab="实验内容" key="labContent" style={{wrapperCol: {xs: {span: 21}}}}>
+              <Tabs defaultActiveKey='1'>
+                <TabPane tab='实验内容' key='labContent' style={{ wrapperCol: { xs: { span: 21 } } }}>
                   <p>实验内容balabala</p>
                   <p>实验内容balabala</p>
                   <p>实验内容balabala</p>
@@ -139,18 +143,20 @@ const Lab = props => {
               <Tag icon={<EyeOutlined />}>200</Tag>
               <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
               <Tag icon={<UserOutlined />}>海纳</Tag>
-              <Button type="link" icon={<EditTwoTone />}>编辑</Button>
+              <Button type='link' icon={<EditTwoTone />}>
+                编辑
+              </Button>
             </div>
           </PageHeader>
         </div>
-        
+
         <Form
           hideRequiredMark
           style={{
             marginTop: 8,
           }}
           form={form}
-          name="basic"
+          name='basic'
           initialValues={{
             public: '1',
           }}
@@ -158,21 +164,21 @@ const Lab = props => {
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
-          <FormItem {...formItemLayout} label="下载附件" name="goal">
+          <FormItem {...formItemLayout} label='下载附件' name='goal'>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label="提交报告" name="upload" />
+            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='upload' />
           </FormItem>
-          <FormItem {...formItemLayout} label="实验得分" name="labScore">
-            <Statistic value={5} suffix="/ 100" />
+          <FormItem {...formItemLayout} label='实验得分' name='labScore'>
+            <Statistic value={5} suffix='/ 100' />
           </FormItem>
-          <FormItem {...formItemLayout} label="教师评语" name="labReview">
+          <FormItem {...formItemLayout} label='教师评语' name='labReview'>
             <TextArea
               style={{
                 minHeight: 32,
               }}
-              placeholder=""
+              placeholder=''
               rows={4}
             />
           </FormItem>
@@ -187,8 +193,8 @@ const Lab = props => {
               style={{
                 marginLeft: 16,
               }}
-              type="primary"
-              htmlType="submit"
+              type='primary'
+              htmlType='submit'
               loading={submitting}
             >
               提交作业
@@ -197,9 +203,9 @@ const Lab = props => {
         </Form>
       </Card>
     </PageContainer>
-  );
-};
+  )
+}
 
 export default connect(({ loading }) => ({
   submitting: loading.effects['labsAndLab/submitRegularForm'],
-}))(Lab);
+}))(Lab)

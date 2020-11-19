@@ -1,31 +1,32 @@
-import React, { useEffect } from 'react';
-import { Button, Card, Col, Form, List, Row, Select, Tag } from 'antd';
-import { LoadingOutlined, StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
-import ArticleListContent from './components/ArticleListContent';
-import StandardFormRow from './components/StandardFormRow';
-import TagSelect from './components/TagSelect';
-import styles from './style.less';
-const { Option } = Select;
-const FormItem = Form.Item;
-const pageSize = 5;
+import React, { useEffect } from 'react'
+import { Button, Card, Col, Form, List, Row, Select, Tag } from 'antd'
+import { LoadingOutlined, StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons'
+import { connect } from 'umi'
+import ArticleListContent from './components/ArticleListContent'
+import StandardFormRow from './components/StandardFormRow'
+import TagSelect from './components/TagSelect'
+import styles from './style.less'
+
+const { Option } = Select
+const FormItem = Form.Item
+const pageSize = 5
 
 const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
   useEffect(() => {
     dispatch({
       type: 'listAndsearchAndarticles/fetch',
       payload: {
         count: 5,
       },
-    });
-  }, []);
+    })
+  }, [])
 
   const setOwner = () => {
     form.setFieldsValue({
       owner: ['wzj'],
-    });
-  };
+    })
+  }
 
   const fetchMore = () => {
     dispatch({
@@ -33,8 +34,8 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
       payload: {
         count: pageSize,
       },
-    });
-  };
+    })
+  }
 
   const owners = [
     {
@@ -57,7 +58,7 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
       id: 'ym',
       name: '姚明',
     },
-  ];
+  ]
 
   const IconText = ({ type, text }) => {
     switch (type) {
@@ -71,7 +72,7 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
             />
             {text}
           </span>
-        );
+        )
 
       case 'like-o':
         return (
@@ -83,7 +84,7 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
             />
             {text}
           </span>
-        );
+        )
 
       case 'message':
         return (
@@ -95,12 +96,12 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
             />
             {text}
           </span>
-        );
+        )
 
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const formItemLayout = {
     wrapperCol: {
@@ -114,7 +115,7 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
         span: 12,
       },
     },
-  };
+  }
   const loadMore = list.length > 0 && (
     <div
       style={{
@@ -138,12 +139,12 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
         )}
       </Button>
     </div>
-  );
+  )
   return (
     <>
       <Card bordered={false}>
         <Form
-          layout="inline"
+          layout='inline'
           form={form}
           initialValues={{
             owner: ['wjh', 'zxx'],
@@ -154,36 +155,36 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
               payload: {
                 count: 8,
               },
-            });
+            })
           }}
         >
           <StandardFormRow
-            title="所属类目"
+            title='所属类目'
             block
             style={{
               paddingBottom: 11,
             }}
           >
-            <FormItem name="category">
+            <FormItem name='category'>
               <TagSelect expandable>
-                <TagSelect.Option value="cat1">类目一</TagSelect.Option>
-                <TagSelect.Option value="cat2">类目二</TagSelect.Option>
-                <TagSelect.Option value="cat3">类目三</TagSelect.Option>
-                <TagSelect.Option value="cat4">类目四</TagSelect.Option>
-                <TagSelect.Option value="cat5">类目五</TagSelect.Option>
-                <TagSelect.Option value="cat6">类目六</TagSelect.Option>
-                <TagSelect.Option value="cat7">类目七</TagSelect.Option>
-                <TagSelect.Option value="cat8">类目八</TagSelect.Option>
-                <TagSelect.Option value="cat9">类目九</TagSelect.Option>
-                <TagSelect.Option value="cat10">类目十</TagSelect.Option>
-                <TagSelect.Option value="cat11">类目十一</TagSelect.Option>
-                <TagSelect.Option value="cat12">类目十二</TagSelect.Option>
+                <TagSelect.Option value='cat1'>类目一</TagSelect.Option>
+                <TagSelect.Option value='cat2'>类目二</TagSelect.Option>
+                <TagSelect.Option value='cat3'>类目三</TagSelect.Option>
+                <TagSelect.Option value='cat4'>类目四</TagSelect.Option>
+                <TagSelect.Option value='cat5'>类目五</TagSelect.Option>
+                <TagSelect.Option value='cat6'>类目六</TagSelect.Option>
+                <TagSelect.Option value='cat7'>类目七</TagSelect.Option>
+                <TagSelect.Option value='cat8'>类目八</TagSelect.Option>
+                <TagSelect.Option value='cat9'>类目九</TagSelect.Option>
+                <TagSelect.Option value='cat10'>类目十</TagSelect.Option>
+                <TagSelect.Option value='cat11'>类目十一</TagSelect.Option>
+                <TagSelect.Option value='cat12'>类目十二</TagSelect.Option>
               </TagSelect>
             </FormItem>
           </StandardFormRow>
-          <StandardFormRow title="owner" grid>
-            <FormItem name="owner" noStyle>
-              <Select mode="multiple" placeholder="选择 owner">
+          <StandardFormRow title='owner' grid>
+            <FormItem name='owner' noStyle>
+              <Select mode='multiple' placeholder='选择 owner'>
                 {owners.map((owner) => (
                   <Option key={owner.id} value={owner.id}>
                     {owner.name}
@@ -195,31 +196,31 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
               只看自己的
             </a>
           </StandardFormRow>
-          <StandardFormRow title="其它选项" grid last>
+          <StandardFormRow title='其它选项' grid last>
             <Row gutter={16}>
               <Col xl={8} lg={10} md={12} sm={24} xs={24}>
-                <FormItem {...formItemLayout} label="活跃用户" name="user">
+                <FormItem {...formItemLayout} label='活跃用户' name='user'>
                   <Select
-                    placeholder="不限"
+                    placeholder='不限'
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                   >
-                    <Option value="lisa">李三</Option>
+                    <Option value='lisa'>李三</Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col xl={8} lg={10} md={12} sm={24} xs={24}>
-                <FormItem {...formItemLayout} label="好评度" name="rate">
+                <FormItem {...formItemLayout} label='好评度' name='rate'>
                   <Select
-                    placeholder="不限"
+                    placeholder='不限'
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                   >
-                    <Option value="good">优秀</Option>
+                    <Option value='good'>优秀</Option>
                   </Select>
                 </FormItem>
               </Col>
@@ -237,19 +238,19 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
         }}
       >
         <List
-          size="large"
+          size='large'
           loading={list.length === 0 ? loading : false}
-          rowKey="id"
-          itemLayout="vertical"
+          rowKey='id'
+          itemLayout='vertical'
           loadMore={loadMore}
           dataSource={list}
           renderItem={(item) => (
             <List.Item
               key={item.id}
               actions={[
-                <IconText key="star" type="star-o" text={item.star} />,
-                <IconText key="like" type="like-o" text={item.like} />,
-                <IconText key="message" type="message" text={item.message} />,
+                <IconText key='star' type='star-o' text={item.star} />,
+                <IconText key='like' type='like-o' text={item.like} />,
+                <IconText key='message' type='message' text={item.message} />,
               ]}
               extra={<div className={styles.listItemExtra} />}
             >
@@ -273,10 +274,10 @@ const Articles = ({ dispatch, listAndsearchAndarticles: { list }, loading }) => 
         />
       </Card>
     </>
-  );
-};
+  )
+}
 
 export default connect(({ listAndsearchAndarticles, loading }) => ({
   listAndsearchAndarticles,
   loading: loading.models.listAndsearchAndarticles,
-}))(Articles);
+}))(Articles)

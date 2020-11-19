@@ -1,7 +1,6 @@
 export default {
   'formstepform.basic.title': '基礎表單',
-  'formstepform.basic.description':
-    '表單頁用於向用戶收集或驗證信息，基礎表單常見於數據項較少的表單場景。',
+  'formstepform.basic.description': '表單頁用於向用戶收集或驗證信息，基礎表單常見於數據項較少的表單場景。',
 
   'formstepform.email.required': '請輸入郵箱地址！',
   'formstepform.email.wrong-format': '郵箱地址格式錯誤！',
@@ -56,4 +55,4 @@ export default {
   'formstepform.option.A': '同事甲',
   'formstepform.option.B': '同事乙',
   'formstepform.option.C': '同事丙',
-};
+}

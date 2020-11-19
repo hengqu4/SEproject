@@ -1,14 +1,8 @@
-import React from 'react';
-import { Tooltip } from 'antd';
-import styles from './index.less';
+import React from 'react'
+import { Tooltip } from 'antd'
+import styles from './index.less'
 
-const MiniProgress = ({
-  targetLabel,
-  target,
-  color = 'rgb(19, 194, 194)',
-  strokeWidth,
-  percent,
-}) => (
+const MiniProgress = ({ targetLabel, target, color = 'rgb(19, 194, 194)', strokeWidth, percent }) => (
   <div className={styles.miniProgress}>
     <Tooltip title={targetLabel}>
       <div
@@ -40,6 +34,6 @@ const MiniProgress = ({
       />
     </div>
   </div>
-);
+)
 
-export default MiniProgress;
+export default MiniProgress

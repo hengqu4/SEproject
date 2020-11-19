@@ -1,4 +1,5 @@
-import mockjs from 'mockjs';
+import mockjs from 'mockjs'
+
 export default {
   'GET  /api/tags': mockjs.mock({
     'list|100': [
@@ -9,4 +10,4 @@ export default {
       },
     ],
   }),
-};
+}

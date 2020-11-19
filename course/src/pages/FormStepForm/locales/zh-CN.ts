@@ -1,7 +1,6 @@
 export default {
   'formstepform.basic.title': '基础表单',
-  'formstepform.basic.description':
-    '表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。',
+  'formstepform.basic.description': '表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。',
 
   'formstepform.email.required': '请输入邮箱地址！',
   'formstepform.email.wrong-format': '邮箱地址格式错误！',
@@ -56,4 +55,4 @@ export default {
   'formstepform.option.A': '同事甲',
   'formstepform.option.B': '同事乙',
   'formstepform.option.C': '同事丙',
-};
+}

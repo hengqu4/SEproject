@@ -1,12 +1,13 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Col, Row, Tooltip } from 'antd';
-import { FormattedMessage } from 'umi';
-import React from 'react';
-import numeral from 'numeral';
-import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from './Charts';
-import Trend from './Trend';
-import Yuan from '../utils/Yuan';
-import styles from '../style.less';
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Col, Row, Tooltip } from 'antd'
+import { FormattedMessage } from 'umi'
+import React from 'react'
+import numeral from 'numeral'
+import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from './Charts'
+import Trend from './Trend'
+import Yuan from '../utils/Yuan'
+import styles from '../style.less'
+
 const topColResponsiveProps = {
   xs: 24,
   sm: 12,
@@ -16,26 +17,26 @@ const topColResponsiveProps = {
   style: {
     marginBottom: 24,
   },
-};
+}
 
 const IntroduceRow = ({ loading, visitData }) => (
-  <Row gutter={24} type="flex">
+  <Row gutter={24} type='flex'>
     <Col {...topColResponsiveProps}>
       <ChartCard
         bordered={false}
-        title="Total Sales"
+        title='Total Sales'
         action={
-          <Tooltip title="Introduce">
+          <Tooltip title='Introduce'>
             <InfoCircleOutlined />
           </Tooltip>
         }
         loading={loading}
         total={() => <Yuan>126560</Yuan>}
-        footer={<Field label="Daily Sales" value={`￥${numeral(12423).format('0,0')}`} />}
+        footer={<Field label='Daily Sales' value={`￥${numeral(12423).format('0,0')}`} />}
         contentHeight={46}
       >
         <Trend
-          flag="up"
+          flag='up'
           style={{
             marginRight: 16,
           }}
@@ -43,7 +44,7 @@ const IntroduceRow = ({ loading, visitData }) => (
           Weekly Changes
           <span className={styles.trendText}>12%</span>
         </Trend>
-        <Trend flag="down">
+        <Trend flag='down'>
           Daily Changes
           <span className={styles.trendText}>11%</span>
         </Trend>
@@ -54,31 +55,31 @@ const IntroduceRow = ({ loading, visitData }) => (
       <ChartCard
         bordered={false}
         loading={loading}
-        title="Visits"
+        title='Visits'
         action={
-          <Tooltip title="Introduce">
+          <Tooltip title='Introduce'>
             <InfoCircleOutlined />
           </Tooltip>
         }
         total={numeral(8846).format('0,0')}
-        footer={<Field label="Daily Visits" value={numeral(1234).format('0,0')} />}
+        footer={<Field label='Daily Visits' value={numeral(1234).format('0,0')} />}
         contentHeight={46}
       >
-        <MiniArea color="#975FE4" data={visitData} />
+        <MiniArea color='#975FE4' data={visitData} />
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>
       <ChartCard
         bordered={false}
         loading={loading}
-        title="Payments"
+        title='Payments'
         action={
-          <Tooltip title="Introduce">
+          <Tooltip title='Introduce'>
             <InfoCircleOutlined />
           </Tooltip>
         }
         total={numeral(6560).format('0,0')}
-        footer={<Field label="Conversion Rate" value="60%" />}
+        footer={<Field label='Conversion Rate' value='60%' />}
         contentHeight={46}
       >
         <MiniBar data={visitData} />
@@ -88,13 +89,13 @@ const IntroduceRow = ({ loading, visitData }) => (
       <ChartCard
         loading={loading}
         bordered={false}
-        title="Operational Effect"
+        title='Operational Effect'
         action={
-          <Tooltip title="Introduce">
+          <Tooltip title='Introduce'>
             <InfoCircleOutlined />
           </Tooltip>
         }
-        total="78%"
+        total='78%'
         footer={
           <div
             style={{
@@ -103,7 +104,7 @@ const IntroduceRow = ({ loading, visitData }) => (
             }}
           >
             <Trend
-              flag="up"
+              flag='up'
               style={{
                 marginRight: 16,
               }}
@@ -111,7 +112,7 @@ const IntroduceRow = ({ loading, visitData }) => (
               Weekly Changes
               <span className={styles.trendText}>12%</span>
             </Trend>
-            <Trend flag="down">
+            <Trend flag='down'>
               Weekly Changes
               <span className={styles.trendText}>11%</span>
             </Trend>
@@ -119,10 +120,10 @@ const IntroduceRow = ({ loading, visitData }) => (
         }
         contentHeight={46}
       >
-        <MiniProgress percent={78} strokeWidth={8} target={80} color="#13C2C2" />
+        <MiniProgress percent={78} strokeWidth={8} target={80} color='#13C2C2' />
       </ChartCard>
     </Col>
   </Row>
-);
+)
 
-export default IntroduceRow;
+export default IntroduceRow

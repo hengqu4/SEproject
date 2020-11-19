@@ -1,16 +1,16 @@
-import { Card, List } from 'antd';
-import React from 'react';
-import { connect } from 'umi';
-import moment from 'moment';
-import AvatarList from '../AvatarList';
-import styles from './index.less';
+import { Card, List } from 'antd'
+import React from 'react'
+import { connect } from 'umi'
+import moment from 'moment'
+import AvatarList from '../AvatarList'
+import styles from './index.less'
 
 const Projects = (props) => {
-  const { list } = props;
+  const { list } = props
   return (
     <List
       className={styles.coverCardList}
-      rowKey="id"
+      rowKey='id'
       grid={{
         gutter: 16,
         xs: 1,
@@ -28,13 +28,9 @@ const Projects = (props) => {
             <div className={styles.cardItemContent}>
               <span>{moment(item.updatedAt).fromNow()}</span>
               <div className={styles.avatarList}>
-                <AvatarList size="small">
+                <AvatarList size='small'>
                   {item.members.map((member) => (
-                    <AvatarList.Item
-                      key={`${item.id}-avatar-${member.id}`}
-                      src={member.avatar}
-                      tips={member.name}
-                    />
+                    <AvatarList.Item key={`${item.id}-avatar-${member.id}`} src={member.avatar} tips={member.name} />
                   ))}
                 </AvatarList>
               </div>
@@ -43,9 +39,9 @@ const Projects = (props) => {
         </List.Item>
       )}
     />
-  );
-};
+  )
+}
 
 export default connect(({ accountAndcenter }) => ({
   list: accountAndcenter.list,
-}))(Projects);
+}))(Projects)

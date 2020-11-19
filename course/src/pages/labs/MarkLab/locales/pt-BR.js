@@ -7,8 +7,7 @@ export default {
   'labsandmarklab.userName.required': 'Por favor insira nome de usuário!',
   'labsandmarklab.password.required': 'Por favor insira sua senha!',
   'labsandmarklab.password.twice': 'As senhas não estão iguais!',
-  'labsandmarklab.strength.msg':
-    'Por favor insira pelo menos 6 caracteres e não use senhas fáceis de adivinhar.',
+  'labsandmarklab.strength.msg': 'Por favor insira pelo menos 6 caracteres e não use senhas fáceis de adivinhar.',
   'labsandmarklab.strength.strong': 'Força: forte',
   'labsandmarklab.strength.medium': 'Força: média',
   'labsandmarklab.strength.short': 'Força: curta',
@@ -40,8 +39,7 @@ export default {
   'labsandmarklab.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'labsandmarklab.invites.label': 'Inviting critics',
-  'labsandmarklab.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'labsandmarklab.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'labsandmarklab.weight.label': 'Weight',
   'labsandmarklab.weight.placeholder': 'Please enter weight',
   'labsandmarklab.public.label': 'Target disclosure',
@@ -53,4 +51,4 @@ export default {
   'labsandmarklab.option.A': 'Colleague A',
   'labsandmarklab.option.B': 'Colleague B',
   'labsandmarklab.option.C': 'Colleague C',
-};
+}

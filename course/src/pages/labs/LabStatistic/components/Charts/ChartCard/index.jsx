@@ -1,37 +1,37 @@
-import { Card } from 'antd';
-import React from 'react';
-import classNames from 'classnames';
-import styles from './index.less';
+import { Card } from 'antd'
+import React from 'react'
+import classNames from 'classnames'
+import styles from './index.less'
 
 const renderTotal = (total) => {
   if (!total && total !== 0) {
-    return null;
+    return null
   }
 
-  let totalDom;
+  let totalDom
 
   switch (typeof total) {
     case 'undefined':
-      totalDom = null;
-      break;
+      totalDom = null
+      break
 
     case 'function':
-      totalDom = <div className={styles.total}>{total()}</div>;
-      break;
+      totalDom = <div className={styles.total}>{total()}</div>
+      break
 
     default:
-      totalDom = <div className={styles.total}>{total}</div>;
+      totalDom = <div className={styles.total}>{total}</div>
   }
 
-  return totalDom;
-};
+  return totalDom
+}
 
 class ChartCard extends React.Component {
   renderContent = () => {
-    const { contentHeight, title, avatar, action, total, footer, children, loading } = this.props;
+    const { contentHeight, title, avatar, action, total, footer, children, loading } = this.props
 
     if (loading) {
-      return false;
+      return false
     }
 
     return (
@@ -70,21 +70,11 @@ class ChartCard extends React.Component {
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   render() {
-    const {
-      loading = false,
-      contentHeight,
-      title,
-      avatar,
-      action,
-      total,
-      footer,
-      children,
-      ...rest
-    } = this.props;
+    const { loading = false, contentHeight, title, avatar, action, total, footer, children, ...rest } = this.props
     return (
       <Card
         loading={loading}
@@ -95,8 +85,8 @@ class ChartCard extends React.Component {
       >
         {this.renderContent()}
       </Card>
-    );
+    )
   }
 }
 
-export default ChartCard;
+export default ChartCard

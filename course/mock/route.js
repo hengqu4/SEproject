@@ -4,4 +4,4 @@ export default {
       authority: ['admin', 'user'],
     },
   },
-};
+}
