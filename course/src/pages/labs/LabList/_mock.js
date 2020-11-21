@@ -99,8 +99,8 @@ let sourceData = [];
 
 function getFakeList(req, res) {
   const params = req.query;
-  // const count = params.count * 1 || 20;
-  const count = 10;
+  const count = params.count * 1 || 20;
+  // const count = 10;
   const result = fakeList(count);
   sourceData = result;
   return res.json(result);

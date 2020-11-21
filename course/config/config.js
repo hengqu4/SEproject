@@ -104,6 +104,12 @@ export default defineConfig({
                   component: './labs/LabList',
                 },
                 {
+                  name: '实验表格',
+                  icon: 'smile',
+                  path: '/labs/table',
+                  component: './labs/LabTable',
+                },
+                {
                   name: '创建实验',
                   icon: 'smile',
                   path: '/labs/create_lab',
@@ -122,16 +128,10 @@ export default defineConfig({
                   component: './labs/MarkLab',
                 },
                 {
-                  name: '分析页',
+                  name: '高级表单',
                   icon: 'smile',
-                  path: '/labs/statistic',
-                  component: './labs/LabStatistic',
-                },
-                {
-                  name: '实验表格',
-                  icon: 'smile',
-                  path: '/labs/table',
-                  component: './labs/LabTable',
+                  path: '/labs/test',
+                  component: './labs/LabTest',
                 },
               ],
             },
