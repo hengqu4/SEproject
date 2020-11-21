@@ -31,4 +31,4 @@ export default {
   'dashboardandanalysis.table.search-keyword': 'Palavra chave',
   'dashboardandanalysis.table.users': 'Usuários',
   'dashboardandanalysis.table.weekly-range': 'Faixa Semanal',
-};
+}

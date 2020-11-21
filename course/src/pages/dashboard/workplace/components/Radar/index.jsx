@@ -1,86 +1,81 @@
-import { Axis, Chart, Coord, Geom, Tooltip } from 'bizcharts';
-import { Col, Row } from 'antd';
-import React, { Component } from 'react';
-import autoHeight from './autoHeight';
-import styles from './index.less';
+import { Axis, Chart, Coord, Geom, Tooltip } from 'bizcharts'
+import { Col, Row } from 'antd'
+import React, { Component } from 'react'
+import autoHeight from './autoHeight'
+import styles from './index.less'
 
 /* eslint react/no-danger:0 */
 class Radar extends Component {
   state = {
     legendData: [],
-  };
-  chart = undefined;
-  node = undefined;
+  }
+
+  chart = undefined
+
+  node = undefined
 
   componentDidMount() {
-    this.getLegendData();
+    this.getLegendData()
   }
 
   componentDidUpdate(preProps) {
-    const { data } = this.props;
+    const { data } = this.props
 
     if (data !== preProps.data) {
-      this.getLegendData();
+      this.getLegendData()
     }
   }
 
   getG2Instance = (chart) => {
-    this.chart = chart;
-  }; // for custom lengend view
+    this.chart = chart
+  } // for custom lengend view
 
   getLegendData = () => {
-    if (!this.chart) return;
-    const geom = this.chart.getAllGeoms()[0]; // 获取所有的图形
+    if (!this.chart) return
+    const geom = this.chart.getAllGeoms()[0] // 获取所有的图形
 
-    if (!geom) return;
-    const items = geom.get('dataArray') || []; // 获取图形对应的
+    if (!geom) return
+    const items = geom.get('dataArray') || [] // 获取图形对应的
 
     const legendData = items.map((item) => {
       // eslint-disable-next-line no-underscore-dangle
-      const origins = item.map((t) => t._origin);
+      const origins = item.map((t) => t._origin)
       const result = {
         name: origins[0].name,
         color: item[0].color,
         checked: true,
         value: origins.reduce((p, n) => p + n.value, 0),
-      };
-      return result;
-    });
+      }
+      return result
+    })
     this.setState({
       legendData,
-    });
-  };
+    })
+  }
+
   handleRef = (n) => {
-    this.node = n;
-  };
+    this.node = n
+  }
+
   handleLegendClick = (item, i) => {
-    const newItem = item;
-    newItem.checked = !newItem.checked;
-    const { legendData } = this.state;
-    legendData[i] = newItem;
-    const filteredLegendData = legendData.filter((l) => l.checked).map((l) => l.name);
+    const newItem = item
+    newItem.checked = !newItem.checked
+    const { legendData } = this.state
+    legendData[i] = newItem
+    const filteredLegendData = legendData.filter((l) => l.checked).map((l) => l.name)
 
     if (this.chart) {
-      this.chart.filter('name', (val) => filteredLegendData.indexOf(`${val}`) > -1);
-      this.chart.repaint();
+      this.chart.filter('name', (val) => filteredLegendData.indexOf(`${val}`) > -1)
+      this.chart.repaint()
     }
 
     this.setState({
       legendData,
-    });
-  };
+    })
+  }
 
   render() {
-    const defaultColors = [
-      '#1890FF',
-      '#FACC14',
-      '#2FC25B',
-      '#8543E0',
-      '#F04864',
-      '#13C2C2',
-      '#fa8c16',
-      '#a0d911',
-    ];
+    const defaultColors = ['#1890FF', '#FACC14', '#2FC25B', '#8543E0', '#F04864', '#13C2C2', '#fa8c16', '#a0d911']
     const {
       data = [],
       height = 0,
@@ -91,15 +86,15 @@ class Radar extends Component {
       padding = [35, 30, 16, 30],
       animate = true,
       colors = defaultColors,
-    } = this.props;
-    const { legendData } = this.state;
+    } = this.props
+    const { legendData } = this.state
     const scale = {
       value: {
         min: 0,
         tickCount,
       },
-    };
-    const chartHeight = height - (hasLegend ? 80 : 22);
+    }
+    const chartHeight = height - (hasLegend ? 80 : 22)
     return (
       <div
         className={styles.radar}
@@ -118,9 +113,9 @@ class Radar extends Component {
           onGetG2Instance={this.getG2Instance}
         >
           <Tooltip />
-          <Coord type="polar" />
+          <Coord type='polar' />
           <Axis
-            name="label"
+            name='label'
             line={undefined}
             tickLine={undefined}
             grid={{
@@ -131,7 +126,7 @@ class Radar extends Component {
             }}
           />
           <Axis
-            name="value"
+            name='value'
             grid={{
               type: 'polygon',
               lineStyle: {
@@ -139,23 +134,13 @@ class Radar extends Component {
               },
             }}
           />
-          <Geom type="line" position="label*value" color={['name', colors]} size={1} />
-          <Geom
-            type="point"
-            position="label*value"
-            color={['name', colors]}
-            shape="circle"
-            size={3}
-          />
+          <Geom type='line' position='label*value' color={['name', colors]} size={1} />
+          <Geom type='point' position='label*value' color={['name', colors]} shape='circle' size={3} />
         </Chart>
         {hasLegend && (
           <Row className={styles.legend}>
             {legendData.map((item, i) => (
-              <Col
-                span={24 / legendData.length}
-                key={item.name}
-                onClick={() => this.handleLegendClick(item, i)}
-              >
+              <Col span={24 / legendData.length} key={item.name} onClick={() => this.handleLegendClick(item, i)}>
                 <div className={styles.legendItem}>
                   <p>
                     <span
@@ -173,8 +158,8 @@ class Radar extends Component {
           </Row>
         )}
       </div>
-    );
+    )
   }
 }
 
-export default autoHeight()(Radar);
+export default autoHeight()(Radar)

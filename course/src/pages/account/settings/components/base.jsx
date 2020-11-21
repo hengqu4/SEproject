@@ -1,17 +1,18 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
-import styles from './BaseView.less';
-const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
+import { UploadOutlined } from '@ant-design/icons'
+import { Button, Input, Select, Upload, Form, message } from 'antd'
+import { connect, FormattedMessage, formatMessage } from 'umi'
+import React, { Component } from 'react'
+import GeographicView from './GeographicView'
+import PhoneView from './PhoneView'
+import styles from './BaseView.less'
+
+const { Option } = Select // 头像组件 方便以后独立，增加裁剪之类的功能
 
 const AvatarView = ({ avatar }) => (
   <>
     <div className={styles.avatar_title}>头像</div>
     <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
+      <img src={avatar} alt='avatar' />
     </div>
     <Upload showUploadList={false}>
       <div className={styles.button_view}>
@@ -22,75 +23,71 @@ const AvatarView = ({ avatar }) => (
       </div>
     </Upload>
   </>
-);
+)
 
 const validatorGeographic = (_, value, callback) => {
-  const { province, city } = value;
+  const { province, city } = value
 
   if (!province.key) {
-    callback('Please input your province!');
+    callback('Please input your province!')
   }
 
   if (!city.key) {
-    callback('Please input your city!');
+    callback('Please input your city!')
   }
 
-  callback();
-};
+  callback()
+}
 
 const validatorPhone = (rule, value, callback) => {
-  const values = value.split('-');
+  const values = value.split('-')
 
   if (!values[0]) {
-    callback('Please input your area code!');
+    callback('Please input your area code!')
   }
 
   if (!values[1]) {
-    callback('Please input your phone number!');
+    callback('Please input your phone number!')
   }
 
-  callback();
-};
+  callback()
+}
 
 class BaseView extends Component {
-  view = undefined;
+  view = undefined
 
   getAvatarURL() {
-    const { currentUser } = this.props;
+    const { currentUser } = this.props
 
     if (currentUser) {
       if (currentUser.avatar) {
-        return currentUser.avatar;
+        return currentUser.avatar
       }
 
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
+      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
+      return url
     }
 
-    return '';
+    return ''
   }
 
   getViewDom = (ref) => {
-    this.view = ref;
-  };
+    this.view = ref
+  }
+
   handleFinish = () => {
-    message.success('更新基本信息成功');
-  };
+    message.success('更新基本信息成功')
+  }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser } = this.props
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form
-            layout="vertical"
-            onFinish={this.handleFinish}
-            initialValues={currentUser}
-            hideRequiredMark
-          >
+          <Form layout='vertical' onFinish={this.handleFinish} initialValues={currentUser} hideRequiredMark>
             <Form.Item
-              name="email"
-              label="邮箱"
+              name='email'
+              label='邮箱'
               rules={[
                 {
                   required: true,
@@ -101,8 +98,8 @@ class BaseView extends Component {
               <Input />
             </Form.Item>
             <Form.Item
-              name="name"
-              label="昵称"
+              name='name'
+              label='昵称'
               rules={[
                 {
                   required: true,
@@ -113,8 +110,8 @@ class BaseView extends Component {
               <Input />
             </Form.Item>
             <Form.Item
-              name="profile"
-              label="个人简介"
+              name='profile'
+              label='个人简介'
               rules={[
                 {
                   required: true,
@@ -122,11 +119,11 @@ class BaseView extends Component {
                 },
               ]}
             >
-              <Input.TextArea placeholder="个人简介" rows={4} />
+              <Input.TextArea placeholder='个人简介' rows={4} />
             </Form.Item>
             <Form.Item
-              name="country"
-              label="国家/地区"
+              name='country'
+              label='国家/地区'
               rules={[
                 {
                   required: true,
@@ -139,12 +136,12 @@ class BaseView extends Component {
                   maxWidth: 220,
                 }}
               >
-                <Option value="China">中国</Option>
+                <Option value='China'>中国</Option>
               </Select>
             </Form.Item>
             <Form.Item
-              name="geographic"
-              label="所在省市"
+              name='geographic'
+              label='所在省市'
               rules={[
                 {
                   required: true,
@@ -158,8 +155,8 @@ class BaseView extends Component {
               <GeographicView />
             </Form.Item>
             <Form.Item
-              name="address"
-              label="街道地址"
+              name='address'
+              label='街道地址'
               rules={[
                 {
                   required: true,
@@ -170,8 +167,8 @@ class BaseView extends Component {
               <Input />
             </Form.Item>
             <Form.Item
-              name="phone"
-              label="联系电话"
+              name='phone'
+              label='联系电话'
               rules={[
                 {
                   required: true,
@@ -185,7 +182,7 @@ class BaseView extends Component {
               <PhoneView />
             </Form.Item>
             <Form.Item>
-              <Button htmlType="submit" type="primary">
+              <Button htmlType='submit' type='primary'>
                 更新基本信息
               </Button>
             </Form.Item>
@@ -195,10 +192,10 @@ class BaseView extends Component {
           <AvatarView avatar={this.getAvatarURL()} />
         </div>
       </div>
-    );
+    )
   }
 }
 
 export default connect(({ accountAndsettings }) => ({
   currentUser: accountAndsettings.currentUser,
-}))(BaseView);
+}))(BaseView)

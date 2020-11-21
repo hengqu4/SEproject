@@ -1,27 +1,27 @@
-import { Effect, Reducer } from 'umi';
+import { Effect, Reducer } from 'umi'
 
-import { fakeSubmitForm } from './service';
+import { fakeSubmitForm } from './service'
 
 export interface StateType {
-  current?: string;
+  current?: string
   step?: {
-    payAccount: string;
-    receiverAccount: string;
-    receiverName: string;
-    amount: string;
-  };
+    payAccount: string
+    receiverAccount: string
+    receiverName: string
+    amount: string
+  }
 }
 
 export interface ModelType {
-  namespace: string;
-  state: StateType;
+  namespace: string
+  state: StateType
   effects: {
-    submitStepForm: Effect;
-  };
+    submitStepForm: Effect
+  }
   reducers: {
-    saveStepFormData: Reducer<StateType>;
-    saveCurrentStep: Reducer<StateType>;
-  };
+    saveStepFormData: Reducer<StateType>
+    saveCurrentStep: Reducer<StateType>
+  }
 }
 
 const Model: ModelType = {
@@ -39,15 +39,15 @@ const Model: ModelType = {
 
   effects: {
     *submitStepForm({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
+      yield call(fakeSubmitForm, payload)
       yield put({
         type: 'saveStepFormData',
         payload,
-      });
+      })
       yield put({
         type: 'saveCurrentStep',
         payload: 'result',
-      });
+      })
     },
   },
 
@@ -56,7 +56,7 @@ const Model: ModelType = {
       return {
         ...state,
         current: payload,
-      };
+      }
     },
 
     saveStepFormData(state, { payload }) {
@@ -66,9 +66,9 @@ const Model: ModelType = {
           ...(state as StateType).step,
           ...payload,
         },
-      };
+      }
     },
   },
-};
+}
 
-export default Model;
+export default Model

@@ -1,7 +1,6 @@
 export default {
   'formandstep-form.basic.title': '基础表单',
-  'formandstep-form.basic.description':
-    '表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。',
+  'formandstep-form.basic.description': '表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。',
   'formandstep-form.email.required': '请输入邮箱地址！',
   'formandstep-form.email.wrong-format': '邮箱地址格式错误！',
   'formandstep-form.userName.required': '请输入用户名!',
@@ -54,4 +53,4 @@ export default {
   'formandstep-form.option.A': '同事甲',
   'formandstep-form.option.B': '同事乙',
   'formandstep-form.option.C': '同事丙',
-};
+}

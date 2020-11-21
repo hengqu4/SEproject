@@ -1,4 +1,5 @@
-import { queryAdvancedProfile } from './service';
+import { queryAdvancedProfile } from './service'
+
 const Model = {
   namespace: 'profileAndadvanced',
   state: {
@@ -8,17 +9,17 @@ const Model = {
   },
   effects: {
     *fetchAdvanced(_, { call, put }) {
-      const response = yield call(queryAdvancedProfile);
+      const response = yield call(queryAdvancedProfile)
       yield put({
         type: 'show',
         payload: response,
-      });
+      })
     },
   },
   reducers: {
     show(state, { payload }) {
-      return { ...state, ...payload };
+      return { ...state, ...payload }
     },
   },
-};
-export default Model;
+}
+export default Model

@@ -1,8 +1,9 @@
-import { Badge, Card, Descriptions, Divider, Table } from 'antd';
-import React, { Component } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { connect } from 'umi';
-import styles from './style.less';
+import { Badge, Card, Descriptions, Divider, Table } from 'antd'
+import React, { Component } from 'react'
+import { PageContainer } from '@ant-design/pro-layout'
+import { connect } from 'umi'
+import styles from './style.less'
+
 const progressColumns = [
   {
     title: '时间',
@@ -20,10 +21,10 @@ const progressColumns = [
     key: 'status',
     render: (text) => {
       if (text === 'success') {
-        return <Badge status="success" text="成功" />;
+        return <Badge status='success' text='成功' />
       }
 
-      return <Badge status="processing" text="进行中" />;
+      return <Badge status='processing' text='进行中' />
     },
   },
   {
@@ -36,47 +37,47 @@ const progressColumns = [
     dataIndex: 'cost',
     key: 'cost',
   },
-];
+]
 
 class Basic extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     dispatch({
       type: 'profileAndbasic/fetchBasic',
-    });
+    })
   }
 
   render() {
-    const { profileAndbasic, loading } = this.props;
-    const { basicGoods, basicProgress } = profileAndbasic;
-    let goodsData = [];
+    const { profileAndbasic, loading } = this.props
+    const { basicGoods, basicProgress } = profileAndbasic
+    let goodsData = []
 
     if (basicGoods.length) {
-      let num = 0;
-      let amount = 0;
+      let num = 0
+      let amount = 0
       basicGoods.forEach((item) => {
-        num += Number(item.num);
-        amount += Number(item.amount);
-      });
+        num += Number(item.num)
+        amount += Number(item.amount)
+      })
       goodsData = basicGoods.concat({
         id: '总计',
         num,
         amount,
-      });
+      })
     }
 
     const renderContent = (value, row, index) => {
       const obj = {
         children: value,
         props: {},
-      };
-
-      if (index === basicGoods.length) {
-        obj.props.colSpan = 0;
       }
 
-      return obj;
-    };
+      if (index === basicGoods.length) {
+        obj.props.colSpan = 0
+      }
+
+      return obj
+    }
 
     const goodsColumns = [
       {
@@ -85,7 +86,7 @@ class Basic extends Component {
         key: 'id',
         render: (text, row, index) => {
           if (index < basicGoods.length) {
-            return <a href="">{text}</a>;
+            return <a href=''>{text}</a>
           }
 
           return {
@@ -101,7 +102,7 @@ class Basic extends Component {
             props: {
               colSpan: 4,
             },
-          };
+          }
         },
       },
       {
@@ -130,7 +131,7 @@ class Basic extends Component {
         align: 'right',
         render: (text, row, index) => {
           if (index < basicGoods.length) {
-            return text;
+            return text
           }
 
           return (
@@ -141,7 +142,7 @@ class Basic extends Component {
             >
               {text}
             </span>
-          );
+          )
         },
       },
       {
@@ -151,7 +152,7 @@ class Basic extends Component {
         align: 'right',
         render: (text, row, index) => {
           if (index < basicGoods.length) {
-            return text;
+            return text
           }
 
           return (
@@ -162,23 +163,23 @@ class Basic extends Component {
             >
               {text}
             </span>
-          );
+          )
         },
       },
-    ];
+    ]
     return (
       <PageContainer>
         <Card bordered={false}>
           <Descriptions
-            title="退款申请"
+            title='退款申请'
             style={{
               marginBottom: 32,
             }}
           >
-            <Descriptions.Item label="取货单号">1000000000</Descriptions.Item>
-            <Descriptions.Item label="状态">已取货</Descriptions.Item>
-            <Descriptions.Item label="销售单号">1234123421</Descriptions.Item>
-            <Descriptions.Item label="子订单">3214321432</Descriptions.Item>
+            <Descriptions.Item label='取货单号'>1000000000</Descriptions.Item>
+            <Descriptions.Item label='状态'>已取货</Descriptions.Item>
+            <Descriptions.Item label='销售单号'>1234123421</Descriptions.Item>
+            <Descriptions.Item label='子订单'>3214321432</Descriptions.Item>
           </Descriptions>
           <Divider
             style={{
@@ -186,16 +187,16 @@ class Basic extends Component {
             }}
           />
           <Descriptions
-            title="用户信息"
+            title='用户信息'
             style={{
               marginBottom: 32,
             }}
           >
-            <Descriptions.Item label="用户姓名">付小小</Descriptions.Item>
-            <Descriptions.Item label="联系电话">18100000000</Descriptions.Item>
-            <Descriptions.Item label="常用快递">菜鸟仓储</Descriptions.Item>
-            <Descriptions.Item label="取货地址">浙江省杭州市西湖区万塘路18号</Descriptions.Item>
-            <Descriptions.Item label="备注">无</Descriptions.Item>
+            <Descriptions.Item label='用户姓名'>付小小</Descriptions.Item>
+            <Descriptions.Item label='联系电话'>18100000000</Descriptions.Item>
+            <Descriptions.Item label='常用快递'>菜鸟仓储</Descriptions.Item>
+            <Descriptions.Item label='取货地址'>浙江省杭州市西湖区万塘路18号</Descriptions.Item>
+            <Descriptions.Item label='备注'>无</Descriptions.Item>
           </Descriptions>
           <Divider
             style={{
@@ -211,7 +212,7 @@ class Basic extends Component {
             loading={loading}
             dataSource={goodsData}
             columns={goodsColumns}
-            rowKey="id"
+            rowKey='id'
           />
           <div className={styles.title}>退货进度</div>
           <Table
@@ -225,11 +226,11 @@ class Basic extends Component {
           />
         </Card>
       </PageContainer>
-    );
+    )
   }
 }
 
 export default connect(({ profileAndbasic, loading }) => ({
   profileAndbasic,
   loading: loading.effects['profileAndbasic/fetchBasic'],
-}))(Basic);
+}))(Basic)

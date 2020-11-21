@@ -35,8 +35,7 @@ export default {
   'accountandsettings.security.email': 'Backup Email',
   'accountandsettings.security.email-description': 'Bound Email：',
   'accountandsettings.security.mfa': 'MFA Device',
-  'accountandsettings.security.mfa-description':
-    'Unbound MFA device, after binding, can be confirmed twice',
+  'accountandsettings.security.mfa-description': 'Unbound MFA device, after binding, can be confirmed twice',
   'accountandsettings.security.modify': 'Modify',
   'accountandsettings.security.set': 'Set',
   'accountandsettings.security.bind': 'Bind',
@@ -58,4 +57,4 @@ export default {
     'The to-do list will be notified in the form of a letter from the station',
   'accountandsettings.settings.open': 'Open',
   'accountandsettings.settings.close': 'Close',
-};
+}

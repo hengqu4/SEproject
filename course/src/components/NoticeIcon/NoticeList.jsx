@@ -1,7 +1,7 @@
-import { Avatar, List } from 'antd';
-import React from 'react';
-import classNames from 'classnames';
-import styles from './NoticeList.less';
+import { Avatar, List } from 'antd'
+import React from 'react'
+import classNames from 'classnames'
+import styles from './NoticeList.less'
 
 const NoticeList = ({
   data = [],
@@ -18,13 +18,10 @@ const NoticeList = ({
   if (!data || data.length === 0) {
     return (
       <div className={styles.notFound}>
-        <img
-          src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-          alt="not found"
-        />
+        <img src='https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg' alt='not found' />
         <div>{emptyText}</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -35,21 +32,28 @@ const NoticeList = ({
         renderItem={(item, i) => {
           const itemCls = classNames(styles.item, {
             [styles.read]: item.read,
-          }); // eslint-disable-next-line no-nested-ternary
+          })
 
-          const leftIcon = item.avatar ? (
-            typeof item.avatar === 'string' ? (
-              <Avatar className={styles.avatar} src={item.avatar} />
-            ) : (
-              <span className={styles.iconElement}>{item.avatar}</span>
-            )
-          ) : null;
+          // const leftIcon = item.avatar ? (
+          //   typeof item.avatar === 'string' ? (
+          //     <Avatar className={styles.avatar} src={item.avatar} />
+          //   ) : (
+          //     <span className={styles.iconElement}>{item.avatar}</span>
+          //   )
+          // ) : null;
+          let leftIcon = null
+
+          if (item.avatar) {
+            leftIcon =
+              typeof item.avatar === 'string' ? (
+                <Avatar className={styles.avatar} src={item.avatar} />
+              ) : (
+                <span className={styles.iconElement}>{item.avatar}</span>
+              )
+          }
+
           return (
-            <List.Item
-              className={itemCls}
-              key={item.key || i}
-              onClick={() => onClick && onClick(item)}
-            >
+            <List.Item className={itemCls} key={item.key || i} onClick={() => onClick && onClick(item)}>
               <List.Item.Meta
                 className={styles.meta}
                 avatar={leftIcon}
@@ -67,7 +71,7 @@ const NoticeList = ({
                 }
               />
             </List.Item>
-          );
+          )
         }}
       />
       <div className={styles.bottomBar}>
@@ -80,7 +84,7 @@ const NoticeList = ({
           <div
             onClick={(e) => {
               if (onViewMore) {
-                onViewMore(e);
+                onViewMore(e)
               }
             }}
           >
@@ -89,7 +93,7 @@ const NoticeList = ({
         ) : null}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NoticeList;
+export default NoticeList

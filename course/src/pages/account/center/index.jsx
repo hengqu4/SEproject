@@ -1,12 +1,13 @@
-import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
-import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
-import React, { Component, useState, useRef } from 'react';
-import { GridContent } from '@ant-design/pro-layout';
-import { Link, connect } from 'umi';
-import Projects from './components/Projects';
-import Articles from './components/Articles';
-import Applications from './components/Applications';
-import styles from './Center.less';
+import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons'
+import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd'
+import React, { Component, useState, useRef } from 'react'
+import { GridContent } from '@ant-design/pro-layout'
+import { Link, connect } from 'umi'
+import Projects from './components/Projects'
+import Articles from './components/Articles'
+import Applications from './components/Applications'
+import styles from './Center.less'
+
 const operationTabList = [
   {
     key: 'articles',
@@ -53,29 +54,29 @@ const operationTabList = [
       </span>
     ),
   },
-];
+]
 
 const TagList = ({ tags }) => {
-  const ref = useRef(null);
-  const [newTags, setNewTags] = useState([]);
-  const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const ref = useRef(null)
+  const [newTags, setNewTags] = useState([])
+  const [inputVisible, setInputVisible] = useState(false)
+  const [inputValue, setInputValue] = useState('')
 
   const showInput = () => {
-    setInputVisible(true);
+    setInputVisible(true)
 
     if (ref.current) {
       // eslint-disable-next-line no-unused-expressions
-      ref.current?.focus();
+      ref.current?.focus()
     }
-  };
+  }
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const handleInputConfirm = () => {
-    let tempsTags = [...newTags];
+    let tempsTags = [...newTags]
 
     if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
       tempsTags = [
@@ -84,13 +85,13 @@ const TagList = ({ tags }) => {
           key: `new-${tempsTags.length}`,
           label: inputValue,
         },
-      ];
+      ]
     }
 
-    setNewTags(tempsTags);
-    setInputVisible(false);
-    setInputValue('');
-  };
+    setNewTags(tempsTags)
+    setInputVisible(false)
+    setInputValue('')
+  }
 
   return (
     <div className={styles.tags}>
@@ -101,8 +102,8 @@ const TagList = ({ tags }) => {
       {inputVisible && (
         <Input
           ref={ref}
-          type="text"
-          size="small"
+          type='text'
+          size='small'
           style={{
             width: 78,
           }}
@@ -123,8 +124,8 @@ const TagList = ({ tags }) => {
         </Tag>
       )}
     </div>
-  );
-};
+  )
+}
 
 class Center extends Component {
   // static getDerivedStateFromProps(
@@ -144,17 +145,18 @@ class Center extends Component {
   // }
   state = {
     tabKey: 'articles',
-  };
-  input = undefined;
+  }
+
+  input = undefined
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch } = this.props
     dispatch({
       type: 'accountAndcenter/fetchCurrent',
-    });
+    })
     dispatch({
       type: 'accountAndcenter/fetch',
-    });
+    })
   }
 
   onTabChange = (key) => {
@@ -163,23 +165,25 @@ class Center extends Component {
     // router.push(`${match.url}/${key}`);
     this.setState({
       tabKey: key,
-    });
-  };
+    })
+  }
+
   renderChildrenByTabKey = (tabKey) => {
     if (tabKey === 'projects') {
-      return <Projects />;
+      return <Projects />
     }
 
     if (tabKey === 'applications') {
-      return <Applications />;
+      return <Applications />
     }
 
     if (tabKey === 'articles') {
-      return <Articles />;
+      return <Articles />
     }
 
-    return null;
-  };
+    return null
+  }
+
   renderUserInfo = (currentUser) => (
     <div className={styles.detail}>
       <p>
@@ -224,12 +228,12 @@ class Center extends Component {
         }
       </p>
     </div>
-  );
+  )
 
   render() {
-    const { tabKey } = this.state;
-    const { currentUser = {}, currentUserLoading } = this.props;
-    const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
+    const { tabKey } = this.state
+    const { currentUser = {}, currentUserLoading } = this.props
+    const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length)
     return (
       <GridContent>
         <Row gutter={24}>
@@ -244,7 +248,7 @@ class Center extends Component {
               {!dataLoading && (
                 <div>
                   <div className={styles.avatarHolder}>
-                    <img alt="" src={currentUser.avatar} />
+                    <img alt='' src={currentUser.avatar} />
                     <div className={styles.name}>{currentUser.name}</div>
                     <div>{currentUser.signature}</div>
                   </div>
@@ -264,7 +268,7 @@ class Center extends Component {
                         currentUser.notice.map((item) => (
                           <Col key={item.id} lg={24} xl={12}>
                             <Link to={item.href}>
-                              <Avatar size="small" src={item.logo} />
+                              <Avatar size='small' src={item.logo} />
                               {item.member}
                             </Link>
                           </Col>
@@ -288,11 +292,11 @@ class Center extends Component {
           </Col>
         </Row>
       </GridContent>
-    );
+    )
   }
 }
 
 export default connect(({ loading, accountAndcenter }) => ({
   currentUser: accountAndcenter.currentUser,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
-}))(Center);
+}))(Center)

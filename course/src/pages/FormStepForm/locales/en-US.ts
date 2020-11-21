@@ -8,8 +8,7 @@ export default {
   'formstepform.userName.required': 'Please enter your userName!',
   'formstepform.password.required': 'Please enter your password!',
   'formstepform.password.twice': 'The passwords entered twice do not match!',
-  'formstepform.strength.msg':
-    "Please enter at least 6 characters and don't use passwords that are easy to guess.",
+  'formstepform.strength.msg': "Please enter at least 6 characters and don't use passwords that are easy to guess.",
   'formstepform.strength.strong': 'Strength: strong',
   'formstepform.strength.medium': 'Strength: medium',
   'formstepform.strength.short': 'Strength: too short',
@@ -46,8 +45,7 @@ export default {
   'formstepform.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'formstepform.invites.label': 'Inviting critics',
-  'formstepform.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'formstepform.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'formstepform.weight.label': 'Weight',
   'formstepform.weight.placeholder': 'Please enter weight',
   'formstepform.public.label': 'Target disclosure',
@@ -59,4 +57,4 @@ export default {
   'formstepform.option.A': 'Colleague A',
   'formstepform.option.B': 'Colleague B',
   'formstepform.option.C': 'Colleague C',
-};
+}

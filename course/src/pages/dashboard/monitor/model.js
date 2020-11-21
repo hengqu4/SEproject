@@ -1,4 +1,5 @@
-import { queryTags } from './service';
+import { queryTags } from './service'
+
 const Model = {
   namespace: 'dashboardAndmonitor',
   state: {
@@ -6,17 +7,17 @@ const Model = {
   },
   effects: {
     *fetchTags(_, { call, put }) {
-      const response = yield call(queryTags);
+      const response = yield call(queryTags)
       yield put({
         type: 'saveTags',
         payload: response.list,
-      });
+      })
     },
   },
   reducers: {
     saveTags(state, action) {
-      return { ...state, tags: action.payload };
+      return { ...state, tags: action.payload }
     },
   },
-};
-export default Model;
+}
+export default Model

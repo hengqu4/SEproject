@@ -4,6 +4,6 @@ export default {
     res.send({
       status: 'ok',
       currentAuthority: 'user',
-    });
+    })
   },
-};
+}

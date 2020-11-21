@@ -19,4 +19,4 @@ export default {
   'userandregister-result.register-result.back-home': '返回首頁',
   'userandregister-result.register-result.view-mailbox': '查看郵箱',
   'userandregister-result.navBar.lang': '語言',
-};
+}

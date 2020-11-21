@@ -15,4 +15,4 @@ export default {
   'dashboardandmonitor.monitor.popular-searches': 'Popular Searches',
   'dashboardandmonitor.monitor.resource-surplus': 'Resource Surplus',
   'dashboardandmonitor.monitor.fund-surplus': 'Fund Surplus',
-};
+}

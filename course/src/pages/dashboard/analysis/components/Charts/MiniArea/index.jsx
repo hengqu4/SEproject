@@ -1,7 +1,7 @@
-import { Axis, Chart, Geom, Tooltip } from 'bizcharts';
-import React from 'react';
-import autoHeight from '../autoHeight';
-import styles from '../index.less';
+import { Axis, Chart, Geom, Tooltip } from 'bizcharts'
+import React from 'react'
+import autoHeight from '../autoHeight'
+import styles from '../index.less'
 
 const MiniArea = (props) => {
   const {
@@ -19,8 +19,8 @@ const MiniArea = (props) => {
     xAxis,
     yAxis,
     animate = true,
-  } = props;
-  const padding = [36, 5, 30, 5];
+  } = props
+  const padding = [36, 5, 30, 5]
   const scaleProps = {
     x: {
       type: 'cat',
@@ -31,15 +31,15 @@ const MiniArea = (props) => {
       min: 0,
       ...scale.y,
     },
-  };
+  }
   const tooltip = [
     'x*y',
     (x, y) => ({
       name: x,
       value: y,
     }),
-  ];
-  const chartHeight = height + 54;
+  ]
+  const chartHeight = height + 54
   return (
     <div
       className={styles.miniChart}
@@ -57,44 +57,21 @@ const MiniArea = (props) => {
             data={data}
             padding={padding}
           >
-            <Axis
-              key="axis-x"
-              name="x"
-              label={null}
-              line={null}
-              tickLine={null}
-              grid={null}
-              {...xAxis}
-            />
-            <Axis
-              key="axis-y"
-              name="y"
-              label={null}
-              line={null}
-              tickLine={null}
-              grid={null}
-              {...yAxis}
-            />
+            <Axis key='axis-x' name='x' label={null} line={null} tickLine={null} grid={null} {...xAxis} />
+            <Axis key='axis-y' name='y' label={null} line={null} tickLine={null} grid={null} {...yAxis} />
             <Tooltip showTitle={false} crosshairs={false} />
             <Geom
-              type="area"
-              position="x*y"
+              type='area'
+              position='x*y'
               color={color}
               tooltip={tooltip}
-              shape="smooth"
+              shape='smooth'
               style={{
                 fillOpacity: 1,
               }}
             />
             {line ? (
-              <Geom
-                type="line"
-                position="x*y"
-                shape="smooth"
-                color={borderColor}
-                size={borderWidth}
-                tooltip={false}
-              />
+              <Geom type='line' position='x*y' shape='smooth' color={borderColor} size={borderWidth} tooltip={false} />
             ) : (
               <span
                 style={{
@@ -106,7 +83,7 @@ const MiniArea = (props) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default autoHeight()(MiniArea);
+export default autoHeight()(MiniArea)

@@ -1,4 +1,5 @@
-import { fakeSubmitForm } from './service';
+import { fakeSubmitForm } from './service'
+
 const Model = {
   namespace: 'formAndstepForm',
   state: {
@@ -12,25 +13,25 @@ const Model = {
   },
   effects: {
     *submitStepForm({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
+      yield call(fakeSubmitForm, payload)
       yield put({
         type: 'saveStepFormData',
         payload,
-      });
+      })
       yield put({
         type: 'saveCurrentStep',
         payload: 'result',
-      });
+      })
     },
   },
   reducers: {
     saveCurrentStep(state, { payload }) {
-      return { ...state, current: payload };
+      return { ...state, current: payload }
     },
 
     saveStepFormData(state, { payload }) {
-      return { ...state, step: { ...state.step, ...payload } };
+      return { ...state, step: { ...state.step, ...payload } }
     },
   },
-};
-export default Model;
+}
+export default Model

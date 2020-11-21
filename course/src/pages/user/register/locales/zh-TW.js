@@ -71,4 +71,4 @@ export default {
   'userandregister.option.B': '同事乙',
   'userandregister.option.C': '同事丙',
   'userandregister.navBar.lang': '語言',
-};
+}

@@ -1,10 +1,10 @@
-import React from 'react';
-import { Form, Button, Divider, Input, Select } from 'antd';
-import { connect, Dispatch } from 'umi';
-import { StateType } from '../../model';
-import styles from './index.less';
+import React from 'react'
+import { Form, Button, Divider, Input, Select } from 'antd'
+import { connect, Dispatch } from 'umi'
+import { StateType } from '../../model'
+import styles from './index.less'
 
-const { Option } = Select;
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -13,80 +13,72 @@ const formItemLayout = {
   wrapperCol: {
     span: 19,
   },
-};
+}
 interface Step1Props {
-  data?: StateType['step'];
-  dispatch?: Dispatch<any>;
+  data?: StateType['step']
+  dispatch?: Dispatch<any>
 }
 
 const Step1: React.FC<Step1Props> = (props) => {
-  const { dispatch, data } = props;
-  const [form] = Form.useForm();
+  const { dispatch, data } = props
+  const [form] = Form.useForm()
 
   if (!data) {
-    return null;
+    return null
   }
-  const { validateFields } = form;
+  const { validateFields } = form
   const onValidateForm = async () => {
-    const values = await validateFields();
+    const values = await validateFields()
     if (dispatch) {
       dispatch({
         type: 'formStepForm/saveStepFormData',
         payload: values,
-      });
+      })
       dispatch({
         type: 'formStepForm/saveCurrentStep',
         payload: 'confirm',
-      });
+      })
     }
-  };
+  }
   return (
     <>
       <Form
         {...formItemLayout}
         form={form}
-        layout="horizontal"
+        layout='horizontal'
         className={styles.stepForm}
         hideRequiredMark
         initialValues={data}
       >
-        <Form.Item
-          label="付款账户"
-          name="payAccount"
-          rules={[{ required: true, message: '请选择付款账户' }]}
-        >
-          <Select placeholder="test@example.com">
-            <Option value="ant-design@alipay.com">ant-design@alipay.com</Option>
+        <Form.Item label='付款账户' name='payAccount' rules={[{ required: true, message: '请选择付款账户' }]}>
+          <Select placeholder='test@example.com'>
+            <Option value='ant-design@alipay.com'>ant-design@alipay.com</Option>
           </Select>
         </Form.Item>
-        <Form.Item label="收款账户">
+        <Form.Item label='收款账户'>
           <Input.Group compact>
-            <Select defaultValue="alipay" style={{ width: 100 }}>
-              <Option value="alipay">支付宝</Option>
-              <Option value="bank">银行账户</Option>
+            <Select defaultValue='alipay' style={{ width: 100 }}>
+              <Option value='alipay'>支付宝</Option>
+              <Option value='bank'>银行账户</Option>
             </Select>
             <Form.Item
               noStyle
-              name="receiverAccount"
+              name='receiverAccount'
               rules={[
                 { required: true, message: '请输入收款人账户' },
                 { type: 'email', message: '账户名应为邮箱格式' },
               ]}
             >
-              <Input style={{ width: 'calc(100% - 100px)' }} placeholder="test@example.com" />
+              <Input style={{ width: 'calc(100% - 100px)' }} placeholder='test@example.com' />
             </Form.Item>
           </Input.Group>
         </Form.Item>
-        <Form.Item
-          label="收款人姓名"
-          name="receiverName"
-          rules={[{ required: true, message: '请输入收款人姓名' }]}
-        >
-          <Input placeholder="请输入收款人姓名" />
+        <Form.Item label='收款人姓名' name='receiverName' rules={[{ required: true, message: '请输入收款人姓名' }]}>
+          <Input placeholder='请输入收款人姓名' />
         </Form.Item>
         <Form.Item
-          label="转账金额"
-          name="amount"
+          label='转账金额'
+          name='amount'
           rules={[
             { required: true, message: '请输入转账金额' },
             {
@@ -95,7 +87,7 @@ const Step1: React.FC<Step1Props> = (props) => {
             },
           ]}
         >
-          <Input prefix="￥" placeholder="请输入金额" />
+          <Input prefix='￥' placeholder='请输入金额' />
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -106,7 +98,7 @@ const Step1: React.FC<Step1Props> = (props) => {
             },
           }}
         >
-          <Button type="primary" onClick={onValidateForm}>
+          <Button type='primary' onClick={onValidateForm}>
             下一步
           </Button>
         </Form.Item>
@@ -124,9 +116,9 @@ const Step1: React.FC<Step1Props> = (props) => {
         </p>
       </div>
     </>
-  );
-};
+  )
+}
 
 export default connect(({ formStepForm }: { formStepForm: StateType }) => ({
   data: formStepForm.step,
-}))(Step1);
+}))(Step1)

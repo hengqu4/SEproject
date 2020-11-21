@@ -16,4 +16,4 @@ export default {
   'dashboardandmonitor.monitor.resource-surplus': 'Resource Surplus',
   'dashboardandmonitor.monitor.fund-surplus': 'Fund Surplus',
   'dashboardandmonitor.exception.back': 'Back to home',
-};
+}

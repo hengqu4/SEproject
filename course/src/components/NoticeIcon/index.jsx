@@ -1,40 +1,32 @@
-import { BellOutlined } from '@ant-design/icons';
-import { Badge, Spin, Tabs } from 'antd';
-import useMergeValue from 'use-merge-value';
-import React from 'react';
-import classNames from 'classnames';
-import NoticeList from './NoticeList';
-import HeaderDropdown from '../HeaderDropdown';
-import styles from './index.less';
-const { TabPane } = Tabs;
+import { BellOutlined } from '@ant-design/icons'
+import { Badge, Spin, Tabs } from 'antd'
+import useMergeValue from 'use-merge-value'
+import React from 'react'
+import classNames from 'classnames'
+import NoticeList from './NoticeList'
+import HeaderDropdown from '../HeaderDropdown'
+import styles from './index.less'
+
+const { TabPane } = Tabs
 
 const NoticeIcon = (props) => {
   const getNotificationBox = () => {
-    const {
-      children,
-      loading,
-      onClear,
-      onTabChange,
-      onItemClick,
-      onViewMore,
-      clearText,
-      viewMoreText,
-    } = props;
+    const { children, loading, onClear, onTabChange, onItemClick, onViewMore, clearText, viewMoreText } = props
 
     if (!children) {
-      return null;
+      return null
     }
 
-    const panes = [];
+    const panes = []
     React.Children.forEach(children, (child) => {
       if (!child) {
-        return;
+        return
       }
 
-      const { list, title, count, tabKey, showClear, showViewMore } = child.props;
-      const len = list && list.length ? list.length : 0;
-      const msgCount = count || count === 0 ? count : len;
-      const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
+      const { list, title, count, tabKey, showClear, showViewMore } = child.props
+      const len = list && list.length ? list.length : 0
+      const msgCount = count || count === 0 ? count : len
+      const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title
       panes.push(
         <TabPane tab={tabTitle} key={tabKey}>
           <NoticeList
@@ -50,25 +42,25 @@ const NoticeIcon = (props) => {
             title={title}
           />
         </TabPane>,
-      );
-    });
+      )
+    })
     return (
       <Spin spinning={loading} delay={300}>
         <Tabs className={styles.tabs} onChange={onTabChange}>
           {panes}
         </Tabs>
       </Spin>
-    );
-  };
+    )
+  }
 
-  const { className, count, bell } = props;
+  const { className, count, bell } = props
   const [visible, setVisible] = useMergeValue(false, {
     value: props.popupVisible,
     onChange: props.onPopupVisibleChange,
-  });
-  const noticeButtonClass = classNames(className, styles.noticeButton);
-  const notificationBox = getNotificationBox();
-  const NoticeBellIcon = bell || <BellOutlined className={styles.icon} />;
+  })
+  const noticeButtonClass = classNames(className, styles.noticeButton)
+  const notificationBox = getNotificationBox()
+  const NoticeBellIcon = bell || <BellOutlined className={styles.icon} />
   const trigger = (
     <span
       className={classNames(noticeButtonClass, {
@@ -85,15 +77,15 @@ const NoticeIcon = (props) => {
         {NoticeBellIcon}
       </Badge>
     </span>
-  );
+  )
 
   if (!notificationBox) {
-    return trigger;
+    return trigger
   }
 
   return (
     <HeaderDropdown
-      placement="bottomRight"
+      placement='bottomRight'
       overlay={notificationBox}
       overlayClassName={styles.popover}
       trigger={['click']}
@@ -102,11 +94,11 @@ const NoticeIcon = (props) => {
     >
       {trigger}
     </HeaderDropdown>
-  );
-};
+  )
+}
 
 NoticeIcon.defaultProps = {
   emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
-};
-NoticeIcon.Tab = NoticeList;
-export default NoticeIcon;
+}
+NoticeIcon.Tab = NoticeList
+export default NoticeIcon

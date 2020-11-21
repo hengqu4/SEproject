@@ -7,8 +7,7 @@ export default {
   'formandbasic-form.userName.required': 'Por favor insira nome de usuário!',
   'formandbasic-form.password.required': 'Por favor insira sua senha!',
   'formandbasic-form.password.twice': 'As senhas não estão iguais!',
-  'formandbasic-form.strength.msg':
-    'Por favor insira pelo menos 6 caracteres e não use senhas fáceis de adivinhar.',
+  'formandbasic-form.strength.msg': 'Por favor insira pelo menos 6 caracteres e não use senhas fáceis de adivinhar.',
   'formandbasic-form.strength.strong': 'Força: forte',
   'formandbasic-form.strength.medium': 'Força: média',
   'formandbasic-form.strength.short': 'Força: curta',
@@ -40,8 +39,7 @@ export default {
   'formandbasic-form.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'formandbasic-form.invites.label': 'Inviting critics',
-  'formandbasic-form.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'formandbasic-form.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'formandbasic-form.weight.label': 'Weight',
   'formandbasic-form.weight.placeholder': 'Please enter weight',
   'formandbasic-form.public.label': 'Target disclosure',
@@ -53,4 +51,4 @@ export default {
   'formandbasic-form.option.A': 'Colleague A',
   'formandbasic-form.option.B': 'Colleague B',
   'formandbasic-form.option.C': 'Colleague C',
-};
+}

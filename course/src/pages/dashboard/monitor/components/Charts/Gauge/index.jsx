@@ -1,36 +1,37 @@
-import { Axis, Chart, Coord, Geom, Guide, Shape } from 'bizcharts';
-import React from 'react';
-import autoHeight from '../autoHeight';
-const { Arc, Html, Line } = Guide;
+import { Axis, Chart, Coord, Geom, Guide, Shape } from 'bizcharts'
+import React from 'react'
+import autoHeight from '../autoHeight'
+
+const { Arc, Html, Line } = Guide
 
 const defaultFormatter = (val) => {
   switch (val) {
     case '2':
-      return '差';
+      return '差'
 
     case '4':
-      return '中';
+      return '中'
 
     case '6':
-      return '良';
+      return '良'
 
     case '8':
-      return '优';
+      return '优'
 
     default:
-      return '';
+      return ''
   }
-};
+}
 
 if (Shape.registerShape) {
   Shape.registerShape('point', 'pointer', {
     drawShape(cfg, group) {
-      let point = cfg.points[0];
-      point = this.parsePoint(point);
+      let point = cfg.points[0]
+      point = this.parsePoint(point)
       const center = this.parsePoint({
         x: 0,
         y: 0,
-      });
+      })
       group.addShape('line', {
         attrs: {
           x1: center.x,
@@ -41,7 +42,7 @@ if (Shape.registerShape) {
           lineWidth: 2,
           lineCap: 'round',
         },
-      });
+      })
       return group.addShape('circle', {
         attrs: {
           x: center.x,
@@ -51,9 +52,9 @@ if (Shape.registerShape) {
           lineWidth: 3,
           fill: '#fff',
         },
-      });
+      })
     },
-  });
+  })
 }
 
 const Gauge = (props) => {
@@ -65,7 +66,7 @@ const Gauge = (props) => {
     formatter = defaultFormatter,
     color = '#2F9CFF',
     bgColor = '#F0F2F5',
-  } = props;
+  } = props
   const cols = {
     value: {
       type: 'linear',
@@ -74,12 +75,12 @@ const Gauge = (props) => {
       tickCount: 6,
       nice: true,
     },
-  };
+  }
   const data = [
     {
       value: percent / 10,
     },
-  ];
+  ]
 
   const renderHtml = () => `
   <div style="width: 300px;text-align: center;font-size: 12px!important;">
@@ -87,22 +88,22 @@ const Gauge = (props) => {
     <div style="font-size: 24px;color: rgba(0,0,0,0.85);margin: 0;">
       ${(data[0].value * 10).toFixed(2)}%
     </div>
-  </div>`;
+  </div>`
 
   const textStyle = {
     fontSize: 12,
     fill: 'rgba(0, 0, 0, 0.65)',
     textAlign: 'center',
-  };
+  }
   return (
     <Chart height={height} data={data} scale={cols} padding={[-16, 0, 16, 0]} forceFit={forceFit}>
-      <Coord type="polar" startAngle={-1.25 * Math.PI} endAngle={0.25 * Math.PI} radius={0.8} />
-      <Axis name="1" line={undefined} />
+      <Coord type='polar' startAngle={-1.25 * Math.PI} endAngle={0.25 * Math.PI} radius={0.8} />
+      <Axis name='1' line={undefined} />
       <Axis
         line={undefined}
         tickLine={undefined}
         subTickLine={undefined}
-        name="value"
+        name='value'
         zIndex={2}
         label={{
           offset: -12,
@@ -156,16 +157,9 @@ const Gauge = (props) => {
         />
         <Html position={['50%', '95%']} html={renderHtml()} />
       </Guide>
-      <Geom
-        line={false}
-        type="point"
-        position="value*1"
-        shape="pointer"
-        color={color}
-        active={false}
-      />
+      <Geom line={false} type='point' position='value*1' shape='pointer' color={color} active={false} />
     </Chart>
-  );
-};
+  )
+}
 
-export default autoHeight()(Gauge);
+export default autoHeight()(Gauge)

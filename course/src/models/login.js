@@ -1,8 +1,9 @@
-import { stringify } from 'querystring';
-import { history } from 'umi';
-import { fakeAccountLogin } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
+import { stringify } from 'querystring'
+import { history } from 'umi'
+import { fakeAccountLogin } from '@/services/login'
+import { setAuthority } from '@/utils/authority'
+import { getPageQuery } from '@/utils/utils'
+
 const Model = {
   namespace: 'login',
   state: {
@@ -10,38 +11,38 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(fakeAccountLogin, payload)
       yield put({
         type: 'changeLoginStatus',
         payload: response,
-      }); // Login successfully
+      }) // Login successfully
 
       if (response.status === 'ok') {
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
+        const urlParams = new URL(window.location.href)
+        const params = getPageQuery()
+        let { redirect } = params
 
         if (redirect) {
-          const redirectUrlParams = new URL(redirect);
+          const redirectUrlParams = new URL(redirect)
 
           if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+            redirect = redirect.substr(urlParams.origin.length)
 
             if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
+              redirect = redirect.substr(redirect.indexOf('#') + 1)
             }
           } else {
-            window.location.href = '/';
-            return;
+            window.location.href = '/'
+            return
           }
         }
 
-        history.replace(redirect || '/');
+        history.replace(redirect || '/')
       }
     },
 
     logout() {
-      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
+      const { redirect } = getPageQuery() // Note: There may be security issues, please note
 
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
@@ -49,15 +50,15 @@ const Model = {
           search: stringify({
             redirect: window.location.href,
           }),
-        });
+        })
       }
     },
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      setAuthority(payload.currentAuthority)
+      return { ...state, status: payload.status, type: payload.type }
     },
   },
-};
-export default Model;
+}
+export default Model

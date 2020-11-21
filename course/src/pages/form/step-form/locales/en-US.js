@@ -7,8 +7,7 @@ export default {
   'formandstep-form.userName.required': 'Please enter your userName!',
   'formandstep-form.password.required': 'Please enter your password!',
   'formandstep-form.password.twice': 'The passwords entered twice do not match!',
-  'formandstep-form.strength.msg':
-    "Please enter at least 6 characters and don't use passwords that are easy to guess.",
+  'formandstep-form.strength.msg': "Please enter at least 6 characters and don't use passwords that are easy to guess.",
   'formandstep-form.strength.strong': 'Strength: strong',
   'formandstep-form.strength.medium': 'Strength: medium',
   'formandstep-form.strength.short': 'Strength: too short',
@@ -44,8 +43,7 @@ export default {
   'formandstep-form.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'formandstep-form.invites.label': 'Inviting critics',
-  'formandstep-form.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'formandstep-form.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'formandstep-form.weight.label': 'Weight',
   'formandstep-form.weight.placeholder': 'Please enter weight',
   'formandstep-form.public.label': 'Target disclosure',
@@ -57,4 +55,4 @@ export default {
   'formandstep-form.option.A': 'Colleague A',
   'formandstep-form.option.B': 'Colleague B',
   'formandstep-form.option.C': 'Colleague C',
-};
+}

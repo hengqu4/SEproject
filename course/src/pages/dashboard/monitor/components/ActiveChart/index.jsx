@@ -1,41 +1,43 @@
-import React, { Component } from 'react';
-import { Statistic } from 'antd';
-import { MiniArea } from '../Charts';
-import styles from './index.less';
+import React, { Component } from 'react'
+import { Statistic } from 'antd'
+import { MiniArea } from '../Charts'
+import styles from './index.less'
 
 function fixedZero(val) {
-  return val * 1 < 10 ? `0${val}` : val;
+  return val * 1 < 10 ? `0${val}` : val
 }
 
 function getActiveData() {
-  const activeData = [];
+  const activeData = []
 
   for (let i = 0; i < 24; i += 1) {
     activeData.push({
       x: `${fixedZero(i)}:00`,
       y: Math.floor(Math.random() * 200) + i * 50,
-    });
+    })
   }
 
-  return activeData;
+  return activeData
 }
 
 export default class ActiveChart extends Component {
   state = {
     activeData: getActiveData(),
-  };
-  timer = undefined;
-  requestRef = undefined;
+  }
+
+  timer = undefined
+
+  requestRef = undefined
 
   componentDidMount() {
-    this.loopData();
+    this.loopData()
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timer);
+    clearTimeout(this.timer)
 
     if (this.requestRef) {
-      cancelAnimationFrame(this.requestRef);
+      cancelAnimationFrame(this.requestRef)
     }
   }
 
@@ -47,18 +49,18 @@ export default class ActiveChart extends Component {
             activeData: getActiveData(),
           },
           () => {
-            this.loopData();
+            this.loopData()
           },
-        );
-      }, 1000);
-    });
-  };
+        )
+      }, 1000)
+    })
+  }
 
   render() {
-    const { activeData = [] } = this.state;
+    const { activeData = [] } = this.state
     return (
       <div className={styles.activeChart}>
-        <Statistic title="目标评估" value="有望达到预期" />
+        <Statistic title='目标评估' value='有望达到预期' />
         <div
           style={{
             marginTop: 32,
@@ -105,6 +107,6 @@ export default class ActiveChart extends Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 }

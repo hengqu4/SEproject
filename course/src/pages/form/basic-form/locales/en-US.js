@@ -44,8 +44,7 @@ export default {
   'formandbasic-form.client.placeholder':
     'Please describe your customer service, internal customers directly @ Name / job number',
   'formandbasic-form.invites.label': 'Inviting critics',
-  'formandbasic-form.invites.placeholder':
-    'Please direct @ Name / job number, you can invite up to 5 people',
+  'formandbasic-form.invites.placeholder': 'Please direct @ Name / job number, you can invite up to 5 people',
   'formandbasic-form.weight.label': 'Weight',
   'formandbasic-form.weight.placeholder': 'Please enter weight',
   'formandbasic-form.public.label': 'Target disclosure',
@@ -57,4 +56,4 @@ export default {
   'formandbasic-form.option.A': 'Colleague A',
   'formandbasic-form.option.B': 'Colleague B',
   'formandbasic-form.option.C': 'Colleague C',
-};
+}
