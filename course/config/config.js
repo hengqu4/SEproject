@@ -5,6 +5,10 @@ import proxy from './proxy'
 
 const { REACT_APP_ENV } = process.env
 export default defineConfig({
+  nodeModulesTransform: {
+    type: 'none',
+    exclude: [],
+  },
   hash: true,
   antd: {},
   dva: {
@@ -133,6 +137,44 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/labs/table',
                   component: './labs/LabTable',
+                },
+              ],
+            },
+            {
+              name: '对抗系统',
+              icon: 'aim',
+              path: '/contest',
+              authority: ['teacher', 'student'],
+              routes: [
+                {
+                  name: '历史记录',
+                  path: '/contest/histroy',
+                  component: './contest/student/MatchHistory',
+                  authority: ['student'],
+                },
+                {
+                  name: '参加比赛',
+                  path: '/contest/match',
+                  component: './contest/student/Match',
+                  authority: ['student'],
+                },
+                {
+                  name: '查看成绩',
+                  path: '/contest/match-history',
+                  component: './contest/teacher/MatchHistory',
+                  authority: ['teacher'],
+                },
+                {
+                  name: '创建比赛',
+                  path: '/contest/create-match',
+                  component: './contest/teacher/CreateMatch',
+                  authority: ['teacher'],
+                },
+                {
+                  name: '对抗题库',
+                  path: '/contest/questions-bank',
+                  component: './contest/teacher/QuestionBank',
+                  authority: ['teacher'],
                 },
               ],
             },
