@@ -4,4 +4,5 @@ module.exports = {
   ...fabric.prettier,
   jsxSingleQuote: true,
   semi: false,
+  endOfLine: 'auto'
 }

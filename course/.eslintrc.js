@@ -15,5 +15,14 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
+    '@typescript-eslint/no-unused-expressions': [
+      2,
+      {
+        allowShortCircuit: true,
+        allowTernary: true,
+        allowTaggedTemplates: true,
+      },
+    ],
+    'react/jsx-no-bind': 0,
   },
 }
