@@ -29,6 +29,8 @@ set BABEL_CACHE=none&&umi dev
 
 **注意：为使自动格式化生效，需保证当前文件没有语法错误。且因为 vscode 的配置文件夹在 course 文件夹内，所以开发需要将 course 文件夹作为根目录通过 vscode 打开**
 
+**注意：使用 VS Code 进行开发时，不要安装 JS-CSS-HTML Formatter，会产生插件冲突**
+
 代码需保证没有红色波浪线，即错误存在。如果**因特殊需求实在无法满足** eslint 某条规则，可通过注释的方式 disable，参考
 
 [eslint docs](https://eslint.org/docs/user-guide/configuring.html#configuring-rules)
