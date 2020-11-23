@@ -155,7 +155,7 @@ export default defineConfig({
                 {
                   name: '参加比赛',
                   path: '/contest/match',
-                  component: './contest/student/Match',
+                  component: './contest/student/Contest',
                   authority: ['student'],
                 },
                 {
@@ -166,8 +166,8 @@ export default defineConfig({
                 },
                 {
                   name: '创建比赛',
-                  path: '/contest/create-match',
-                  component: './contest/teacher/CreateMatch',
+                  path: '/contest/create-contest',
+                  component: './contest/teacher/CreateContest',
                   authority: ['teacher'],
                 },
                 {

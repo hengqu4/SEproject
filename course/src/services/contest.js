@@ -16,3 +16,11 @@ export const fetchStudentMatchDetail = (params) => {
     prefix: API_CONTEST_PREFIX,
   })
 }
+
+export const fetchCurrentContest = (query) => {
+  return request(SafeUrlAssembler('/contest').toString(), {
+    method: 'GET',
+    prefix: API_CONTEST_PREFIX,
+    params: query,
+  })
+}

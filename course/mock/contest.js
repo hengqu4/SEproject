@@ -155,7 +155,20 @@ const studentMatchDetail = Mock.mock({
   ],
 })
 
+const currentContest = Mock.mock({
+  contestId: 1,
+  publisherId: 1,
+  title: '@ctitle',
+  participantNumber: 3,
+  startTime: Date.now(),
+  endTime: Date.now(),
+  chapter: 4,
+  description: '@cparagraph',
+  courseId: 1,
+})
+
 export default {
   [`GET ${API_CONTEST_PREFIX}/matches/:matchId`]: studentMatchDetail,
   [`GET ${API_CONTEST_PREFIX}/matches`]: studentMatchHistory,
+  [`GET ${API_CONTEST_PREFIX}/contest`]: currentContest,
 }
