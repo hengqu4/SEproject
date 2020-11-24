@@ -132,6 +132,12 @@ export default defineConfig({
                   path: '/labs/mark-lab',
                   component: './labs/MarkLab',
                 },
+                {
+                  name: '实验分析页',
+                  icon: 'smile',
+                  path: '/labs/analyse_lab',
+                  component: './labs/AnalyseLab',
+                },
               ],
             },
             {
