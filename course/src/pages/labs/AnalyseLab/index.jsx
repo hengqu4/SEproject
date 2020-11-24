@@ -143,8 +143,8 @@ class AnalyseLab extends Component {
                   size='large'
                   type='primary'
                   style={{
-                    height: 50,
-                    width: 80,
+                    height: 40,
+                    width: 150,
                     marginLeft: 150,
                   }}
                 >
@@ -155,9 +155,9 @@ class AnalyseLab extends Component {
                   size='large'
                   type='primary'
                   style={{
-                    height: 50,
-                    width: 80,
-                    marginLeft: 300,
+                    height: 40,
+                    width: 150,
+                    marginLeft: 280,
                   }}
                 >
                   发布

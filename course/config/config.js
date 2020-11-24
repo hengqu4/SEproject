@@ -138,6 +138,12 @@ export default defineConfig({
                   path: '/labs/analyse_lab',
                   component: './labs/AnalyseLab',
                 },
+                {
+                  name: '待批改',
+                  icon: 'smile',
+                  path: '/labs/pending_list',
+                  component: './labs/PendingList',
+                },
               ],
             },
             {
