@@ -135,6 +135,25 @@ export default defineConfig({
               ],
             },
             {
+              name:'教学管理',
+              icon:'',
+              path:'/teachingManagement',
+              routes:[
+                {
+                  name:'理论课',
+                  icon:'',
+                  path:'/teachingManagement/theory',
+                  component:'./teachingManagement/theory'
+                },
+                {
+                  name:'实验课',
+                  icon:'',
+                  path:'/teachingManagement/laboratory',
+                  component:'./teachingManagement/laboratory'
+                }
+              ]
+            },
+            {
               name: '对抗系统',
               icon: 'aim',
               path: '/contest',
