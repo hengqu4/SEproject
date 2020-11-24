@@ -16,4 +16,4 @@ export default {
   'resultandsuccess.success.btn-return': 'Back List',
   'resultandsuccess.success.btn-project': 'View Project',
   'resultandsuccess.success.btn-print': 'Print',
-}
+};

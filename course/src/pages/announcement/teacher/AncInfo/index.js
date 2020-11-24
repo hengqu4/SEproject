@@ -18,6 +18,7 @@ const MatchHistory = (props) => {
           <Tag color="blue">2020.11.24</Tag>
           <Tag color="blue">Dri</Tag>
           <Button size='small' style={{fontSize: '10px', color: '#019cea'}}>编辑</Button>
+          {/* <a style={{fontSize: '10px'}}>编辑</a> */}
           <p style={{marginTop: '30px'}}>
             给妈妈洗脚并写一篇心得
           </p>

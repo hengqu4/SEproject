@@ -16,4 +16,4 @@ export default {
   'resultandsuccess.success.btn-return': '返回列表',
   'resultandsuccess.success.btn-project': '查看项目',
   'resultandsuccess.success.btn-print': '打印',
-}
+};
