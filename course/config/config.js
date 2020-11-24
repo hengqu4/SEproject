@@ -150,6 +150,12 @@ export default defineConfig({
                   icon:'',
                   path:'/teachingManagement/laboratory',
                   component:'./teachingManagement/laboratory'
+                },
+                {
+                  name:'责任教师(展示）',
+                  icon:'',
+                  path:'/teachingManagement/add',
+                  component:'./teachingManagement/add'
                 }
               ]
             },
