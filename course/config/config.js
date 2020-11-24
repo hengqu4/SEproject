@@ -173,6 +173,24 @@ export default defineConfig({
               ],
             },
             {
+              name: '公告',
+              path: '/announcement',
+              routes: [
+                {
+                  name: '公告列表',
+                  path: '/announcement/anc-list',
+                  component: './announcement/teacher/AncList',
+                  //authority: ['teacher'],
+                },
+                {
+                  name: '公告详情',
+                  path: '/announcement/anc-info',
+                  component: './announcement/teacher/AncInfo',
+                },
+              ]
+              
+            },
+            {
               path: '/form',
               icon: 'form',
               name: 'form',
