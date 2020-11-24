@@ -1,9 +1,8 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi'
-import defaultSettings from './defaultSettings'
-import proxy from './proxy'
-
-const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi';
+import defaultSettings from './defaultSettings';
+import proxy from './proxy';
+const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -69,68 +68,78 @@ export default defineConfig({
               redirect: '/labs/list',
             },
             {
-              path: '/dashboard',
-              name: 'dashboard',
+              path: '/course',
+              name: '课程',
               icon: 'dashboard',
               routes: [
                 {
                   path: '/',
-                  redirect: '/dashboard/analysis',
+                  redirect: '/course/empty',
                 },
                 {
-                  name: 'analysis',
+                  name: '空白页面',
                   icon: 'smile',
-                  path: '/dashboard/analysis',
-                  component: './dashboard/analysis',
-                },
-                {
-                  name: 'monitor',
-                  icon: 'smile',
-                  path: '/dashboard/monitor',
-                  component: './dashboard/monitor',
-                },
-                {
-                  name: 'workplace',
-                  icon: 'smile',
-                  path: '/dashboard/workplace',
-                  component: './dashboard/workplace',
+                  path: '/course/empty',
+                  component: './course/EmptyPage',
                 },
               ],
             },
             {
+              name: '作业',
+              icon: 'highlight',
+              path: '/homework',
+              routes: [
+                {
+                  name: '空白页面',
+                  icon: 'smile',
+                  path: '/homework/empty',
+                  component: './homework/EmptyPage',
+                },
+              ]
+            },
+            {
               name: '实验',
-              icon: 'smile',
+              icon: 'cluster',
               path: '/labs',
               routes: [
+                {
+                  path: '/',
+                  redirect: '/labs/student/list',
+                },
                 {
                   name: '实验列表',
                   icon: 'smile',
                   path: '/labs/list',
-                  component: './labs/LabList',
+                  component: './labs/student/LabList',
+                  // authority: ['student'],
                 },
                 {
                   name: '实验表格',
                   icon: 'smile',
                   path: '/labs/table',
-                  component: './labs/LabTable',
+                  component: './labs/student/LabTable',
+                  // authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   icon: 'smile',
                   path: '/labs/create_lab',
-                  component: './labs/CreateLab',
+                  component: './labs/teacher/CreateLab',
+                  // authority: ['teacher'],
                 },
                 {
                   name: '实验1',
                   icon: 'smile',
                   path: '/labs/lab',
-                  component: './labs/Lab',
+                  component: './labs/student/Lab',
+                  // authority: ['student'],
                 },
                 {
                   name: '批改实验',
                   icon: 'smile',
                   path: '/labs/mark-lab',
-                  component: './labs/MarkLab',
+                  component: './labs/teacher/MarkLab',
+                  // authority: ['teacher'],
                 },
               ],
             },
@@ -138,147 +147,95 @@ export default defineConfig({
               name: '对抗系统',
               icon: 'aim',
               path: '/contest',
-              authority: ['teacher', 'student'],
+              // authority: ['teacher', 'student'],
               routes: [
                 {
                   name: '历史记录',
                   path: '/contest/histroy',
                   component: './contest/student/MatchHistory',
-                  authority: ['student'],
+                  // authority: ['student'],
                 },
                 {
                   name: '参加比赛',
                   path: '/contest/match',
                   component: './contest/student/Match',
-                  authority: ['student'],
+                  // authority: ['student'],
                 },
                 {
                   name: '查看成绩',
                   path: '/contest/match-history',
                   component: './contest/teacher/MatchHistory',
-                  authority: ['teacher'],
+                  // authority: ['teacher'],
                 },
                 {
                   name: '创建比赛',
                   path: '/contest/create-match',
                   component: './contest/teacher/CreateMatch',
-                  authority: ['teacher'],
+                  // authority: ['teacher'],
                 },
                 {
                   name: '对抗题库',
                   path: '/contest/questions-bank',
                   component: './contest/teacher/QuestionBank',
-                  authority: ['teacher'],
+                  // authority: ['teacher'],
                 },
               ],
             },
+            
             {
-              path: '/form',
-              icon: 'form',
-              name: 'form',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/form/basic-form',
-                },
-                {
-                  name: 'basic-form',
-                  icon: 'smile',
-                  path: '/form/basic-form',
-                  component: './form/basic-form',
-                },
-                {
-                  name: 'step-form',
-                  icon: 'smile',
-                  path: '/form/step-form',
-                  component: './form/step-form',
-                },
-                {
-                  name: 'advanced-form',
-                  icon: 'smile',
-                  path: '/form/advanced-form',
-                  component: './form/advanced-form',
-                },
-              ],
-            },
-            {
-              path: '/list',
+              name: '资料库',
               icon: 'table',
-              name: 'list',
+              path: '/storehouse',
               routes: [
                 {
-                  path: '/list/search',
-                  name: 'search-list',
-                  component: './list/search',
-                  routes: [
-                    {
-                      path: '/list/search',
-                      redirect: '/list/search/articles',
-                    },
-                    {
-                      name: 'articles',
-                      icon: 'smile',
-                      path: '/list/search/articles',
-                      component: './list/search/articles',
-                    },
-                    {
-                      name: 'projects',
-                      icon: 'smile',
-                      path: '/list/search/projects',
-                      component: './list/search/projects',
-                    },
-                    {
-                      name: 'applications',
-                      icon: 'smile',
-                      path: '/list/search/applications',
-                      component: './list/search/applications',
-                    },
-                  ],
-                },
-                {
                   path: '/',
-                  redirect: '/list/table-list',
+                  redirect: '/storehouse/empty',
                 },
                 {
-                  name: 'table-list',
+                  name: '空白页面',
                   icon: 'smile',
-                  path: '/list/table-list',
-                  component: './list/table-list',
-                },
-                {
-                  name: 'basic-list',
-                  icon: 'smile',
-                  path: '/list/basic-list',
-                  component: './list/basic-list',
-                },
-                {
-                  name: 'card-list',
-                  icon: 'smile',
-                  path: '/list/card-list',
-                  component: './list/card-list',
+                  path: '/storehouse/empty',
+                  component: './storehouse/EmptyPage',
                 },
               ],
             },
             {
-              path: '/profile',
-              name: 'profile',
+              name: '账户',
+              icon: 'user',
+              path: '/account',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/account/center',
+                },
+                {
+                  name: '个人中心',
+                  icon: 'smile',
+                  path: '/account/center',
+                  component: './account/center',
+                },
+                {
+                  name: '个人设置',
+                  icon: 'smile',
+                  path: '/account/settings',
+                  component: './account/settings',
+                },
+              ],
+            },
+            {
+              path: '/board',
+              name: '公告板',
               icon: 'profile',
               routes: [
                 {
                   path: '/',
-                  redirect: '/profile/basic',
+                  redirect: '/board/empty',
                 },
                 {
-                  name: 'basic',
+                  name: '空白页面',
                   icon: 'smile',
-                  path: '/profile/basic',
-                  component: './profile/basic',
-                },
-                {
-                  name: 'advanced',
-                  icon: 'smile',
-                  path: '/profile/advanced',
-                  component: './profile/advanced',
+                  path: '/board/empty',
+                  component: './board/EmptyPage',
                 },
               ],
             },
@@ -335,58 +292,6 @@ export default defineConfig({
               ],
             },
             {
-              name: 'account',
-              icon: 'user',
-              path: '/account',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/account/center',
-                },
-                {
-                  name: 'center',
-                  icon: 'smile',
-                  path: '/account/center',
-                  component: './account/center',
-                },
-                {
-                  name: 'settings',
-                  icon: 'smile',
-                  path: '/account/settings',
-                  component: './account/settings',
-                },
-              ],
-            },
-            {
-              name: 'editor',
-              icon: 'highlight',
-              path: '/editor',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/editor/flow',
-                },
-                {
-                  name: 'flow',
-                  icon: 'smile',
-                  path: '/editor/flow',
-                  component: './editor/flow',
-                },
-                {
-                  name: 'mind',
-                  icon: 'smile',
-                  path: '/editor/mind',
-                  component: './editor/mind',
-                },
-                {
-                  name: 'koni',
-                  icon: 'smile',
-                  path: '/editor/koni',
-                  component: './editor/koni',
-                },
-              ],
-            },
-            {
               component: '404',
             },
           ],
@@ -406,4 +311,4 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-})
+});
