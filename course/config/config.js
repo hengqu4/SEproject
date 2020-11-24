@@ -223,19 +223,20 @@ export default defineConfig({
               ],
             },
             {
-              path: '/board',
-              name: '公告板',
+              path: '/announcement',
+              name: '公告',
               icon: 'profile',
               routes: [
                 {
-                  path: '/',
-                  redirect: '/board/empty',
+                  name: '公告列表',
+                  path: '/announcement/anc-list',
+                  component: './announcement/teacher/AncList',
+                  // authority: ['teacher'],
                 },
                 {
-                  name: '空白页面',
-                  icon: 'smile',
-                  path: '/board/empty',
-                  component: './board/EmptyPage',
+                  name: '公告详情（放此处仅为调试方便）',
+                  path: '/announcement/anc-info',
+                  component: './announcement/teacher/AncInfo',
                 },
               ],
             },
