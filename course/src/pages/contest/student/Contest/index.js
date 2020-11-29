@@ -32,35 +32,49 @@ const Contest = ({ currentContest = {}, dispatch = () => {} }) => {
   return (
     <PageContainer>
       <ProCard>
-        <Row>
-          <Col md={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
-            <Spin spinning={loading}>
-              <Descriptions
-                column={2}
-                title={
-                  <div style={{ width: '100%', textAlign: 'center' }}>
-                    {currentContest.title || ''}
-                  </div>
-                }
-                bordered
-              >
-                <Descriptions.Item label='开始时间'>
-                  {moment(currentContest.startTime || Date.now()).format('YYYY-MM-DD HH:mm')}
-                </Descriptions.Item>
-                <Descriptions.Item label='结束时间'>
-                  {moment(currentContest.endTime || Date.now()).format('YYYY-MM-DD HH:mm')}
-                </Descriptions.Item>
-                <Descriptions.Item label='人数限制'>
-                  {currentContest.participantNumber || -1}
-                </Descriptions.Item>
-                <Descriptions.Item label='时长'>3 分钟</Descriptions.Item>
-                <Descriptions.Item label='描述' span={2}>
-                  {currentContest.description}
-                </Descriptions.Item>
-              </Descriptions>
-            </Spin>
-          </Col>
-        </Row>
+        <main
+          style={{
+            minHeight: '100vh',
+          }}
+        >
+          <Row>
+            <Col md={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
+              <Spin spinning={loading}>
+                <Descriptions
+                  column={1}
+                  bordered
+                  title={
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      {currentContest.title || ''}
+                    </div>
+                  }
+                  // bordered
+                >
+                  <Descriptions.Item label='开始时间'>
+                    {moment(currentContest.startTime || Date.now()).format('YYYY-MM-DD HH:mm')}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='结束时间'>
+                    {moment(currentContest.endTime || Date.now()).format('YYYY-MM-DD HH:mm')}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='人数限制'>
+                    {currentContest.participantNumber || -1}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='测试时长'>3 分钟</Descriptions.Item>
+                  <Descriptions.Item label='描述信息'>
+                    <span
+                      style={{
+                        maxWidth: '40vw',
+                        flex: '0 0',
+                      }}
+                    >
+                      {currentContest.description || ''}
+                    </span>
+                  </Descriptions.Item>
+                </Descriptions>
+              </Spin>
+            </Col>
+          </Row>
+        </main>
       </ProCard>
     </PageContainer>
   )

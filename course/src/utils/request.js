@@ -43,7 +43,7 @@ const errorHandler = (error) => {
     })
   }
 
-  return Promise.reject(error)
+  return Promise.reject(response)
 }
 /**
  * 配置request请求时的默认参数

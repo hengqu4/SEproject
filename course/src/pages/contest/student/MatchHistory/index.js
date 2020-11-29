@@ -55,7 +55,7 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
         })
       }
     },
-    [matchDetail],
+    [matchDetail, dispatch],
   )
 
   const columns = useMemo(
