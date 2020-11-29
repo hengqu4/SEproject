@@ -1,8 +1,9 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy';
-const { REACT_APP_ENV } = process.env;
+import { defineConfig } from 'umi'
+import defaultSettings from './defaultSettings'
+import proxy from './proxy'
+
+const { REACT_APP_ENV } = process.env
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -95,7 +96,7 @@ export default defineConfig({
                   path: '/homework/empty',
                   component: './homework/EmptyPage',
                 },
-              ]
+              ],
             },
             {
               name: '实验',
@@ -147,7 +148,44 @@ export default defineConfig({
               name: '对抗系统',
               icon: 'aim',
               path: '/contest',
-              // authority: ['teacher', 'student'],
+              authority: ['teacher', 'student'],
+              routes: [
+                {
+                  name: '历史记录',
+                  path: '/contest/histroy',
+                  component: './contest/student/MatchHistory',
+                  authority: ['student'],
+                },
+                {
+                  name: '参加比赛',
+                  path: '/contest/match',
+                  component: './contest/student/Contest',
+                  authority: ['student'],
+                },
+                {
+                  name: '查看成绩',
+                  path: '/contest/match-history',
+                  component: './contest/teacher/MatchHistory',
+                  authority: ['teacher'],
+                },
+                {
+                  name: '创建比赛',
+                  path: '/contest/create-contest',
+                  component: './contest/teacher/CreateContest',
+                  authority: ['teacher'],
+                },
+                {
+                  name: '对抗题库',
+                  path: '/contest/questions-bank',
+                  component: './contest/teacher/QuestionBank',
+                  authority: ['teacher'],
+                },
+              ],
+            },
+            {
+              path: '/form',
+              icon: 'form',
+              name: 'form',
               routes: [
                 {
                   name: '历史记录',
@@ -181,7 +219,7 @@ export default defineConfig({
                 },
               ],
             },
-            
+
             {
               name: '资料库',
               icon: 'table',
@@ -312,4 +350,4 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-});
+})
