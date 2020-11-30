@@ -148,6 +148,24 @@ export default defineConfig({
                   component: './labs/teacher/MarkLab',
                   // authority: ['teacher'],
                 },
+                {
+                  name: '实验分析页',
+                  icon: 'smile',
+                  path: '/labs/analyse_lab',
+                  component: './labs/AnalyseLab',
+                },
+                {
+                  name: '待批改',
+                  icon: 'smile',
+                  path: '/labs/pending_list',
+                  component: './labs/PendingList',
+                },
+                {
+                  name: '所有实验',
+                  icon: 'smile',
+                  path: '/labs/all_lab_list',
+                  component: './labs/AllLabList',
+                },
               ],
             },
             {
