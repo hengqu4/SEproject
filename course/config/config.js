@@ -1,9 +1,8 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi'
-import defaultSettings from './defaultSettings'
-import proxy from './proxy'
-
-const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi';
+import defaultSettings from './defaultSettings';
+import proxy from './proxy';
+const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -43,19 +42,16 @@ export default defineConfig({
             },
             {
               name: 'login',
-              icon: 'smile',
               path: '/user/login',
               component: './user/login',
             },
             {
               name: 'register-result',
-              icon: 'smile',
               path: '/user/register-result',
               component: './user/register-result',
             },
             {
               name: 'register',
-              icon: 'smile',
               path: '/user/register',
               component: './user/register',
             },
@@ -85,7 +81,6 @@ export default defineConfig({
                 },
                 {
                   name: '空白页面',
-                  icon: 'smile',
                   path: '/course/empty',
                   component: './course/EmptyPage',
                 },
@@ -115,31 +110,23 @@ export default defineConfig({
                 },
                 {
                   name: '实验表格',
-                  icon: 'smile',
                   path: '/labs/table',
-                  component: './labs/student/LabTable',
-                  // authority: ['student'],
+                  component: './labs/student/LabTable', // authority: ['student'],
                 },
                 {
                   name: '创建实验',
-                  icon: 'smile',
                   path: '/labs/create_lab',
-                  component: './labs/teacher/CreateLab',
-                  // authority: ['teacher'],
+                  component: './labs/teacher/CreateLab', // authority: ['teacher'],
                 },
                 {
                   name: '实验1',
-                  icon: 'smile',
                   path: '/labs/lab',
-                  component: './labs/student/Lab',
-                  // authority: ['student'],
+                  component: './labs/student/Lab', // authority: ['student'],
                 },
                 {
                   name: '批改实验',
-                  icon: 'smile',
                   path: '/labs/mark-lab',
-                  component: './labs/teacher/MarkLab',
-                  // authority: ['teacher'],
+                  component: './labs/teacher/MarkLab', // authority: ['teacher'],
                 },
               ],
             },
@@ -188,13 +175,12 @@ export default defineConfig({
               routes: [
                 {
                   path: '/',
-                  redirect: '/storehouse/empty',
+                  redirect: '/storehouse',
                 },
                 {
-                  name: '空白页面',
-                  icon: 'smile',
-                  path: '/storehouse/empty',
-                  component: './storehouse/EmptyPage',
+                  name:'总览',
+                  path: '/storehouse/view',
+                  component: './storehouse/Overview',
                 },
               ],
             },
@@ -229,8 +215,7 @@ export default defineConfig({
                 {
                   name: '公告列表',
                   path: '/announcement/anc-list',
-                  component: './announcement/teacher/AncList',
-                  // authority: ['teacher'],
+                  component: './announcement/teacher/AncList', // authority: ['teacher'],
                 },
                 {
                   name: '公告详情（放此处仅为调试方便）',
@@ -250,13 +235,11 @@ export default defineConfig({
                 },
                 {
                   name: 'success',
-                  icon: 'smile',
                   path: '/result/success',
                   component: './result/success',
                 },
                 {
                   name: 'fail',
-                  icon: 'smile',
                   path: '/result/fail',
                   component: './result/fail',
                 },
@@ -273,19 +256,16 @@ export default defineConfig({
                 },
                 {
                   name: '403',
-                  icon: 'smile',
                   path: '/exception/403',
                   component: './exception/403',
                 },
                 {
                   name: '404',
-                  icon: 'smile',
                   path: '/exception/404',
                   component: './exception/404',
                 },
                 {
                   name: '500',
-                  icon: 'smile',
                   path: '/exception/500',
                   component: './exception/500',
                 },
@@ -311,4 +291,4 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-})
+});
