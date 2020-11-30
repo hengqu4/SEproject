@@ -114,13 +114,6 @@ export default defineConfig({
                   redirect: '/labs/student/list',
                 },
                 {
-                  name: '实验列表',
-                  icon: 'smile',
-                  path: '/labs/list',
-                  component: './labs/student/LabList',
-                  // authority: ['student'],
-                },
-                {
                   name: '实验表格',
                   icon: 'smile',
                   path: '/labs/table',
@@ -188,44 +181,6 @@ export default defineConfig({
                 },
               ],
             },
-            {
-              path: '/form',
-              icon: 'form',
-              name: 'form',
-              routes: [
-                {
-                  name: '历史记录',
-                  path: '/contest/histroy',
-                  component: './contest/student/MatchHistory',
-                  // authority: ['student'],
-                },
-                {
-                  name: '参加比赛',
-                  path: '/contest/match',
-                  component: './contest/student/Match',
-                  // authority: ['student'],
-                },
-                {
-                  name: '查看成绩',
-                  path: '/contest/match-history',
-                  component: './contest/teacher/MatchHistory',
-                  // authority: ['teacher'],
-                },
-                {
-                  name: '创建比赛',
-                  path: '/contest/create-match',
-                  component: './contest/teacher/CreateMatch',
-                  // authority: ['teacher'],
-                },
-                {
-                  name: '对抗题库',
-                  path: '/contest/questions-bank',
-                  component: './contest/teacher/QuestionBank',
-                  // authority: ['teacher'],
-                },
-              ],
-            },
-
             {
               name: '资料库',
               icon: 'table',
