@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
-import ModalQuestionDetail from '@/pages/contest/teacher/QuestionBank/ModalQuestionDetail'
-import { useMount } from 'react-use'
-import { Table, notification, Space, Popconfirm, Button, message } from 'antd'
+import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
+import { useMount, useUnmount } from 'react-use'
+import { Table, Space, Popconfirm, Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pick from 'lodash/pick'
+import onError from '@/utils/onError'
 
 const mapStateToProps = ({ Contest }) => ({
   dataSource: Contest.questions,
@@ -27,12 +28,6 @@ const QuestionBank = ({
 
   const modalRef = useRef(null)
 
-  const onError = useCallback((err) => {
-    notification.error({
-      description: err.message,
-    })
-  }, [])
-
   const getQuestions = useCallback(
     (newPageNum, newPageSize) => {
       const pageNum = newPageNum || pagination.pageNum
@@ -51,7 +46,7 @@ const QuestionBank = ({
         },
       })
     },
-    [dispatch, onError, pagination],
+    [dispatch, pagination],
   )
 
   const getQuestionDetail = useCallback(
@@ -67,11 +62,20 @@ const QuestionBank = ({
         onFinish: dismiss,
       })
     },
-    [dispatch, onError],
+    [dispatch],
   )
 
   useMount(() => {
     getQuestions(1, 20)
+  })
+
+  useUnmount(() => {
+    dispatch({
+      type: 'setQuestions',
+    })
+    dispatch({
+      type: 'setQuestionPagination',
+    })
   })
 
   const handleEditQuestionBtnClick = useCallback(
@@ -111,32 +115,37 @@ const QuestionBank = ({
         onFinish: setLoading.bind(this, false),
       })
     },
-    [dispatch, onError],
+    [dispatch],
   )
 
-  const handleModalOk = async (values, closeModal) => {
-    if (modalMode === 'edit') {
-      const payload = {
-        ...values,
-        questionId: questionDetail.questionId,
-        oldType: questionDetail.questionType,
-      }
+  const handleModalOk = useCallback(
+    (values, closeModal) => {
+      if (modalMode === 'edit') {
+        const payload = {
+          ...values,
+          questionId: questionDetail.questionId,
+          oldType: questionDetail.questionType,
+        }
 
-      dispatch({
-        type: 'Contest/updateQuestion',
-        payload,
-        onError,
-        onFinish: closeModal,
-      })
-    } else if (modalMode === 'create') {
-      dispatch({
-        type: 'Contest/createQuestion',
-        payload: values,
-        onError,
-        onFinish: closeModal,
-      })
-    }
-  }
+        dispatch({
+          type: 'Contest/updateQuestion',
+          payload,
+          onError,
+          onFinish: closeModal,
+        })
+      } else if (modalMode === 'create') {
+        dispatch({
+          type: 'Contest/createQuestion',
+          payload: values,
+          onError,
+          onFinish: closeModal,
+        })
+      } else {
+        closeModal()
+      }
+    },
+    [modalMode, dispatch, questionDetail],
+  )
 
   const columns = useMemo(
     () => [
@@ -182,6 +191,7 @@ const QuestionBank = ({
     () => ({
       ...pagination,
       onChange: getQuestions,
+      current: pagination.pageNum,
     }),
     [pagination, getQuestions],
   )

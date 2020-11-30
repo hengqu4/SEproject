@@ -13,8 +13,8 @@ const MatchQuestions = ({ questions = [], score }) => {
 
   return (
     <div>
-      <Row>
-        <Col md={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
+      <Row justify='center'>
+        <Col span={18} xs={24} sm={20} lg={16}>
           <List
             dataSource={questions}
             size='large'

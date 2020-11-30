@@ -27,5 +27,6 @@ module.exports = {
     'no-plusplus': 0,
     'default-case': 0,
     'react-hooks/exhaustive-deps': 2,
+    'prefer-promise-reject-errors': 1,
   },
 }

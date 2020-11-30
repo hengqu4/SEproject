@@ -39,7 +39,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
   }
 
   useEffect(() => {
-    if (mode === 'edit' || mode == 'readonly') {
+    if (mode === 'edit' || mode === 'readonly') {
       setQuestionType(question.questionType)
       form.setFieldsValue(question)
     } else if (mode === 'create') {
@@ -68,8 +68,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
 
   const onCancel = useCallback(() => {
     setVisible(false)
-    restProps.onCancel && restProps.onCancel(setVisible.bind(this, false))
-  }, [restProps])
+  }, [])
 
   const handleQuestionDetailChange = useCallback(
     (changedValues, values) => {

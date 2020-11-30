@@ -37,8 +37,8 @@ const Contest = ({ currentContest = {}, dispatch = () => {} }) => {
             minHeight: '100vh',
           }}
         >
-          <Row>
-            <Col md={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
+          <Row justify='center'>
+            <Col span={18} xs={24} sm={20} lg={16}>
               <Spin spinning={loading}>
                 <Descriptions
                   column={1}

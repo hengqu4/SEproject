@@ -8,7 +8,7 @@ const generateReducer = ({
   return (state, { payload }) => {
     const newState = cloneDeep(state) || defaultState
 
-    newState[attributeName] = transformer(payload)
+    newState[attributeName] = transformer(payload, state)
 
     return newState
   }

@@ -5,9 +5,26 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 import pick from 'lodash/pick'
+import cloneDeep from 'lodash/cloneDeep'
 
 const pageOverflow = ({ total, pageNum, pageSize }) => {
   return total - (pageNum - 1) * pageSize <= 0 && pageNum > 1
+}
+
+const defaultNewContest = {
+  title: null,
+  participantNumber: 3,
+  startTime: null,
+  endTime: null,
+  description: null,
+  chapter: null,
+  questions: [],
+}
+
+const defaultPagination = {
+  total: 0,
+  pageNum: 1,
+  pageSize: 20,
 }
 
 const defaultState = {
@@ -16,11 +33,9 @@ const defaultState = {
   currentContest: {},
   questions: [],
   questionDetail: {},
-  questionPagination: {
-    total: 0,
-    pageNum: 1,
-    pageSize: 20,
-  },
+  questionPagination: defaultPagination,
+  filters: {},
+  newContest: defaultNewContest,
 }
 
 const effects = {
@@ -48,10 +63,19 @@ const effects = {
       payload: res,
     })
   }),
-  fetchQuestions: generateEffect(function* ({ payload }, { call, put }) {
-    const res = yield call(ContestServices.fetchQuestionList, payload)
+  setFiltersAndFetchQuestions: generateEffect(function* ({ payload }, { call, put, select }) {
+    const pagination = yield select((state) => state.Contest.questionPagination)
 
-    console.log(res)
+    yield put({
+      type: 'setFilters',
+      payload,
+    })
+
+    // TODO: 可能添加过滤器
+    const res = yield call(ContestServices.fetchQuestionList, {
+      pageNum: 1,
+      pageSize: pagination.pageSize,
+    })
 
     yield put({
       type: 'setQuestions',
@@ -62,6 +86,43 @@ const effects = {
       type: 'setQuestionPagination',
       payload: res.pagination,
     })
+  }),
+  fetchQuestions: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(ContestServices.fetchQuestionList, payload)
+
+    yield put({
+      type: 'setQuestions',
+      payload: res.questions,
+    })
+
+    yield put({
+      type: 'setQuestionPagination',
+      payload: res.pagination,
+    })
+  }),
+  fetchQuestionsAndAppend: generateEffect(function* ({ payload }, { call, put, select }) {
+    const questionPagination = yield select((state) => state.Contest.questionPagination)
+
+    if (questionPagination.total <= (payload.pageNum - 1) * payload.pageSize) return
+
+    const res = yield call(ContestServices.fetchQuestionList, payload)
+
+    const { questions, pagination } = res
+
+    if (
+      pagination.pageSize === questionPagination.pageSize &&
+      pagination.pageNum === questionPagination.pageNum + 1
+    ) {
+      yield put({
+        type: 'appendQuestions',
+        payload: questions,
+      })
+
+      yield put({
+        type: 'setQuestionPagination',
+        payload: pagination,
+      })
+    }
   }),
   fetchQuestionDetail: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchQuestionDetail, payload)
@@ -119,15 +180,11 @@ const effects = {
       pick(pagination, ['pageNum', 'pageSize']),
     )
 
-    console.log('res: ', res)
-
     if (pageOverflow(res.pagination)) {
       res = yield call(ContestServices.fetchQuestionList, {
         pageNum: res.pagination.pageNum - 1,
         pageSize: res.pagination.pageSize,
       })
-
-      console.log('res: ', res)
     }
 
     yield put({
@@ -160,6 +217,12 @@ const reducers = {
   }),
   setQuestionPagination: generateReducer({
     attributeName: 'questionPagination',
+    transformer: (payload) => payload || defaultPagination,
+    defaultState,
+  }),
+  setFilters: generateReducer({
+    attributeName: 'filters',
+    transformer: defaultObjectTransformer,
     defaultState,
   }),
   setQuestions: generateReducer({
@@ -167,9 +230,36 @@ const reducers = {
     transformer: defaultArrayTransformer,
     defaultState,
   }),
+  appendQuestions: generateReducer({
+    attributeName: 'questions',
+    transformer: (payload, state) => {
+      const questionsCopy = cloneDeep(state.questions) || []
+      questionsCopy.push(...payload)
+      return questionsCopy
+    },
+  }),
   setQuestionDetail: generateReducer({
     attributeName: 'questionDetail',
     transformer: defaultObjectTransformer,
+    defaultState,
+  }),
+  setNewContest: generateReducer({
+    attributeName: 'newContest',
+    transformer: defaultObjectTransformer,
+    defaultState,
+  }),
+  setNewContestQuestions: generateReducer({
+    attributeName: 'newContest',
+    transformer: (payload, state) => {
+      const newContestCopy = cloneDeep(state.newContest) || defaultNewContest
+      newContestCopy.questions = payload
+      return newContestCopy
+    },
+    defaultState,
+  }),
+  setDefaultNewContest: generateReducer({
+    attributeName: 'newContest',
+    transformer: () => defaultNewContest,
     defaultState,
   }),
 }
