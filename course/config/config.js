@@ -144,6 +144,12 @@ export default defineConfig({
                   path: '/labs/pending_list',
                   component: './labs/PendingList',
                 },
+                {
+                  name: '所有实验',
+                  icon: 'smile',
+                  path: '/labs/all_lab_list',
+                  component: './labs/AllLabList',
+                },
               ],
             },
             {
