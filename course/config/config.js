@@ -106,27 +106,23 @@ export default defineConfig({
               routes: [
                 {
                   path: '/',
-                  redirect: '/labs/student/list',
+                  redirect: '/labs',
                 },
                 {
-                  name: '实验表格',
-                  path: '/labs/table',
+                  name: '实验列表',
+                  path: '/labs/list',
                   component: './labs/student/LabTable', // authority: ['student'],
+                },
+                {
+                  name: '实验1',
+                  path: '/labs/lab',
+                  hideInMenu:true,
+                  component: './labs/student/Lab', // authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   path: '/labs/create_lab',
                   component: './labs/teacher/CreateLab', // authority: ['teacher'],
-                },
-                {
-                  name: '实验1',
-                  path: '/labs/lab',
-                  component: './labs/student/Lab', // authority: ['student'],
-                },
-                {
-                  name: '批改实验',
-                  path: '/labs/mark-lab',
-                  component: './labs/teacher/MarkLab', // authority: ['teacher'],
                 },
                 {
                   name: '实验分析页',
@@ -139,6 +135,11 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/labs/pending_list',
                   component: './labs/PendingList',
+                },
+                {
+                  name: '批改实验',
+                  path: '/labs/mark-lab',
+                  component: './labs/teacher/MarkLab', // authority: ['teacher'],
                 },
                 {
                   name: '所有实验',

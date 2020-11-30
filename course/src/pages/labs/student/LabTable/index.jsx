@@ -3,8 +3,9 @@ import { Button, Divider, message, Input } from 'antd'
 import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import CreateForm from './components/CreateForm'
 import { queryRule, updateRule, addRule, removeRule } from './service'
+import {Link} from 'react-router-dom'
+import CreateForm from './components/CreateForm'
 
 /**
  *  删除节点
@@ -46,8 +47,7 @@ const TableList = () => {
         ],
       },
       render: (dom) => {
-        // console.log(name);
-        return <a>{dom}</a>;
+        return <Link to="/labs/lab">{dom}</Link>;
       },
       align:'center',
     },
