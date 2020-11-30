@@ -120,7 +120,6 @@ class AnalyseLab extends Component {
       salesPieData = salesTypeDataOnline
     }
 
-    //  TODO:Modify style
     return (
       <GridContent>
         <React.Fragment>
@@ -138,30 +137,6 @@ class AnalyseLab extends Component {
                   salesPieData={salesPieData}
                   handleChangeSalesType={this.handleChangeSalesType}
                 />
-                <Button
-                  class='mark'
-                  size='large'
-                  type='primary'
-                  style={{
-                    height: 40,
-                    width: 150,
-                    marginLeft: 150,
-                  }}
-                >
-                  评分
-                </Button>
-                <Button
-                  class='publish'
-                  size='large'
-                  type='primary'
-                  style={{
-                    height: 40,
-                    width: 150,
-                    marginLeft: 280,
-                  }}
-                >
-                  发布
-                </Button>
               </Suspense>
             </Col>
             <Col xl={12} lg={24} md={24} sm={24} xs={24}>

@@ -1,4 +1,4 @@
-import { Card, Radio } from 'antd'
+import { Card, Radio, Button } from 'antd'
 import { FormattedMessage } from 'umi'
 import React from 'react'
 import { Pie } from './Charts'
@@ -60,6 +60,26 @@ const ProportionSales = ({
         height={248}
         lineWidth={4}
       />
+      <Button
+        type='primary'
+        style={{
+          height: 35,
+          width: 100,
+          marginLeft: 0,
+        }}
+      >
+        发布成绩
+      </Button>
+      <Button
+        type='primary'
+        style={{
+          height: 35,
+          width: 120,
+          marginLeft: 500,
+        }}
+      >
+        进入学生列表
+      </Button>
     </div>
   </Card>
 )
