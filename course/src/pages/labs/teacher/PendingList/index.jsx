@@ -6,6 +6,7 @@ import ProTable from '@ant-design/pro-table'
 import CreateForm from './components/CreateForm'
 import UpdateForm from './components/UpdateForm'
 import { queryRule, updateRule, addRule, removeRule } from './service'
+import {Link} from 'react-router-dom'
 /**
  * 添加节点
  * @param fields
@@ -120,7 +121,7 @@ const TableList = () => {
       search: false,
       render: (_, record) => (
         <>
-          <a href=''>进入批改</a>
+          <Link to="/labs/mark" target="_blank">进入批改</Link>
         </>
       ),
     },

@@ -5,6 +5,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { queryRule, updateRule, addRule, removeRule } from './service'
+import {Link} from 'react-router-dom'
 
 /**
  *  删除节点
@@ -107,7 +108,9 @@ const TableList = () => {
         search={false}
         toolBarRender={() => [
           <Button type='primary' onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <Link to="/labs/create" target="_blank">
+              <PlusOutlined /> 新建
+            </Link>
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}

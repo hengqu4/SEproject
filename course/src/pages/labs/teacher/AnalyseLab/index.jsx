@@ -1,14 +1,14 @@
 import { EllipsisOutlined } from '@ant-design/icons'
-import { Col, Dropdown, Row, Table, Button, Tag } from 'antd'
+import { Col, Dropdown, Row, Table, Button } from 'antd'
 import React, { Component, Suspense } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { connect } from 'umi'
 import PageLoading from './components/PageLoading'
 import { getTimeDistance } from './utils/utils'
 import styles from './style.less'
+import {Link} from 'react-router-dom'
 
 const ProportionSales = React.lazy(() => import('./components/ProportionSales'))
-const { TabPane } = Tabs;
 
 class AnalyseLab extends Component {
   state = {
@@ -103,15 +103,18 @@ class AnalyseLab extends Component {
       {
         title: '其他实验',
         dataIndex: 'name',
-        render: (text) => (
-          <a
-            onClick={() => {
-              this.otherLabOnClick()
-            }}
-          >
-            {text}
-          </a>
-        ),
+        render: (dom) => {
+          return <Link to="/labs/pending-list" target="_blank">{dom}</Link>;
+        },
+        // render: (text) => (
+        //   <a
+        //     onClick={() => {
+        //       this.otherLabOnClick()
+        //     }}
+        //   >
+        //     {text}
+        //   </a>
+        // ),
       },
     ]
 
@@ -122,24 +125,6 @@ class AnalyseLab extends Component {
     }
 
     return (
-      /**
-      <PageContainer>
-        <Card bordered={false}>
-          <Tabs tabPosition={tabPosition}>
-            <TabPane tab="Tab 1" key="1">
-              <Suspense fallback={null}>
-                <ProportionSales
-                  salesType={salesType}
-                  loading={loading}
-                  salesPieData={salesPieData}
-                  handleChangeSalesType={this.handleChangeSalesType}
-                />
-              </Suspense>
-            </TabPane>
-          </Tabs>
-        </Card>
-      </PageContainer>
-      */
       <GridContent>
         <React.Fragment>
           <Row
@@ -166,7 +151,6 @@ class AnalyseLab extends Component {
           </Row>
         </React.Fragment>
       </GridContent>
-      
     )
   }
 }

@@ -144,10 +144,15 @@ const TableList = () => {
         // pagination={false}
         toolBarRender={() => [
           <Button
+            // onClick={() => handleJumpLab(true)}
+          >
+            <Link to="/labs/all" target="_blank">发布实验</Link>
+          </Button>,
+          <Button
             type='primary'
             // onClick={() => handleJumpLab(true)}
           >
-            编辑
+            删除实验
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
