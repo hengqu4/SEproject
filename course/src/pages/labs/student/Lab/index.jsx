@@ -16,18 +16,18 @@ import {
   PageHeader,
   Typography,
 } from 'antd'
-import { InfoCircleOutlined, EyeOutlined, ClockCircleOutlined, UserOutlined, EditTwoTone } from '@ant-design/icons'
+
+import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
 import { connect, FormattedMessage, formatMessage } from 'umi'
 import styles from './style.less'
 
 const FormItem = Form.Item
-const { Option } = Select
-const { RangePicker } = DatePicker
 const { TextArea } = Input
 const { Paragraph } = Typography
-const { TabPane } = Tabs
+const { Countdown } = Statistic;
+const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
 
 const Lab = (props) => {
   const { submitting } = props
@@ -36,12 +36,12 @@ const Lab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 2,
+        span: 4,
       },
     },
     wrapperCol: {
       xs: {
-        span: 21,
+        span: 16,
       },
     },
   }
@@ -95,6 +95,9 @@ const Lab = (props) => {
     },
   ]
 
+  const desc = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
+  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
+
   const onFinish = (values) => {
     const { dispatch } = props
     dispatch({
@@ -114,30 +117,28 @@ const Lab = (props) => {
   }
 
   return (
-    <PageContainer content=''>
-      、
+    <PageContainer>
       <Card bordered={false}>
-        <div>
-          <PageHeader
-            title='实验1'
-            // subTitle="This is a subtitle"
-            extra={[
-              <Button key='3' type='primary' onClick={() => window.history.back()}>
-                返回
-              </Button>,
-            ]}
-            // footer={}
-          >
-            <Paragraph>Ant Design interprets </Paragraph>
-            <div>
-              <Tag icon={<EyeOutlined />}>200</Tag>
-              <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
-              <Tag icon={<UserOutlined />}>海纳</Tag>
-              <Button type='link' icon={<EditTwoTone />}>
-                编辑
-              </Button>
-            </div>
-          </PageHeader>
+        <Countdown 
+          title="倒计时" 
+          style={{position:'flxed',float:'right'}}
+          value={deadline} 
+          onFinish={onFinish} 
+        />
+        <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
+          <h2>实验1</h2>
+          <Paragraph>{desc}</Paragraph>
+          <div>
+            <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
+            <Tag icon={<UserOutlined />}>海纳</Tag>
+          
+            <Button key='edit' type='link' icon={<EditTwoTone />}>
+              编辑
+            </Button>
+            <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()}>
+              返回
+            </Button>
+          </div>
         </div>
 
         <Form
@@ -168,8 +169,9 @@ const Lab = (props) => {
               style={{
                 minHeight: 32,
               }}
-              placeholder=''
               rows={4}
+              readOnly="readOnly"
+              defaultValue={comment}
             />
           </FormItem>
           <FormItem

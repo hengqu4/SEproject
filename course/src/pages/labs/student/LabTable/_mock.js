@@ -11,18 +11,12 @@ const genList = (current, pageSize) => {
       key: index,
       disabled: i % 6 === 0,
       href: 'https://ant.design',
-      avatar: [
-        'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
-        'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
-      ][i % 2],
-      name: `TradeCode ${index}`,
+      name: `实验 ${index + 1}`,
       owner: '曲丽丽',
-      desc: '这是一段描述',
-      callNo: Math.floor(Math.random() * 1000),
-      status: (Math.floor(Math.random() * 10) % 4).toString(),
+      desc: '这是一段实验描述实验描述实验描述实验描述实验描述实验描述',
+      status: (Math.floor(Math.random() * 10) % 5).toString(),
       startTime: Date.now() - Math.floor(Math.random() * 1000),
-      createdAt: new Date(),
-      progress: Math.ceil(Math.random() * 100),
+      endTime: Date.now(),
     })
   }
 
@@ -30,7 +24,7 @@ const genList = (current, pageSize) => {
   return tableListDataSource
 }
 
-let tableListDataSource = genList(1, 100)
+let tableListDataSource = genList(1, 34)
 
 function getRule(req, res, u) {
   let realUrl = u
@@ -124,18 +118,12 @@ function postRule(req, res, u, b) {
         const newRule = {
           key: tableListDataSource.length,
           href: 'https://ant.design',
-          avatar: [
-            'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
-            'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
-          ][i % 2],
           name,
           owner: '曲丽丽',
           desc,
-          callNo: Math.floor(Math.random() * 1000),
           status: (Math.floor(Math.random() * 10) % 2).toString(),
           startTime: new Date(),
-          createdAt: new Date(),
-          progress: Math.ceil(Math.random() * 100),
+          endTime: new Date(),
         }
         tableListDataSource.unshift(newRule)
         return res.json(newRule)

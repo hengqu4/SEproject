@@ -16,6 +16,7 @@ import {
   PageHeader,
   Typography,
 } from 'antd'
+import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import { connect, FormattedMessage, formatMessage } from 'umi'
 import React from 'react'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
@@ -24,9 +25,8 @@ import PDFViewer from './PDFViewer'
 import styles from './style.less'
 
 const FormItem = Form.Item
-const { Option } = Select
-const { RangePicker } = DatePicker
 const { TextArea } = Input
+const { Paragraph } = Typography
 
 const MarkLab = (props) => {
   const { submitting } = props
@@ -35,12 +35,12 @@ const MarkLab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 2,
+        span: 4,
       },
     },
     wrapperCol: {
       xs: {
-        span: 21,
+        span: 16,
       },
     },
   }
@@ -85,6 +85,8 @@ const MarkLab = (props) => {
       ),
     },
   ]
+  const desc = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
+ 
   const data = [
     {
       key: '1',
@@ -111,8 +113,23 @@ const MarkLab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
   return (
-    <PageContainer content='labsandmarklab.basic.description'>
+    <PageContainer>
       <Card bordered={false}>
+        <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
+          <h2>实验1</h2>
+          <Paragraph>{desc}</Paragraph>
+          <div>
+            <Tag icon={<UserOutlined />}>1923456李华</Tag>
+            <Button key='edit' type='link' icon={<EditTwoTone />}>
+              编辑
+            </Button>
+            <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()}>
+              返回
+            </Button>
+          </div>
+        </div>
+
+
         <Form
           hideRequiredMark
           style={{

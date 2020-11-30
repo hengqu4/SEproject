@@ -4,50 +4,8 @@ import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import CreateForm from './components/CreateForm'
-import UpdateForm from './components/UpdateForm'
 import { queryRule, updateRule, addRule, removeRule } from './service'
-/**
- * 添加节点
- * @param fields
- */
 
-// const handleAdd = async (fields) => {
-//   const hide = message.loading('正在添加');
-
-//   try {
-//     await addRule({ ...fields });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-/**
- * 更新节点
- * @param fields
- */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置')
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    })
-    hide()
-    message.success('配置成功')
-    return true
-  } catch (error) {
-    hide()
-    message.error('配置失败请重试！')
-    return false
-  }
-}
 /**
  *  删除节点
  * @param selectedRows
@@ -72,11 +30,9 @@ const handleRemove = async (selectedRows) => {
 }
 
 const TableList = () => {
-  const [createModalVisible, handleModalVisible] = useState(false)
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [stepFormValues, setStepFormValues] = useState({})
-  const actionRef = useRef()
-  // const [selectedRowsState, setSelectedRows] = useState([]);
+  const actionRef = useRef();
+  const [row, setRow] = useState();
+  const [selectedRowsState, setSelectedRows] = useState([]);
   const columns = [
     {
       title: '实验名称',
@@ -89,6 +45,11 @@ const TableList = () => {
           },
         ],
       },
+      render: (dom) => {
+        // console.log(name);
+        return <a>{dom}</a>;
+      },
+      align:'center',
     },
     {
       title: '实验描述',
@@ -97,15 +58,8 @@ const TableList = () => {
       ellipsis: true,
       search: false,
       // copyable: true,
+      align:'center',
     },
-    // {
-    //   title: '次数',
-    //   dataIndex: 'callNo',
-    //   sorter: true,
-    //   hideInForm: true,
-    //   search: false,
-    //   renderText: (val) => `${val} 万`,
-    // },
     {
       title: '状态',
       dataIndex: 'status',
@@ -117,21 +71,25 @@ const TableList = () => {
         },
         1: {
           text: '进行中',
-          status: 'Processing',
+          status: 'Warning',
         },
         2: {
           text: '已完成',
           status: 'Success',
         },
-        // 3: {
-        //   text: '异常',
-        //   status: 'Error',
-        // },
+        3: {
+          text: '已批改',
+          status: 'Processing',
+        },
+        4: {
+          text: '未提交',
+          status: 'Error',
+        },
       },
+      align:'center',
     },
     {
       title: '开始时间',
-      // dataIndex: 'updatedAt',
       dataIndex: 'startTime',
       sorter: true,
       valueType: 'dateTime',
@@ -162,21 +120,16 @@ const TableList = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 250,
       search: false,
       render: (_, record) => (
         <>
-          <a href=''>进入实验</a>
-          <Divider type='vertical' />
-          <a href=''>查看成绩</a>
-          <Divider type='vertical' />
-          <a
+          <a 
+            href=''
             onClick={() => {
-              handleUpdateModalVisible(true)
               setStepFormValues(record)
             }}
           >
-            配置
+            进入实验
           </a>
         </>
       ),
@@ -188,63 +141,48 @@ const TableList = () => {
         headerTitle='查询表格'
         actionRef={actionRef}
         rowKey='key'
-        pagination={false}
+        // pagination={false}
         toolBarRender={() => [
-          // eslint-disable-next-line react/jsx-key
           <Button
             type='primary'
-            // onClick={() => handleModalVisible(true)}
+            // onClick={() => handleJumpLab(true)}
           >
-            <PlusOutlined /> 编辑实验表格
+            编辑
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        // rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
+        // 删除选中实验
+        rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
       />
-      {/*
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-
-            if (success) {
-              handleModalVisible(false);
-
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          rowKey="key"
-          type="form"
-          columns={columns}
-          rowSelection={{}}
-        />
-      </CreateForm>
-      */}
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value)
-
-            if (success) {
-              handleUpdateModalVisible(false)
-              setStepFormValues({})
-
-              if (actionRef.current) {
-                actionRef.current.reload()
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false)
-            setStepFormValues({})
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择{' '}
+              <a
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                {selectedRowsState.length}
+              </a>{' '}
+              项&nbsp;&nbsp;
+            </div>
+          }
+        >
+          <Button
+            type="primary"
+            onClick={async () => {
+              await handleRemove(selectedRowsState);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          >
+            批量删除
+          </Button>
+        </FooterToolbar>
+      )}
     </PageContainer>
   )
 }
