@@ -47,7 +47,7 @@ const TableList = () => {
         ],
       },
       render: (dom) => {
-        return <Link to="/labs/lab" target="_blank">{dom}</Link>;
+        return <Link to="/labs/lab">{dom}</Link>;
       },
       align:'center',
     },
@@ -125,11 +125,13 @@ const TableList = () => {
         <>
           <a 
             href=''
-            onClick={() => {
-              setStepFormValues(record)
-            }}
+            // onClick={() => {
+            //   setStepFormValues(record)
+            // }}
           >
-            进入实验
+            <Link to="/labs/lab">
+              进入实验
+            </Link>
           </a>
         </>
       ),
@@ -146,7 +148,7 @@ const TableList = () => {
           <Button
             // onClick={() => handleJumpLab(true)}
           >
-            <Link to="/labs/all" target="_blank">发布实验</Link>
+            <Link to="/labs/all">发布实验</Link>
           </Button>,
           <Button
             type='primary'

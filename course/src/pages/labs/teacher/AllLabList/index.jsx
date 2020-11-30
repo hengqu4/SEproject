@@ -53,11 +53,13 @@ const TableList = () => {
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>
       },
+      align:'center',
     },
     {
       title: '描述',
       dataIndex: 'desc',
       valueType: 'textarea',
+      align:'center',
     },
     {
       title: '创建时间',
@@ -80,6 +82,22 @@ const TableList = () => {
       },
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      hideInForm: true,
+      valueEnum: {
+        0: {
+          text: '未发布',
+          status: 'Default',
+        },
+        1: {
+          text: '已发布',
+          status: 'Warning',
+        },
+      },
+      align:'center',
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -95,8 +113,13 @@ const TableList = () => {
           </a>
           <Divider type='vertical' />
           <a href=''>删除</a>
+          <Divider type='vertical' />
+          <a>
+            发布
+          </a>
         </>
       ),
+      align:'center',
     },
   ]
   return (

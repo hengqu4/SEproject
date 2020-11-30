@@ -104,7 +104,7 @@ class AnalyseLab extends Component {
         title: '其他实验',
         dataIndex: 'name',
         render: (dom) => {
-          return <Link to="/labs/pending-list" target="_blank">{dom}</Link>;
+          return <Link to="/labs/pending-list">{dom}</Link>;
         },
         // render: (text) => (
         //   <a

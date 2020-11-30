@@ -146,8 +146,8 @@ export default defineConfig({
                 },
                 {
                   name: '所有实验',
-                  icon: 'smile',
                   path: '/labs/all',
+                  hideInMenu: true,
                   component: './labs/teacher/AllLabList',
                 },
               ],

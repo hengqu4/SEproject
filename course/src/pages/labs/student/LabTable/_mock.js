@@ -16,7 +16,7 @@ const genList = (current, pageSize) => {
       desc: '这是一段实验描述实验描述实验描述实验描述实验描述实验描述',
       status: (Math.floor(Math.random() * 10) % 5).toString(),
       startTime: Date.now() - Math.floor(Math.random() * 1000),
-      endTime: Date.now(),
+      endTime:  Date.now(),
     })
   }
 

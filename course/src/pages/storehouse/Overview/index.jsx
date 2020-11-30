@@ -65,12 +65,12 @@ class Overview extends Component {
                     cover={
                       <div style={{height:'25px', backgroundColor: item.color}}/>
                     }
-                    actions={[<Link to={item.router} target="_blank">查看</Link>]}
+                    actions={[<Link to={item.router}>查看</Link>]}
                   >
                     <Card.Meta
                       title={
                         <div style={{textAlign:"center"}}>
-                          <Link to={item.router} target="_blank">{item.title}</Link>
+                          <Link to={item.router}>{item.title}</Link>
                         </div>
                       }
                       description={
