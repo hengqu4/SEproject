@@ -47,7 +47,7 @@ const TableList = () => {
         ],
       },
       render: (dom) => {
-        return <Link to="/labs/lab">{dom}</Link>;
+        return <Link to="/labs/lab" target="_blank">{dom}</Link>;
       },
       align:'center',
     },

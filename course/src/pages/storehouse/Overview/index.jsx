@@ -2,76 +2,77 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, List, Typography } from 'antd';
 import React, { Component } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import {Link} from 'react-router-dom'
 import { connect } from 'umi';
 import styles from './style.less';
-
 const { Paragraph } = Typography;
-
-const listDate = {};
-listDate.pushlistData.push(
-  {
-    href: 'https://ant.design',
-    title: `课程文件`,
-    name:`file`,
-    color:"#ffeaa7",
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  },
-  {
-    href: 'https://ant.design',
-    title: `对抗题库`,
-    name:`contest`,
-    color:"#a29bfe",
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  },
-  {
-    href: 'https://ant.design',
-    title: `实验案例`,
-    name:`lab`,
-    color:"#fab1a0",
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  },
-);
 
 class Overview extends Component {
   render() {
-    const {
-      storehouseAndOverview: { list },
-      loading,
-    } = this.props;
+    const nullData = [
+      {
+        router: '/',
+        title: `课程文件`,
+        name:`file`,
+        color:"#00cec9",
+        description:
+          'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+        content:
+          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+      },
+      {
+        router: '/labs/list',
+        title: `实验案例`,
+        name:`lab`,
+        color:"#fab1a0",
+        description:
+          'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+        content:
+          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+      },
+      {
+        router: '/contest/questions-bank',
+        title: `对抗题库`,
+        name:`contest`,
+        color:"#a29bfe",
+        description:
+          'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+        content:
+          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+      },
+    ];
     return (
       <PageContainer>
-        <div className={styles.cardList}>
+        <div className={styles.Overview}>
           <List
             rowKey="id"
             grid={{
               gutter: 16,
               xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
+              sm: 1,
+              md: 2,
+              lg: 2,
+              xl: 3,
+              xxl: 3,
             }}
-            dataSource={listData}
+            dataSource={nullData}
             renderItem={(item) => {
               return (
                 <List.Item key={item.id}>
                   <Card
                     hoverable
                     className={styles.card}
-                    actions={[<a key="option">查看</a>]}
+                    cover={
+                      <div style={{height:'25px', backgroundColor: item.color}}/>
+                    }
+                    actions={[<Link to={item.router} target="_blank">查看</Link>]}
                   >
                     <Card.Meta
-                      title={<a>{item.title}</a>}
+                      title={
+                        <div style={{textAlign:"center"}}>
+                          <Link to={item.router} target="_blank">{item.title}</Link>
+                        </div>
+                      }
                       description={
                         <Paragraph
                           className={styles.item}
@@ -85,7 +86,7 @@ class Overview extends Component {
                     />
                   </Card>
                 </List.Item>
-              );
+                );
             }}
           />
         </div>
@@ -93,10 +94,5 @@ class Overview extends Component {
     );
   }
 }
-{/*
-export default connect(({storehouseAndOverview, loading }) => ({
-  storehouseAndOverview,
-  loading: loading.models.storehouseAndOverview,
-}))(Overview);
-*/}
+
 export default Overview;

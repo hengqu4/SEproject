@@ -1,5 +1,5 @@
 import { EllipsisOutlined } from '@ant-design/icons'
-import { Col, Dropdown, Row, Table, Button } from 'antd'
+import { Col, Dropdown, Row, Table, Button, Tag } from 'antd'
 import React, { Component, Suspense } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { connect } from 'umi'
@@ -8,6 +8,7 @@ import { getTimeDistance } from './utils/utils'
 import styles from './style.less'
 
 const ProportionSales = React.lazy(() => import('./components/ProportionSales'))
+const { TabPane } = Tabs;
 
 class AnalyseLab extends Component {
   state = {
@@ -121,6 +122,24 @@ class AnalyseLab extends Component {
     }
 
     return (
+      /**
+      <PageContainer>
+        <Card bordered={false}>
+          <Tabs tabPosition={tabPosition}>
+            <TabPane tab="Tab 1" key="1">
+              <Suspense fallback={null}>
+                <ProportionSales
+                  salesType={salesType}
+                  loading={loading}
+                  salesPieData={salesPieData}
+                  handleChangeSalesType={this.handleChangeSalesType}
+                />
+              </Suspense>
+            </TabPane>
+          </Tabs>
+        </Card>
+      </PageContainer>
+      */
       <GridContent>
         <React.Fragment>
           <Row
@@ -147,6 +166,7 @@ class AnalyseLab extends Component {
           </Row>
         </React.Fragment>
       </GridContent>
+      
     )
   }
 }

@@ -116,7 +116,7 @@ export default defineConfig({
                 {
                   name: '实验1',
                   path: '/labs/lab',
-                  hideInMenu:true,
+                  hideInMenu: true,
                   component: './labs/student/Lab', // authority: ['student'],
                 },
                 {
@@ -191,17 +191,7 @@ export default defineConfig({
               name: '资料库',
               icon: 'table',
               path: '/storehouse',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/storehouse',
-                },
-                {
-                  name:'总览',
-                  path: '/storehouse/view',
-                  component: './storehouse/Overview',
-                },
-              ],
+              component: './storehouse/Overview',
             },
             {
               name: '账户',
