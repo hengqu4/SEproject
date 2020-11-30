@@ -16,7 +16,7 @@ import {
   PageHeader,
   Typography,
 } from 'antd'
-import { InfoCircleOutlined, EyeOutlined, ClockCircleOutlined, UserOutlined, EditTwoTone } from '@ant-design/icons'
+import { InfoCircleOutlined, EyeOutlined, ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
 import { connect, FormattedMessage, formatMessage } from 'umi'
@@ -36,12 +36,12 @@ const Lab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 2,
+        span: 4,
       },
     },
     wrapperCol: {
       xs: {
-        span: 21,
+        span: 16,
       },
     },
   }
@@ -94,6 +94,7 @@ const Lab = (props) => {
       fileSize: '167 KB',
     },
   ]
+  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
 
   const onFinish = (values) => {
     const { dispatch } = props
@@ -115,29 +116,21 @@ const Lab = (props) => {
 
   return (
     <PageContainer content=''>
-      、
       <Card bordered={false}>
-        <div>
-          <PageHeader
-            title='实验1'
-            // subTitle="This is a subtitle"
-            extra={[
-              <Button key='3' type='primary' onClick={() => window.history.back()}>
-                返回
-              </Button>,
-            ]}
-            // footer={}
-          >
-            <Paragraph>Ant Design interprets </Paragraph>
-            <div>
-              <Tag icon={<EyeOutlined />}>200</Tag>
-              <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
-              <Tag icon={<UserOutlined />}>海纳</Tag>
-              <Button type='link' icon={<EditTwoTone />}>
-                编辑
-              </Button>
-            </div>
-          </PageHeader>
+        <div style={{textAlign:'center'}}>
+          <h2>实验1</h2>
+          <Paragraph>Ant Design interprets </Paragraph>
+          <div>
+            <Tag icon={<EyeOutlined />}>200</Tag>
+            <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
+            <Tag icon={<UserOutlined />}>海纳</Tag>
+            <Button key='edit' type='link' icon={<EditTwoTone />}>
+              编辑
+            </Button>
+            <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()}>
+              返回
+            </Button>
+          </div>
         </div>
 
         <Form
@@ -168,8 +161,9 @@ const Lab = (props) => {
               style={{
                 minHeight: 32,
               }}
-              placeholder=''
               rows={4}
+              readOnly="readOnly"
+              defaultValue={comment}
             />
           </FormItem>
           <FormItem

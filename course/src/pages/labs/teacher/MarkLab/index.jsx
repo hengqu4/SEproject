@@ -35,12 +35,12 @@ const MarkLab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 2,
+        span: 4,
       },
     },
     wrapperCol: {
       xs: {
-        span: 21,
+        span: 16,
       },
     },
   }
@@ -111,7 +111,7 @@ const MarkLab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
   return (
-    <PageContainer content='labsandmarklab.basic.description'>
+    <PageContainer>
       <Card bordered={false}>
         <Form
           hideRequiredMark
