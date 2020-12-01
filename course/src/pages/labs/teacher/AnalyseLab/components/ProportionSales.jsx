@@ -3,6 +3,7 @@ import { FormattedMessage } from 'umi'
 import React from 'react'
 import { Pie } from './Charts'
 import styles from '../style.less'
+import {Link} from 'react-router-dom'
 
 const ProportionSales = ({
   dropdownGroup,
@@ -71,14 +72,16 @@ const ProportionSales = ({
         发布成绩
       </Button>
       <Button
-        type='primary'
+        type='link'
         style={{
           height: 35,
           width: 120,
-          marginLeft: 500,
+          marginLeft: '50%',
         }}
       >
-        进入学生列表
+        <Link to="/labs/pending-list">
+          查看学生提交记录
+        </Link>
       </Button>
     </div>
   </Card>

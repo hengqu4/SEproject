@@ -6,7 +6,6 @@ import { connect } from 'umi'
 import PageLoading from './components/PageLoading'
 import { getTimeDistance } from './utils/utils'
 import styles from './style.less'
-import {Link} from 'react-router-dom'
 
 const ProportionSales = React.lazy(() => import('./components/ProportionSales'))
 
@@ -103,18 +102,15 @@ class AnalyseLab extends Component {
       {
         title: '其他实验',
         dataIndex: 'name',
-        render: (dom) => {
-          return <Link to="/labs/pending-list">{dom}</Link>;
-        },
-        // render: (text) => (
-        //   <a
-        //     onClick={() => {
-        //       this.otherLabOnClick()
-        //     }}
-        //   >
-        //     {text}
-        //   </a>
-        // ),
+        render: (text) => (
+          <a
+            onClick={() => {
+              this.otherLabOnClick()
+            }}
+          >
+            {text}
+          </a>
+        ),
       },
     ]
 
