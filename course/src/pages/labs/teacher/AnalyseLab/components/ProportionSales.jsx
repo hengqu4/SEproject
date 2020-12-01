@@ -1,9 +1,11 @@
-import { Card, Radio, Button } from 'antd'
+import { Card, Radio, Button, Tabs } from 'antd'
 import { FormattedMessage } from 'umi'
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Pie } from './Charts'
 import styles from '../style.less'
-import {Link} from 'react-router-dom'
+
+const { TabPane } = Tabs
 
 const ProportionSales = ({
   dropdownGroup,
@@ -11,6 +13,7 @@ const ProportionSales = ({
   loading,
   salesPieData,
   handleChangeSalesType,
+  otherLabsData,
 }) => (
   <Card
     loading={loading}
@@ -42,47 +45,67 @@ const ProportionSales = ({
     }
   >
     <div>
-      <h4
+      <Tabs
+        defaultActiveKey='1'
+        tabPosition='left'
         style={{
-          marginTop: 8,
-          marginBottom: 32,
+          height: '100%',
+          width: '80%',
         }}
+        size='large'
       >
-        <FormattedMessage id='labsandanalyselab.analysis.all-count-title' defaultMessage='Sales' />
-      </h4>
-      <Pie
-        hasLegend
-        subTitle={
-          <FormattedMessage id='labsandanalyselab.analysis.all-count' defaultMessage='Sales' />
-        }
-        total={() => <p>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</p>}
-        data={salesPieData}
-        valueFormat={(value) => <p>{value}</p>}
-        height={248}
-        lineWidth={4}
-      />
-      <Button
-        type='primary'
-        style={{
-          height: 35,
-          width: 100,
-          marginLeft: 0,
-        }}
-      >
-        发布成绩
-      </Button>
-      <Button
-        type='link'
-        style={{
-          height: 35,
-          width: 120,
-          marginLeft: '50%',
-        }}
-      >
-        <Link to="/labs/pending-list">
-          查看学生提交记录
-        </Link>
-      </Button>
+        {otherLabsData.map((i) => (
+          <TabPane tab={i.name} key={i.key}>
+            <div>
+              <h4
+                style={{
+                  marginTop: 8,
+                  marginBottom: 32,
+                }}
+              >
+                <FormattedMessage
+                  id='labsandanalyselab.analysis.all-count-title'
+                  defaultMessage='Sales'
+                />
+              </h4>
+              <Pie
+                hasLegend
+                subTitle={
+                  <FormattedMessage
+                    id='labsandanalyselab.analysis.all-count'
+                    defaultMessage='Sales'
+                  />
+                }
+                total={() => <p>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</p>}
+                data={salesPieData}
+                valueFormat={(value) => <p>{value}</p>}
+                height={248}
+                lineWidth={4}
+              />
+              <Button
+                type='primary'
+                style={{
+                  height: 35,
+                  width: 100,
+                  marginLeft: 0,
+                }}
+              >
+                发布成绩
+              </Button>
+              <Button
+                type='link'
+                style={{
+                  height: 35,
+                  width: 120,
+                  marginLeft: '50%',
+                }}
+              >
+                <Link to='/labs/pending-list'>查看学生提交记录</Link>
+              </Button>
+            </div>
+          </TabPane>
+        ))}
+      </Tabs>
     </div>
   </Card>
 )
