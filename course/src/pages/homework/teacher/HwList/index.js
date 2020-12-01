@@ -35,7 +35,7 @@ const columns = [
         key: 'opr',
         render: () => (
             <Space size="middle">
-              <a href='http://localhost:8000/announcement/anc-list/anc-info'>查看详情</a>
+              <a>查看详情</a>
               <a>编辑</a>
               <a>删除</a>
             </Space>
@@ -46,36 +46,36 @@ const columns = [
 const data = [
     {
       key: '1',
-      title: '作业',
-      content: '第一次作业发啦',
+      title: '第一次作业',
+      content: '给妈妈洗脚并写一篇心得',
       date: '2020.11.24',
       owner: 'Dri',
     },
     {
       key: '1',
-      title: '作业',
-      content: '第二次作业发啦',
+      title: '第二次作业',
+      content: '给爸爸洗脚并写一篇心得',
       date: '2020.11.24',
       owner: 'Dri',
     },
     {
         key: '1',
-        title: '作业',
-        content: '第三次作业发啦',
+        title: '第三次作业',
+        content: '给爷爷洗脚并写一篇心得',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
         key: '1',
-        title: '作业',
-        content: '第四次作业发啦',
+        title: '第四次作业',
+        content: '给奶奶洗脚并写一篇心得',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
         key: '1',
-        title: '作业',
-        content: '第五次作业发啦',
+        title: '第五次作业',
+        content: '给自己洗脚并写一篇心得',
         date: '2020.11.24',
         owner: 'Dri',
     },
@@ -98,7 +98,7 @@ return (
               
         </div>
         <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-          <Button type="dashed" style={{width: '80%'}} onClick={() => {window.location.href="http://localhost:8000/announcement/anc-list/anc-edit"}}>
+          <Button type="dashed" style={{width: '80%'}}>
              + 添加
           </Button>
         </div> 

@@ -92,10 +92,10 @@ export default defineConfig({
               path: '/homework',
               routes: [
                 {
-                  name: '空白页面',
+                  name: '作业列表',
                   icon: 'smile',
-                  path: '/homework/empty',
-                  component: './homework/EmptyPage',
+                  path: '/homework/hw-list',
+                  component: './homework/teacher/HwList',
                 },
               ],
             },
@@ -231,8 +231,15 @@ export default defineConfig({
                 },
                 {
                   name: '公告详情（放此处仅为调试方便）',
-                  path: '/announcement/anc-info',
+                  path: '/announcement/anc-list/anc-info',
+                  hideInMenu: true,
                   component: './announcement/teacher/AncInfo',
+                },
+                {
+                  name: '编辑公告（放此处仅为调试方便）',
+                  path: '/announcement/anc-list/anc-edit',
+                  hideInMenu: true,
+                  component: './announcement/teacher/AncEdit',
                 },
               ],
             },
