@@ -4,8 +4,8 @@ import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
+import { Link } from 'react-router-dom'
 import { queryRule, updateRule, addRule, removeRule } from './service'
-import {Link} from 'react-router-dom'
 
 /**
  *  删除节点
@@ -53,13 +53,13 @@ const TableList = () => {
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>
       },
-      align:'center',
+      align: 'center',
     },
     {
       title: '描述',
       dataIndex: 'desc',
       valueType: 'textarea',
-      align:'center',
+      align: 'center',
     },
     {
       title: '创建时间',
@@ -95,7 +95,7 @@ const TableList = () => {
           status: 'Warning',
         },
       },
-      align:'center',
+      align: 'center',
     },
     {
       title: '操作',
@@ -114,12 +114,10 @@ const TableList = () => {
           <Divider type='vertical' />
           <a href=''>删除</a>
           <Divider type='vertical' />
-          <a>
-            发布
-          </a>
+          <a>发布</a>
         </>
       ),
-      align:'center',
+      align: 'center',
     },
   ]
   return (
@@ -131,7 +129,7 @@ const TableList = () => {
         search={false}
         toolBarRender={() => [
           <Button type='primary' onClick={() => handleModalVisible(true)}>
-            <Link to="/labs/create" target="_blank">
+            <Link to='/labs/create' target='_blank'>
               <PlusOutlined /> 新建
             </Link>
           </Button>,

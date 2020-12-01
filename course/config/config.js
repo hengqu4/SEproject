@@ -1,8 +1,9 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy';
-const { REACT_APP_ENV } = process.env;
+import { defineConfig } from 'umi'
+import defaultSettings from './defaultSettings'
+import proxy from './proxy'
+
+const { REACT_APP_ENV } = process.env
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -132,7 +133,7 @@ export default defineConfig({
                   component: './labs/teacher/AnalyseLab',
                 },
                 {
-                  name: '待批改',
+                  name: '提交列表',
                   icon: 'smile',
                   path: '/labs/pending-list',
                   hideInMenu: true,
@@ -303,4 +304,4 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-});
+})
