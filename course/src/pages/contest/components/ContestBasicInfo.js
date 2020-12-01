@@ -57,7 +57,7 @@ const ContestBasicInfo = ({ onNextStep = () => {}, contest, ...restProps }, ref)
           <InputNumber style={{ width: '100%' }} min={1} placeholder='请填写参赛人数' />
         </Form.Item>
         <Form.Item
-          name='questionChapter'
+          name='chapter'
           label='比赛章节'
           rules={[
             {

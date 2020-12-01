@@ -72,9 +72,11 @@ const effects = {
     })
 
     // TODO: 可能添加过滤器
+
     const res = yield call(ContestServices.fetchQuestionList, {
       pageNum: 1,
       pageSize: pagination.pageSize,
+      ...payload,
     })
 
     yield put({
@@ -87,8 +89,9 @@ const effects = {
       payload: res.pagination,
     })
   }),
-  fetchQuestions: generateEffect(function* ({ payload }, { call, put }) {
-    const res = yield call(ContestServices.fetchQuestionList, payload)
+  fetchQuestions: generateEffect(function* ({ payload }, { call, put, select }) {
+    const filters = yield select((state) => state.Contest.filters)
+    const res = yield call(ContestServices.fetchQuestionList, { ...payload, ...filters })
 
     yield put({
       type: 'setQuestions',
@@ -102,10 +105,11 @@ const effects = {
   }),
   fetchQuestionsAndAppend: generateEffect(function* ({ payload }, { call, put, select }) {
     const questionPagination = yield select((state) => state.Contest.questionPagination)
+    const filters = yield select((state) => state.Contest.filters)
 
     if (questionPagination.total <= (payload.pageNum - 1) * payload.pageSize) return
 
-    const res = yield call(ContestServices.fetchQuestionList, payload)
+    const res = yield call(ContestServices.fetchQuestionList, { ...payload, ...filters })
 
     const { questions, pagination } = res
 
@@ -138,11 +142,12 @@ const effects = {
   }),
   createQuestion: generateEffect(function* ({ payload }, { select, call, put }) {
     const pagination = yield select((state) => state.Contest.questionPagination)
+    const filters = yield select((state) => state.Contest.filters)
     yield call(ContestServices.createQuestion, payload)
-    const res = yield call(
-      ContestServices.fetchQuestionList,
-      pick(pagination, ['pageNum', 'pageSize']),
-    )
+    const res = yield call(ContestServices.fetchQuestionList, {
+      ...pick(pagination, ['pageNum', 'pageSize']),
+      ...filters,
+    })
 
     yield put({
       type: 'setQuestions',
@@ -156,11 +161,12 @@ const effects = {
   }),
   updateQuestion: generateEffect(function* ({ payload }, { select, call, put }) {
     const pagination = yield select((state) => state.Contest.questionPagination)
+    const filters = yield select((state) => state.Contest.filters)
     yield call(ContestServices.updateQuestion, payload)
-    const res = yield call(
-      ContestServices.fetchQuestionList,
-      pick(pagination, ['pageNum', 'pageSize']),
-    )
+    const res = yield call(ContestServices.fetchQuestionList, {
+      ...pick(pagination, ['pageNum', 'pageSize']),
+      ...filters,
+    })
 
     yield put({
       type: 'setQuestions',
@@ -174,16 +180,18 @@ const effects = {
   }),
   deleteQuestion: generateEffect(function* ({ payload }, { select, call, put }) {
     const pagination = yield select((state) => state.Contest.questionPagination)
+    const filters = yield select((state) => state.Contest.filters)
     yield call(ContestServices.deleteQuestion, payload)
-    let res = yield call(
-      ContestServices.fetchQuestionList,
-      pick(pagination, ['pageNum', 'pageSize']),
-    )
+    let res = yield call(ContestServices.fetchQuestionList, {
+      ...pick(pagination, ['pageNum', 'pageSize']),
+      ...filters,
+    })
 
     if (pageOverflow(res.pagination)) {
       res = yield call(ContestServices.fetchQuestionList, {
         pageNum: res.pagination.pageNum - 1,
         pageSize: res.pagination.pageSize,
+        ...filters,
       })
     }
 
@@ -245,7 +253,7 @@ const reducers = {
   }),
   setNewContest: generateReducer({
     attributeName: 'newContest',
-    transformer: defaultObjectTransformer,
+    transformer: (payload) => payload || defaultNewContest,
     defaultState,
   }),
   setNewContestQuestions: generateReducer({

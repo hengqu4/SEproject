@@ -6,20 +6,31 @@ import BasicInfo from '@/pages/contest/components/ContestBasicInfo'
 import SelectQuestions from '@/pages/contest/components/SelectQuestions'
 import ContestDescription from '@/pages/contest/components/ContestDescription'
 import { connect } from 'umi'
+import { useUnmount } from 'react-use'
 import omit from 'lodash/omit'
 
 const mapStateToProps = ({ Contest = {} }) => ({
   newContest: Contest.newContest,
+  questions: Contest.questions,
 })
 
 const stepTitles = ['填写比赛信息', '选择比赛题目', '完成']
 
 const stepsDom = stepTitles.map((title) => <Steps.Step title={title} key={title} />)
 
-export const Match = ({ newContest = {}, dispatch = () => {} }) => {
+export const Match = ({ newContest = {}, questions = [], dispatch = () => {} }) => {
   const [step, setStep] = useState(0)
 
   const basicInfoFormRef = useRef(null)
+
+  useUnmount(() => {
+    dispatch({
+      type: 'Contest/setNewContest',
+    })
+    dispatch({
+      type: 'Contest/setQuestions',
+    })
+  })
 
   const onStepChange = async (newStep) => {
     if (step === 0) {
@@ -28,7 +39,9 @@ export const Match = ({ newContest = {}, dispatch = () => {} }) => {
         const contestInfo = { ...values }
         contestInfo.startTime = values.time[0].toISOString()
         contestInfo.endTime = values.time[1].toISOString()
-        console.log(contestInfo)
+
+        console.log('contestInfo: ', contestInfo)
+
         dispatch({
           type: 'Contest/setNewContest',
           payload: {
@@ -57,7 +70,7 @@ export const Match = ({ newContest = {}, dispatch = () => {} }) => {
     />
   )
   const selectQuestionsDom = <SelectQuestions onNextStep={onStepChange.bind(this, 2)} />
-  const descriptionsDom = <ContestDescription />
+  const descriptionsDom = <ContestDescription questions={questions} newContest={newContest} />
 
   const domItems = [basicInfoDom, selectQuestionsDom, descriptionsDom]
 

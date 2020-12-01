@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { Spin, Transfer, message, Button } from 'antd'
+import { Spin, Transfer, message, Button, Row, Select } from 'antd'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
@@ -12,12 +12,14 @@ const mapStateToProps = ({ Contest }) => ({
   pagination: Contest.questionPagination,
   questionDetail: Contest.questionDetail,
   newContest: Contest.newContest,
+  filters: Contest.filters,
 })
 
 const SelectQuestions = ({
   questions = [],
   pagination,
   newContest,
+  filters = {},
   dispatch = () => {},
   questionDetail = {},
   onNextStep = () => {},
@@ -36,6 +38,20 @@ const SelectQuestions = ({
       })
     }
   })
+
+  const handleFiltersChange = useCallback(
+    (filterName, value) => {
+      const newFilters = { ...filters, [filterName]: value }
+      setLoading(true)
+      dispatch({
+        type: 'Contest/setFiltersAndFetchQuestions',
+        payload: newFilters,
+        onError,
+        onFinish: setLoading.bind(this, false),
+      })
+    },
+    [dispatch, filters],
+  )
 
   const getPage = useCallback(
     (pageNum, pageSize) => {
@@ -109,25 +125,46 @@ const SelectQuestions = ({
 
   return (
     <React.Fragment>
-      <Spin spinning={loading}>
-        <Transfer
-          listStyle={{
-            width: '500px',
-            height: '500px',
+      <Row>
+        <Select
+          allowClear
+          defaultValue={filters.questionType}
+          style={{ width: '100%' }}
+          onClear={() => handleFiltersChange('questionType', undefined)}
+          placeholder='题目类型'
+          onChange={(value) => {
+            handleFiltersChange('questionType', value)
           }}
-          dataSource={questionsWithKey}
-          titles={['待选题目', '已选题目']}
-          onScroll={onScroll}
-          onChange={onChange}
-          targetKeys={newContest.questions}
-          render={renderItem}
-        />
-      </Spin>
-      <div style={{ textAlign: 'center', margin: '20px 0' }}>
-        <Button type='primary' disabled={newContest.questions.length === 0} onClick={onNextStep}>
+        >
+          <Select.Option value={0}>单选</Select.Option>
+          <Select.Option value={1}>多选</Select.Option>
+        </Select>
+      </Row>
+      <Row>
+        <Spin spinning={loading}>
+          <Transfer
+            listStyle={{
+              width: '500px',
+              height: '500px',
+            }}
+            dataSource={questionsWithKey}
+            titles={['待选题目', '已选题目']}
+            onScroll={onScroll}
+            onChange={onChange}
+            targetKeys={newContest.questions}
+            render={renderItem}
+          />
+        </Spin>
+      </Row>
+      <Row justify='center'>
+        <Button
+          type='primary'
+          disabled={!newContest.questions || newContest.questions.length === 0}
+          onClick={onNextStep}
+        >
           下一步
         </Button>
-      </div>
+      </Row>
       <ModalQuestionDetail
         ref={modalRef}
         mode='readonly'

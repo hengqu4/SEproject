@@ -2,8 +2,8 @@ import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
-import { useMount, useUnmount } from 'react-use'
-import { Table, Space, Popconfirm, Button, message } from 'antd'
+import { useMount, useUnmount, use } from 'react-use'
+import { Table, Space, Popconfirm, Button, message, Select, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pick from 'lodash/pick'
@@ -14,12 +14,14 @@ const mapStateToProps = ({ Contest }) => ({
   total: Contest.questionCount,
   questionDetail: Contest.questionDetail,
   pagination: Contest.questionPagination,
+  filters: Contest.filters,
 })
 
 const QuestionBank = ({
   dispatch = () => {},
   dataSource = [],
   questionDetail = {},
+  filters = {},
   pagination,
 }) => {
   const [loading, setLoading] = useState(false)
@@ -29,7 +31,7 @@ const QuestionBank = ({
   const modalRef = useRef(null)
 
   const getQuestions = useCallback(
-    (newPageNum, newPageSize) => {
+    (newPageNum, newPageSize, questionType) => {
       const pageNum = newPageNum || pagination.pageNum
       const pageSize = newPageSize || pagination.pageSize
 
@@ -39,6 +41,7 @@ const QuestionBank = ({
         payload: {
           pageNum,
           pageSize,
+          questionType,
         },
         onError,
         onFinish: () => {
@@ -71,10 +74,13 @@ const QuestionBank = ({
 
   useUnmount(() => {
     dispatch({
-      type: 'setQuestions',
+      type: 'Contest/setQuestions',
     })
     dispatch({
-      type: 'setQuestionPagination',
+      type: 'Contest/setQuestionPagination',
+    })
+    dispatch({
+      type: 'Contest/setFilters',
     })
   })
 
@@ -147,6 +153,20 @@ const QuestionBank = ({
     [modalMode, dispatch, questionDetail],
   )
 
+  const handleFiltersChange = useCallback(
+    (filterName, value) => {
+      const newFilters = { ...filters, [filterName]: value }
+      setLoading(true)
+      dispatch({
+        type: 'Contest/setFiltersAndFetchQuestions',
+        payload: newFilters,
+        onError,
+        onFinish: setLoading.bind(this, false),
+      })
+    },
+    [dispatch, filters],
+  )
+
   const columns = useMemo(
     () => [
       {
@@ -198,23 +218,43 @@ const QuestionBank = ({
 
   return (
     <PageContainer>
-      <ProCard
-        extra={
-          <Button type='link' icon={<PlusOutlined />} onClick={handleCreateQuestionBtnClick}>
-            新增题目
-          </Button>
-        }
-      >
-        <Table
-          loading={loading}
-          dataSource={dataSource}
-          columns={columns}
-          rowKey='questionId'
-          pagination={tablePagination}
-          onRow={(record) => ({
-            onDoubleClick: handleShowQuestionDetail.bind(this, record),
-          })}
-        />
+      <ProCard>
+        <Row gutter={16}>
+          <Col span={4}>
+            <Select
+              allowClear
+              defaultValue={filters.questionType}
+              style={{ width: '100%' }}
+              onClear={() => handleFiltersChange('questionType', undefined)}
+              placeholder='题目类型'
+              onChange={(value) => {
+                handleFiltersChange('questionType', value)
+              }}
+            >
+              <Select.Option value={0}>单选</Select.Option>
+              <Select.Option value={1}>多选</Select.Option>
+            </Select>
+          </Col>
+          <Col span={4}>
+            <Button type='primary' icon={<PlusOutlined />} onClick={handleCreateQuestionBtnClick}>
+              新增题目
+            </Button>
+          </Col>
+        </Row>
+
+        <div style={{ marginTop: '20px' }}>
+          <Table
+            bordered
+            loading={loading}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey='questionId'
+            pagination={tablePagination}
+            onRow={(record) => ({
+              onDoubleClick: handleShowQuestionDetail.bind(this, record),
+            })}
+          />
+        </div>
         <ModalQuestionDetail
           ref={modalRef}
           mode={modalMode}

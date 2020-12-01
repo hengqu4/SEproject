@@ -209,22 +209,37 @@ export default {
   [`GET ${API_CONTEST_PREFIX}/matches`]: studentMatchHistory,
   [`GET ${API_CONTEST_PREFIX}/contest`]: currentContest,
   [`GET ${API_CONTEST_QUESTIONS_PREFIX}/questions`]: (req, res) => {
-    let { pageSize, pageNum } = req.query
+    let { pageSize, pageNum, questionType } = req.query
 
     pageSize = +pageSize
     pageNum = +pageNum
 
     const attrs = ['questionId', 'questionType', 'questionChapter', 'questionContent']
-    const resQuestions = questions
-      .slice((pageNum - 1) * pageSize, Math.min(pageNum * pageSize, questions.length))
+
+    let resQuestions = questions
+    let total = resQuestions.length
+
+    if (questionType) {
+      questionType = +questionType
+
+      resQuestions = resQuestions.filter((q) => q.questionType === questionType)
+      total = resQuestions.length
+    }
+
+    console.log(req.query)
+
+    resQuestions = resQuestions
+      .slice((pageNum - 1) * pageSize, Math.min(pageNum * pageSize, resQuestions.length))
       .map((q) => pick(q, attrs))
+
+    console.log('resQuestions: ', resQuestions.length)
 
     res.json({
       questions: resQuestions,
       pagination: {
         pageSize,
         pageNum,
-        total: questions.length,
+        total,
       },
     })
   },

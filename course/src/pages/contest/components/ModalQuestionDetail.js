@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Modal, Form, Input, Radio, Checkbox, message } from 'antd'
-import { useMount } from 'react-use'
-import cloneDeep from 'lodash/cloneDeep'
 
 const options = ['A', 'B', 'C', 'D']
 
@@ -180,7 +178,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
             },
           ]}
         >
-          <Radio.Group disabled={disabeld}>
+          <Radio.Group disabled={disabeld || mode === 'edit'}>
             <Radio value={0}>单选</Radio>
             <Radio value={1}>多选</Radio>
           </Radio.Group>
