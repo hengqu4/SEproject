@@ -230,13 +230,13 @@ export default defineConfig({
                   component: './announcement/teacher/AncList', // authority: ['teacher'],
                 },
                 {
-                  name: '公告详情（放此处仅为调试方便）',
+                  name: '公告详情',
                   path: '/announcement/anc-list/anc-info',
                   hideInMenu: true,
                   component: './announcement/teacher/AncInfo',
                 },
                 {
-                  name: '编辑公告（放此处仅为调试方便）',
+                  name: '编辑公告',
                   path: '/announcement/anc-list/anc-edit',
                   hideInMenu: true,
                   component: './announcement/teacher/AncEdit',
