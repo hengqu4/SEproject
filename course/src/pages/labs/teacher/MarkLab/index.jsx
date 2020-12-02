@@ -17,7 +17,7 @@ import {
   Typography,
 } from 'antd'
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
-import { connect, FormattedMessage, formatMessage } from 'umi'
+import { connect } from 'umi'
 import React from 'react'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
