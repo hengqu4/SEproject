@@ -20,7 +20,7 @@ import {
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
-import { connect, FormattedMessage, formatMessage } from 'umi'
+import { connect } from 'umi'
 import styles from './style.less'
 
 const FormItem = Form.Item
