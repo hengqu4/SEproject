@@ -158,17 +158,7 @@ const studentMatchDetail = Mock.mock({
   ],
 })
 
-const currentContest = Mock.mock({
-  contestId: 1,
-  publisherId: 1,
-  title: '@ctitle',
-  participantNumber: 3,
-  startTime: Date.now(),
-  endTime: Date.now(),
-  chapter: 4,
-  description: '@cparagraph',
-  courseId: 1,
-})
+let currentContest = {}
 
 const questions = (function () {
   const res = []
@@ -204,10 +194,94 @@ const questions = (function () {
   return res
 })()
 
+const students = (function () {
+  const res = []
+  const STUDENTS_COUNT = 67
+  for (let i = 0; i < STUDENTS_COUNT; ++i) {
+    res.push(
+      Mock.mock({
+        userId: '@id',
+        email: '@email',
+        personal_id: '@id',
+        realname: '@cname',
+        nickname: '@cname',
+        avatar: '@image',
+        universityId: '@id',
+        schoolId: '@id',
+      }),
+    )
+  }
+
+  return res
+})()
+
+const contests = (function () {
+  const res = []
+  const CONTESTS_COUNT = 8
+  const timeStr = new Date().toISOString()
+
+  for (let i = 0; i < CONTESTS_COUNT; ++i) {
+    res.push(
+      Mock.mock({
+        contestId: '@id',
+        courseId: 1,
+        publisherId: '@id',
+        title: '@ctitle',
+        'participantNumber|2-4': 1,
+        startTime: timeStr,
+        endTime: timeStr,
+        'chapter|1-10': 1,
+        description: '@cparagraph',
+      }),
+    )
+  }
+
+  return res
+})()
+
+const matches = (function () {
+  const res = []
+  const random = Mock.Random
+  const timeStr = new Date().toISOString()
+  contests.forEach((contest) => {
+    const { participantNumber } = contest
+
+    const matchesCount = random.natural(10, 40)
+
+    for (let i = 0; i < matchesCount; ++i) {
+      const participants = shuffle(students).slice(0, participantNumber)
+      const scores = new Array(participantNumber)
+        .fill(null)
+        .map(() => random.natural(0, 20))
+        .sort()
+        .reverse()
+
+      res.push(
+        Mock.mock({
+          ...contest,
+          matchId: '@id',
+          timeStamp: timeStr,
+          participants: participants.map((p, index) => ({
+            ...p,
+            rank: index + 1,
+            score: scores[index],
+          })),
+        }),
+      )
+    }
+  })
+
+  return res
+})()
+
 export default {
   [`GET ${API_CONTEST_PREFIX}/matches/:matchId`]: studentMatchDetail,
   [`GET ${API_CONTEST_PREFIX}/matches`]: studentMatchHistory,
-  [`GET ${API_CONTEST_PREFIX}/contest`]: currentContest,
+  [`GET ${API_CONTEST_PREFIX}/contest`]: (req, res) => {
+    const contest = omit(currentContest, ['questions'])
+
+    res.json(contest)
+  },
   [`GET ${API_CONTEST_QUESTIONS_PREFIX}/questions`]: (req, res) => {
     let { pageSize, pageNum, questionType } = req.query
 
@@ -226,13 +300,9 @@ export default {
       total = resQuestions.length
     }
 
-    console.log(req.query)
-
     resQuestions = resQuestions
       .slice((pageNum - 1) * pageSize, Math.min(pageNum * pageSize, resQuestions.length))
       .map((q) => pick(q, attrs))
-
-    console.log('resQuestions: ', resQuestions.length)
 
     res.json({
       questions: resQuestions,
@@ -288,5 +358,85 @@ export default {
 
     questions.push(newQuestion)
     res.json(newQuestion)
+  },
+  [`POST ${API_CONTEST_PREFIX}/contest`]: (req, res) => {
+    const { contest } = req.body
+
+    let contestQuestions = null
+
+    if (contest.randomQuestions) {
+      contestQuestions = shuffle(questions).slice(0, 5)
+    } else {
+      contestQuestions = contest.questions.map(({ questionId }) =>
+        questions.find((q) => q.questionId === questionId),
+      )
+    }
+
+    currentContest = {
+      ...omit(contest, ['randomQuestions', 'questions']),
+      questions: contestQuestions,
+      publisherId: 1,
+    }
+
+    res.json({ message: 'ok' })
+  },
+  [`GET ${API_CONTEST_PREFIX}/contest/all`]: { contests },
+  [`GET ${API_CONTEST_PREFIX}/students`]: (req, res) => {
+    let { pageSize, pageNum } = req.query
+
+    pageSize = +pageSize
+    pageNum = +pageNum
+
+    res.json({
+      students: students.slice(
+        (pageNum - 1) * pageSize,
+        Math.min(pageNum * pageSize, students.length),
+      ),
+      pagination: {
+        pageNum,
+        pageSize,
+        total: students.length,
+      },
+    })
+  },
+  [`GET ${API_CONTEST_PREFIX}/matchesByContest`]: (req, res) => {
+    /* eslint-disable-next-line */
+    let { pageSize, pageNum, contestId } = req.query
+
+    pageSize = +pageSize
+    pageNum = +pageNum
+
+    const contestMatches = matches.filter((m) => m.contestId === contestId)
+
+    res.json({
+      matches: contestMatches.slice(
+        (pageNum - 1) * pageSize,
+        Math.min(pageNum * pageSize, contestMatches.length),
+      ),
+      pagination: {
+        pageNum,
+        pageSize,
+        total: contestMatches.length,
+      },
+    })
+  },
+  [`GET ${API_CONTEST_PREFIX}/matchesByStudent`]: (req, res) => {
+    const { studentId } = req.query
+
+    const student = students.find((s) => s.userId === studentId)
+    const studentMatches = matches.filter((match) =>
+      match.participants.map((p) => p.userId).includes(studentId),
+    )
+
+    res.json({
+      student,
+      matches: studentMatches.map((m) => ({
+        ...omit(m, ['participants']),
+        ...pick(
+          m.participants.find((p) => p.userId === studentId),
+          ['rank', 'score'],
+        ),
+      })),
+    })
   },
 }

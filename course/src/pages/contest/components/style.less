@@ -1,6 +1,6 @@
 .QuestionList {
   max-height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto;
   
   .QuestionListItem {
     display: flex;
@@ -18,5 +18,22 @@
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+  }
+}
+
+.SelectQuestionsBlock {
+  > *:not(:first-child) {
+    margin-top: 20px;
+  }
+}
+
+.StudentCardDescription {
+  margin: 1em 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &:last-of-type {
+    margin-bottom: 0;
   }
 }

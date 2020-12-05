@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useMount } from 'react-use'
 import { PageContainer } from '@ant-design/pro-layout'
-import { notification, Spin, Descriptions, Row, Col } from 'antd'
+import { notification, Spin, Row, Col } from 'antd'
 import ProCard from '@ant-design/pro-card'
+import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { connect } from 'umi'
-import moment from 'moment'
 
 const mapStateToProps = ({ Contest }) => ({
   currentContest: Contest.currentContest,
@@ -40,37 +40,11 @@ const Contest = ({ currentContest = {}, dispatch = () => {} }) => {
           <Row justify='center'>
             <Col span={18} xs={24} sm={20} lg={16}>
               <Spin spinning={loading}>
-                <Descriptions
-                  column={1}
-                  bordered
-                  title={
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      {currentContest.title || ''}
-                    </div>
-                  }
-                  // bordered
-                >
-                  <Descriptions.Item label='开始时间'>
-                    {moment(currentContest.startTime || Date.now()).format('YYYY-MM-DD HH:mm')}
-                  </Descriptions.Item>
-                  <Descriptions.Item label='结束时间'>
-                    {moment(currentContest.endTime || Date.now()).format('YYYY-MM-DD HH:mm')}
-                  </Descriptions.Item>
-                  <Descriptions.Item label='人数限制'>
-                    {currentContest.participantNumber || -1}
-                  </Descriptions.Item>
-                  <Descriptions.Item label='测试时长'>3 分钟</Descriptions.Item>
-                  <Descriptions.Item label='描述信息'>
-                    <span
-                      style={{
-                        maxWidth: '40vw',
-                        flex: '0 0',
-                      }}
-                    >
-                      {currentContest.description || ''}
-                    </span>
-                  </Descriptions.Item>
-                </Descriptions>
+                {Object.keys(currentContest).length ? (
+                  <ContestDescription contest={currentContest} />
+                ) : (
+                  <h1 style={{ textAlign: 'center', fontSize: 40, margin: 40 }}>当前没有比赛</h1>
+                )}
               </Spin>
             </Col>
           </Row>

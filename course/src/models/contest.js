@@ -18,13 +18,14 @@ const defaultNewContest = {
   endTime: null,
   description: null,
   chapter: null,
+  randomQuestions: false,
   questions: [],
 }
 
 const defaultPagination = {
   total: 0,
   pageNum: 1,
-  pageSize: 20,
+  pageSize: 10,
 }
 
 const defaultState = {
@@ -36,6 +37,12 @@ const defaultState = {
   questionPagination: defaultPagination,
   filters: {},
   newContest: defaultNewContest,
+  contests: [],
+  contestMatches: [],
+  contestMatchesPagination: defaultPagination,
+  students: [],
+  studentsPagination: defaultPagination,
+  studentMatches: [],
 }
 
 const effects = {
@@ -61,6 +68,41 @@ const effects = {
     yield put({
       type: 'setCurrentContest',
       payload: res,
+    })
+  }),
+  createContest: generateEffect(function* (_, { call, put, select }) {
+    const newContest = yield select((state) => state.Contest.newContest)
+    const questions = yield select((state) => state.Contest.questions)
+
+    // TODO: 添加课程Id
+    const courseId = 1
+
+    const newContestCopy = cloneDeep(newContest)
+    if (!newContestCopy.randomQuestions) {
+      newContestCopy.questions = newContest.questions.map((questionId) =>
+        pick(
+          questions.find((q) => q.questionId === questionId),
+          ['questionType', 'questionId'],
+        ),
+      )
+    }
+
+    yield call(ContestServices.createContest, {
+      contest: {
+        ...newContestCopy,
+        courseId,
+      },
+    })
+
+    yield put({
+      type: 'fetchCurrentContest',
+      payload: {
+        courseId,
+      },
+    })
+
+    yield put({
+      type: 'setNewContest',
     })
   }),
   setFiltersAndFetchQuestions: generateEffect(function* ({ payload }, { call, put, select }) {
@@ -205,6 +247,48 @@ const effects = {
       payload: res.pagination,
     })
   }),
+  fetchAllContests: generateEffect(function* ({ payload }, { call, put, select }) {
+    const res = yield call(ContestServices.fetchAllContests, payload)
+
+    yield put({
+      type: 'setContests',
+      payload: res.contests,
+    })
+  }),
+  fetchContestMatches: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(ContestServices.fetchAllContestMatches, payload)
+
+    yield put({
+      type: 'setContestMatches',
+      payload: res.matches,
+    })
+
+    yield put({
+      type: 'setContestMatchesPagination',
+      payload: res.pagination,
+    })
+  }),
+  fetchStudents: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(ContestServices.fetchAllStudents, payload)
+
+    yield put({
+      type: 'setStudents',
+      payload: res.students,
+    })
+
+    yield put({
+      type: 'setStudentsPagination',
+      payload: res.pagination,
+    })
+  }),
+  fetchStudentMatches: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(ContestServices.fetchAllStudentMatches, payload)
+
+    yield put({
+      type: 'setStudentMatches',
+      payload: res.matches,
+    })
+  }),
 }
 
 const reducers = {
@@ -268,6 +352,36 @@ const reducers = {
   setDefaultNewContest: generateReducer({
     attributeName: 'newContest',
     transformer: () => defaultNewContest,
+    defaultState,
+  }),
+  setContests: generateReducer({
+    attributeName: 'contests',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setContestMatches: generateReducer({
+    attributeName: 'contestMatches',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setContestMatchesPagination: generateReducer({
+    attributeName: 'contestMatchesPagination',
+    transformer: (payload) => payload || defaultPagination,
+    defaultState,
+  }),
+  setStudents: generateReducer({
+    attributeName: 'students',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setStudentsPagination: generateReducer({
+    attributeName: 'studentsPagination',
+    transformer: (payload) => payload || defaultPagination,
+    defaultState,
+  }),
+  setStudentMatches: generateReducer({
+    attributeName: 'studentMatches',
+    transformer: defaultArrayTransformer,
     defaultState,
   }),
 }

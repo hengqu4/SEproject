@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { Spin, Transfer, message, Button, Row, Select } from 'antd'
+import { Spin, Transfer, message, Button, Space, Select } from 'antd'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 import { useMount } from 'react-use'
 import pick from 'lodash/pick'
 import scrollToEnd from '@/utils/scrollToEnd'
+import classes from './style.less'
 
 const mapStateToProps = ({ Contest }) => ({
   questions: Contest.questions,
@@ -23,7 +24,6 @@ const SelectQuestions = ({
   dispatch = () => {},
   questionDetail = {},
   onNextStep = () => {},
-  ...restProps
 }) => {
   const [loading, setLoading] = useState(false)
   const modalRef = useRef(null)
@@ -111,6 +111,19 @@ const SelectQuestions = ({
     [dispatch],
   )
 
+  const handleRandomQuestionsChange = useCallback(
+    (value) => {
+      dispatch({
+        type: 'Contest/setNewContest',
+        payload: {
+          ...newContest,
+          randomQuestions: value,
+        },
+      })
+    },
+    [dispatch, newContest],
+  )
+
   const onModalOk = useCallback((_, closeModal) => {
     closeModal && closeModal()
   }, [])
@@ -124,54 +137,72 @@ const SelectQuestions = ({
   ])
 
   return (
-    <React.Fragment>
-      <Row>
+    <div className={classes.SelectQuestionsBlock}>
+      <div>
         <Select
-          allowClear
-          defaultValue={filters.questionType}
+          defaultValue={false}
+          placeholder='出题方式'
           style={{ width: '100%' }}
-          onClear={() => handleFiltersChange('questionType', undefined)}
-          placeholder='题目类型'
-          onChange={(value) => {
-            handleFiltersChange('questionType', value)
-          }}
+          onChange={handleRandomQuestionsChange}
         >
-          <Select.Option value={0}>单选</Select.Option>
-          <Select.Option value={1}>多选</Select.Option>
+          <Select.Option value>随机出题</Select.Option>
+          <Select.Option value={false}>题库选题</Select.Option>
         </Select>
-      </Row>
-      <Row>
-        <Spin spinning={loading}>
-          <Transfer
-            listStyle={{
-              width: '500px',
-              height: '500px',
+      </div>
+      {newContest.randomQuestions ? null : (
+        <div>
+          <Select
+            allowClear
+            defaultValue={filters.questionType}
+            onClear={() => handleFiltersChange('questionType', undefined)}
+            style={{ width: '100%' }}
+            placeholder='题目类型'
+            onChange={(value) => {
+              handleFiltersChange('questionType', value)
             }}
-            dataSource={questionsWithKey}
-            titles={['待选题目', '已选题目']}
-            onScroll={onScroll}
-            onChange={onChange}
-            targetKeys={newContest.questions}
-            render={renderItem}
-          />
-        </Spin>
-      </Row>
-      <Row justify='center'>
+          >
+            <Select.Option value={0}>单选</Select.Option>
+            <Select.Option value={1}>多选</Select.Option>
+          </Select>
+        </div>
+      )}
+      {newContest.randomQuestions ? null : (
+        <div>
+          <Spin spinning={loading}>
+            <Transfer
+              listStyle={{
+                width: '500px',
+                height: '500px',
+              }}
+              dataSource={questionsWithKey}
+              titles={['待选题目', '已选题目']}
+              onScroll={onScroll}
+              onChange={onChange}
+              targetKeys={newContest.questions}
+              render={renderItem}
+            />
+          </Spin>
+        </div>
+      )}
+      <div style={{ textAlign: 'center' }}>
         <Button
           type='primary'
-          disabled={!newContest.questions || newContest.questions.length === 0}
+          disabled={
+            !newContest.randomQuestions &&
+            (!newContest.questions || newContest.questions.length === 0)
+          }
           onClick={onNextStep}
         >
           下一步
         </Button>
-      </Row>
+      </div>
       <ModalQuestionDetail
         ref={modalRef}
         mode='readonly'
         question={questionDetail}
         onOk={onModalOk}
       />
-    </React.Fragment>
+    </div>
   )
 }
 
