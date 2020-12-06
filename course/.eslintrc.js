@@ -26,6 +26,7 @@ module.exports = {
     'react/jsx-no-bind': 0,
     'no-plusplus': 0,
     'default-case': 0,
-    'react-hooks/exhaustive-deps': 2,
+    'react-hooks/exhaustive-deps': 1,
+    'prefer-promise-reject-errors': 1,
   },
 }
