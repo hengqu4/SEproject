@@ -139,7 +139,7 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
     )
   }
 
-  return <PageContainer>{content}</PageContainer>
+  return <PageContainer title={false}>{content}</PageContainer>
 }
 
 export default connect(mapStateToProps)(MatchHistory)

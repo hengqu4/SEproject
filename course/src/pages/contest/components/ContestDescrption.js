@@ -36,8 +36,6 @@ const ContestDescription = ({ contest = {}, questions = [] }) => {
     return null
   }, [contest, questions])
 
-  console.log('contest: ', contest)
-
   return (
     <Descriptions
       bordered

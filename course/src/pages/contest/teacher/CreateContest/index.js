@@ -68,7 +68,7 @@ export const Match = ({
         return
       }
     } else if (step === 1) {
-      if (!newContest.questions.length) {
+      if (!newContest.randomQuestions && !newContest.questions.length) {
         message.error('请先选择题目')
         return
       }
@@ -104,7 +104,7 @@ export const Match = ({
   console.log('currentContest: ', currentContest)
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProCard title='创建比赛' headerBordered loading={loading}>
         <div style={{ minHeight: '60vh' }}>
           <Row justify='center'>
