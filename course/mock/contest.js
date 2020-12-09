@@ -2,7 +2,11 @@ import Mock from 'mockjs'
 import shuffle from 'lodash/shuffle'
 import pick from 'lodash/pick'
 import omit from 'lodash/omit'
-import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX } from '../src/url-prefixes'
+import {
+  API_CONTEST_PREFIX,
+  API_CONTEST_QUESTIONS_PREFIX,
+  API_MATCH_PREFIX,
+} from '../src/url-prefixes'
 
 const studentMatchHistory = [
   {
@@ -280,7 +284,11 @@ export default {
   [`GET ${API_CONTEST_PREFIX}/contest`]: (req, res) => {
     const contest = omit(currentContest, ['questions'])
 
-    res.json(contest)
+    res.json({
+      contest,
+      bIsParticipated: false,
+      bIsParticipating: true,
+    })
   },
   [`GET ${API_CONTEST_QUESTIONS_PREFIX}/questions`]: (req, res) => {
     let { pageSize, pageNum, questionType } = req.query
@@ -437,6 +445,26 @@ export default {
           ['rank', 'score'],
         ),
       })),
+    })
+  },
+  [`GET ${API_MATCH_PREFIX}/userindex`]: {
+    index: 2,
+  },
+  [`POST ${API_MATCH_PREFIX}/start`]: {
+    channelId: 1,
+  },
+  [`POST ${API_MATCH_PREFIX}/questions`]: (req, res) => {
+    const matchQuestions = currentContest.questions.map((q) => omit(q, ['questionAnswer']))
+
+    const match = {
+      ...currentContest,
+      questions: matchQuestions,
+      matchId: 1,
+      timeStamp: Date.now() + 5 * 60 * 1000,
+    }
+
+    res.json({
+      match,
     })
   },
 }

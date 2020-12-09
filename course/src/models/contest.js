@@ -6,6 +6,8 @@ import generateReducer, {
 } from '@/utils/generateReducer'
 import pick from 'lodash/pick'
 import cloneDeep from 'lodash/cloneDeep'
+import MatchingStatus from '@/pages/contest/student/Contest/MatchingStatus'
+import storage from 'store2'
 
 const pageOverflow = ({ total, pageNum, pageSize }) => {
   return total - (pageNum - 1) * pageSize <= 0 && pageNum > 1
@@ -25,13 +27,15 @@ const defaultNewContest = {
 const defaultPagination = {
   total: 0,
   pageNum: 1,
-  pageSize: 10,
+  pageSize: 20,
 }
 
 const defaultState = {
   studentMatchHistory: [],
   studentMatchDetail: {},
   currentContest: {},
+  participated: false,
+  participating: false,
   questions: [],
   questionDetail: {},
   questionPagination: defaultPagination,
@@ -43,6 +47,13 @@ const defaultState = {
   students: [],
   studentsPagination: defaultPagination,
   studentMatches: [],
+  matchingStatus: MatchingStatus.IDLE,
+  readyArr: [],
+  channelId: null,
+  userIndex: 0,
+  matchId: null,
+  currentMatch: {},
+  matchQuestionAnswers: [],
 }
 
 const effects = {
@@ -67,7 +78,17 @@ const effects = {
 
     yield put({
       type: 'setCurrentContest',
-      payload: res,
+      payload: res.contest,
+    })
+
+    yield put({
+      type: 'setParticipated',
+      payload: res.bIsParticipated,
+    })
+
+    yield put({
+      type: 'setParticipating',
+      payload: res.bIsParticipating,
     })
   }),
   createContest: generateEffect(function* (_, { call, put, select }) {
@@ -289,6 +310,65 @@ const effects = {
       payload: res.matches,
     })
   }),
+  fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(ContestServices.startMatching, payload)
+
+    yield put({
+      type: 'setChannelId',
+      payload: res.channelId,
+    })
+  }),
+  matchingComplete: generateEffect(function* ({ payload }, { select, call, put }) {
+    yield put({
+      type: 'setMatchingStatus',
+      payload: MatchingStatus.WAITING_FOR_READY,
+    })
+
+    const res = yield call(ContestServices.fetchMatchingIndex, payload)
+
+    yield put({
+      type: 'setUserIndex',
+      payload: res.index,
+    })
+  }),
+  readyForMatch: generateEffect(function* ({ payload }, { call }) {
+    yield call(ContestServices.readyMatch, payload)
+  }),
+  fetchCurrentMatch: generateEffect(function* ({ payload }, { call, put }) {
+    const { match } = yield call(ContestServices.fetchCurrentMatch, payload)
+
+    const defaultAnswers = match.questions.map((q) => ({
+      ...pick(q, ['questionId', 'questionType']),
+      answer: null,
+    }))
+
+    const matchAnswersHistory = storage(`match${match.matchId}`)
+
+    if (matchAnswersHistory) {
+      matchAnswersHistory.forEach((qh) => {
+        if (qh.answer) {
+          const index = match.questions.findIndex(
+            (mq) => mq.questionId === qh.questionId && mq.questionType === qh.questionType,
+          )
+
+          if (index !== -1) {
+            match.questions[index].answer = qh.answer
+            defaultAnswers[index].answer = qh.answer
+          }
+        }
+      })
+    }
+
+    yield put({
+      type: 'setCurrentMatch',
+      payload: match,
+    })
+
+    yield put({
+      type: 'setMatchQuestionAnswers',
+      payload: defaultAnswers,
+    })
+  }),
 }
 
 const reducers = {
@@ -382,6 +462,51 @@ const reducers = {
   setStudentMatches: generateReducer({
     attributeName: 'studentMatches',
     transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setParticipating: generateReducer({
+    attributeName: 'participating',
+    transformer: (payload) => !!payload,
+    defaultState,
+  }),
+  setParticipated: generateReducer({
+    attributeName: 'participated',
+    transformer: (payload) => !!payload,
+    defaultState,
+  }),
+  setMatchingStatus: generateReducer({
+    attributeName: 'matchingStatus',
+    transformer: (payload) => payload || MatchingStatus.IDLE,
+    defaultState,
+  }),
+  setReadyArr: generateReducer({
+    attributeName: 'readyArr',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setChannelId: generateReducer({
+    attributeName: 'channelId',
+    transformer: (payload) => payload || null,
+    defaultState,
+  }),
+  setUserIndex: generateReducer({
+    attributeName: 'userIndex',
+    transformer: (payload) => payload || 0,
+    defaultState,
+  }),
+  setMatchId: generateReducer({
+    attributeName: 'matchId',
+    transformer: (payload) => payload || null,
+    defaultState,
+  }),
+  setCurrentMatch: generateReducer({
+    attributeName: 'currentMatch',
+    transformer: defaultObjectTransformer,
+    defaultState,
+  }),
+  setMatchQuestionAnswers: generateReducer({
+    attributeName: 'matchQuestionAnswers',
+    defaultArrayTransformer,
     defaultState,
   }),
 }

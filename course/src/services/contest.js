@@ -1,4 +1,4 @@
-import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX } from '@/url-prefixes'
+import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX, API_MATCH_PREFIX } from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
 import omit from 'lodash/omit'
@@ -115,5 +115,45 @@ export const fetchAllStudentMatches = (query) => {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
+  })
+}
+
+export const startMatching = (data) => {
+  return request('/start', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const cancelMatching = (data) => {
+  return request('/cancel', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const fetchMatchingIndex = (query) => {
+  return request('/userindex', {
+    method: 'GET',
+    params: query,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const readyMatch = (data) => {
+  return request('/ready', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const fetchCurrentMatch = (data) => {
+  return request('/questions', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
   })
 }

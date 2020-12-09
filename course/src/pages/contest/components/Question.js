@@ -4,17 +4,18 @@ import Option from '@/pages/contest/components/Option'
 
 const Question = ({
   question: {
+    questionId,
     questionContent: content,
     questionType: type,
-    questionAnswer: answer,
-    answer: userAnswer,
+    questionAnswer: answer = null,
+    answer: userAnswer = null,
     ...questionProps
   },
   onChange = () => {},
   ...restProps
 }) => {
   const isSingleChoice = type === 0
-  const answerArr = answer.split('')
+  const answerArr = answer && answer.split('')
   const userAnswerArr = userAnswer && userAnswer.split('')
   const options = ['A', 'B', 'C', 'D']
   const optionsDom = options.map((op) => (
@@ -31,7 +32,7 @@ const Question = ({
   let optionsContainerDom = null
   let questionFooter = null
 
-  if (userAnswerArr) {
+  if (answerArr) {
     optionsContainerDom = <React.Fragment>{optionsDom}</React.Fragment>
 
     questionFooter = (
@@ -52,13 +53,21 @@ const Question = ({
     )
   } else if (isSingleChoice) {
     optionsContainerDom = (
-      <Radio.Group onChange={onChange} {...restProps}>
+      <Radio.Group
+        onChange={(event) => onChange(questionId, event.target.value)}
+        defaultValue={userAnswer}
+        {...restProps}
+      >
         {optionsDom}
       </Radio.Group>
     )
   } else {
     optionsContainerDom = (
-      <Checkbox.Group onChange={onChange} {...restProps}>
+      <Checkbox.Group
+        onChange={onChange.bind(this, questionId)}
+        defaultValue={userAnswerArr}
+        {...restProps}
+      >
         {optionsDom}
       </Checkbox.Group>
     )
@@ -75,7 +84,7 @@ const Question = ({
         <span>
           <Tag color='processing'>{isSingleChoice ? '单选' : '多选'}</Tag>
         </span>
-        <h3>{content}</h3>
+        <h3 style={{ margin: 0 }}>{content}</h3>
       </div>
       <div className='question-options-block'>{optionsContainerDom}</div>
       {questionFooter}

@@ -68,7 +68,7 @@ export const Match = ({
         return
       }
     } else if (step === 1) {
-      if (!newContest.questions.length) {
+      if (!newContest.randomQuestions && !newContest.questions.length) {
         message.error('请先选择题目')
         return
       }
