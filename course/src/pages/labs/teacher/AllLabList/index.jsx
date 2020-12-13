@@ -1,11 +1,13 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input, Drawer } from 'antd'
+import { Button, Divider, message, Input, Drawer, notification } from 'antd'
 import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
+import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
-import { queryRule, updateRule, addRule, removeRule } from './service'
+import { connect } from 'umi'
+import { removeRule } from './service'
 
 /**
  *  删除节点
@@ -30,7 +32,26 @@ const handleRemove = async (selectedRows) => {
   }
 }
 
-const TableList = () => {
+const FormatData = (allLabList) => {
+  const formattedLabList = []
+  for (let i = 0; i < allLabList.length; i++) {
+    formattedLabList.push({
+      key: allLabList[i].experiment_case_id,
+      name: allLabList[i].experiment_case_name,
+      desc: allLabList[i].experiment_case_description,
+      updatedAt: allLabList[i].case_created_timestamp,
+      status: 0,
+    })
+  }
+  return formattedLabList
+}
+
+const LabDatabase = ({ labDatabase }) => ({
+  isSuccess: labDatabase.isSuccess,
+  allLabList: labDatabase.allLabList,
+})
+
+const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const [updateModalVisible, handleUpdateModalVisible] = useState(false)
   const [stepFormValues, setStepFormValues] = useState({})
@@ -120,6 +141,25 @@ const TableList = () => {
       align: 'center',
     },
   ]
+
+  const [loading, setLoading] = useState(true)
+
+  useMount(() => {
+    dispatch({
+      type: 'labDatabase/fetchLabDatabase',
+      payload: {
+        allLabList,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取资料库实验列表失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+  })
+
   return (
     <PageContainer>
       <ProTable
@@ -134,7 +174,7 @@ const TableList = () => {
             </Link>
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allLabList)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -193,4 +233,4 @@ const TableList = () => {
   )
 }
 
-export default TableList
+export default connect(LabDatabase)(TableList)
