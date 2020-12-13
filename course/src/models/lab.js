@@ -7,15 +7,15 @@ import generateReducer, {
 
 const defaultState = {
   isSuccess: false,
-  allLabList: [],
+  allPendingList: [],
 }
 
 const effects = {
-  fetchLabDatabase: generateEffect(function* ({ payload }, { call, put }) {
-    const res = yield call(LabServices.fetchLabDatabase, payload)
+  fetchAllStudentReport: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchAllStudentReport, payload)
 
     yield put({
-      type: 'setLabDatabase',
+      type: 'setPendingList',
       payload: res.data,
     })
 
@@ -27,8 +27,8 @@ const effects = {
 }
 
 const reducers = {
-  setLabDatabase: generateReducer({
-    attributeName: 'allLabList',
+  setPendingList: generateReducer({
+    attributeName: 'allPendingList',
     transformer: defaultArrayTransformer,
     defaultState,
   }),
@@ -40,7 +40,7 @@ const reducers = {
 }
 
 export default {
-  namespace: 'labDatabase',
+  namespace: 'lab',
   state: defaultState,
   effects,
   reducers,

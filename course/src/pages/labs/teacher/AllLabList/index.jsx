@@ -39,7 +39,7 @@ const FormatData = (allLabList) => {
       key: allLabList[i].experiment_case_id,
       name: allLabList[i].experiment_case_name,
       desc: allLabList[i].experiment_case_description,
-      updatedAt: null,
+      updatedAt: allLabList[i].case_created_timestamp,
       status: 0,
     })
   }
