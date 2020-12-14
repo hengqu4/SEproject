@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, DatePicker, Space } from 'antd'
+import moment from 'moment'
 
 const PublishMoal = (props) => {
   const { modelVisible } = props
@@ -7,12 +8,10 @@ const PublishMoal = (props) => {
   const { RangePicker } = DatePicker
   const [okButtonDisable, setOkButtonDisable] = useState(true)
   const [timeValue, setTimeValue] = useState()
-  const [displayTimeValue, setDisplayTimeValue] = useState()
 
   const ok = () => {
     handleOk(timeValue)
     setOkButtonDisable(true)
-    setDisplayTimeValue(null)
   }
 
   const onRangePickFinished = (value) => {
@@ -21,6 +20,8 @@ const PublishMoal = (props) => {
       setOkButtonDisable(false)
     }
   }
+
+  const disabledRangeDate = (current) => current < moment().startOf('day')
 
   return (
     <Modal
@@ -32,7 +33,13 @@ const PublishMoal = (props) => {
     >
       <p>请选择开始日期和截止日期</p>
       <Space direction='vertical' size={12}>
-        <RangePicker showTime onOk={onRangePickFinished} value={displayTimeValue} />
+        <RangePicker
+          showTime={{
+            inputReadOnly: true,
+          }}
+          onOk={onRangePickFinished}
+          disabledDate={disabledRangeDate}
+        />
       </Space>
     </Modal>
   )
