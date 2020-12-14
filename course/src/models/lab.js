@@ -5,9 +5,18 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
+const defaultPublishLab = {
+  case_id: -1,
+  course_id: -1,
+  case_start_timestamp: null,
+  case_end_timestamp: null,
+  course_case_id: -1,
+}
+
 const defaultState = {
   isSuccess: false,
   allPendingList: [],
+  newPublishLab: defaultPublishLab,
 }
 
 const effects = {
@@ -24,6 +33,15 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+  publishLabCase: generateEffect(function* (_, { call, put, select }) {
+    const newPublishLab = yield select((state) => state.lab.newPublishLab)
+
+    yield call(LabServices.publishLab, newPublishLab.payload)
+
+    yield put({
+      type: 'setPublishLab',
+    })
+  }),
 }
 
 const reducers = {
@@ -35,6 +53,11 @@ const reducers = {
   setIsSuccess: generateReducer({
     attributeName: 'isSuccess',
     transformer: defaultObjectTransformer,
+    defaultState,
+  }),
+  setPublishLab: generateReducer({
+    attributeName: 'newPublishLab',
+    transformer: (payload) => payload || defaultPublishLab,
     defaultState,
   }),
 }

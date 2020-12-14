@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, message, Input, Drawer, notification } from 'antd'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
@@ -58,6 +58,8 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [publishCaseId, setPublishCaseId] = useState()
   const columns = [
     {
       title: '实验名称',
@@ -136,7 +138,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           <a
             onClick={() => {
               handlePublishModalVisible(true)
-              console.log(record.key)
+              setPublishCaseId(record.key)
             }}
           >
             发布
@@ -148,12 +150,38 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   ]
 
   const handlePublish = (value) => {
-    // TODO: publish
-    console.log(value.[0].format())
+    const payload = {
+      case_id: publishCaseId,
+      case_start_timestamp: value[0].format(),
+      case_end_timestamp: value[1].format(),
+      course_id: 1,
+    }
+
+    dispatch({
+      type: 'lab/setPublishLab',
+      payload: {
+        payload,
+      },
+    })
+
+    dispatch({
+      type: 'lab/publishLabCase',
+      onError: (err) => {
+        notification.error({
+          message: '实验发布失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '实验发布成功',
+          description: '实验已发布',
+        })
+      },
+    })
     handlePublishModalVisible(false)
   }
 
-  const [loading, setLoading] = useState(true)
   useMount(() => {
     dispatch({
       type: 'labDatabase/fetchLabDatabase',
