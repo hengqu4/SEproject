@@ -8,7 +8,7 @@ import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
 import { removeRule } from './service'
-
+import PublishMoal from './components/Publish'
 /**
  *  删除节点
  * @param selectedRows
@@ -54,7 +54,7 @@ const LabDatabase = ({ labDatabase }) => ({
 const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [stepFormValues, setStepFormValues] = useState({})
+  const [publishModalVisible, handlePublishModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
@@ -85,7 +85,6 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
     {
       title: '创建时间',
       dataIndex: 'updatedAt',
-      sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -127,7 +126,6 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           <a
             onClick={() => {
               handleUpdateModalVisible(true)
-              setStepFormValues(record)
             }}
           >
             查看
@@ -135,15 +133,27 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           <Divider type='vertical' />
           <a href=''>删除</a>
           <Divider type='vertical' />
-          <a>发布</a>
+          <a
+            onClick={() => {
+              handlePublishModalVisible(true)
+              console.log(record.key)
+            }}
+          >
+            发布
+          </a>
         </>
       ),
       align: 'center',
     },
   ]
 
-  const [loading, setLoading] = useState(true)
+  const handlePublish = (value) => {
+    // TODO: publish
+    console.log(value.[0].format())
+    handlePublishModalVisible(false)
+  }
 
+  const [loading, setLoading] = useState(true)
   useMount(() => {
     dispatch({
       type: 'labDatabase/fetchLabDatabase',
@@ -229,6 +239,15 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           />
         )}
       </Drawer>
+      <PublishMoal
+        modelVisible={publishModalVisible}
+        handleOk={(value) => {
+          handlePublish(value)
+        }}
+        handleCancel={() => {
+          handlePublishModalVisible(false)
+        }}
+      />
     </PageContainer>
   )
 }
