@@ -1,12 +1,13 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, message, Input, Drawer, notification } from 'antd'
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
+import Modal from 'antd/lib/modal/Modal'
 import { removeRule } from './service'
 import PublishMoal from './components/Publish'
 /**
@@ -60,6 +61,65 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   const [selectedRowsState, setSelectedRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [publishCaseId, setPublishCaseId] = useState()
+  const [deleteCaseId, setDeleteCaseId] = useState()
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+
+  const getLabDatabaseList = () => {
+    dispatch({
+      type: 'labDatabase/fetchLabDatabase',
+      payload: {
+        allLabList,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取资料库实验列表失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  // FIXME: the dispatch will be invalid randomly
+  const publishLabCase = (payload) => {
+    dispatch({
+      type: 'lab/publishLabCase',
+      payload,
+      onError: (err) => {
+        notification.error({
+          message: '实验发布失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '实验发布成功',
+          description: '实验已发布',
+        })
+      },
+    })
+  }
+
+  const handleDelete = () => {
+    dispatch({
+      type: 'lab/deleteLabCase',
+      payload: deleteCaseId,
+      onSuccess: () => {
+        notification.success({
+          message: '实验删除成功',
+          description: '实验已删除',
+        })
+        getLabDatabaseList()
+      },
+      onError: (err) => {
+        notification.error({
+          message: '实验删除失败',
+          description: err.message,
+        })
+      },
+    })
+  }
+
   const columns = [
     {
       title: '实验名称',
@@ -133,7 +193,14 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
             查看
           </a>
           <Divider type='vertical' />
-          <a href=''>删除</a>
+          <a
+            onClick={() => {
+              setDeleteModalVisible(true)
+              setDeleteCaseId(record.key)
+            }}
+          >
+            删除
+          </a>
           <Divider type='vertical' />
           <a
             onClick={() => {
@@ -156,46 +223,12 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
       case_end_timestamp: value[1].format(),
       course_id: 1,
     }
-
-    dispatch({
-      type: 'lab/setPublishLab',
-      payload: {
-        payload,
-      },
-    })
-
-    dispatch({
-      type: 'lab/publishLabCase',
-      onError: (err) => {
-        notification.error({
-          message: '实验发布失败',
-          description: err.message,
-        })
-      },
-      onSuccess: () => {
-        notification.success({
-          message: '实验发布成功',
-          description: '实验已发布',
-        })
-      },
-    })
+    publishLabCase(payload)
     handlePublishModalVisible(false)
   }
 
   useMount(() => {
-    dispatch({
-      type: 'labDatabase/fetchLabDatabase',
-      payload: {
-        allLabList,
-      },
-      onError: (err) => {
-        notification.error({
-          message: '获取资料库实验列表失败',
-          description: err.message,
-        })
-      },
-      onFinish: setLoading.bind(this, false),
-    })
+    getLabDatabaseList()
   })
 
   return (
@@ -276,6 +309,19 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           handlePublishModalVisible(false)
         }}
       />
+      <Modal
+        title='确认删除'
+        visible={deleteModalVisible}
+        onOk={() => {
+          setDeleteModalVisible(false)
+          handleDelete()
+        }}
+        onCancel={() => {
+          setDeleteModalVisible(false)
+        }}
+      >
+        <p>确认删除该实验吗?</p>
+      </Modal>
     </PageContainer>
   )
 }

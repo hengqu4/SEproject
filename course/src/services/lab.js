@@ -1,5 +1,6 @@
 import { API_LAB_REPORT_PREFIX, API_LAB_DATABASE_PREFIX, API_LAB_COURSE_CASE } from '@/url-prefixes'
 import request from '@/utils/request'
+import SafeUrlAssembler from 'safe-url-assembler'
 
 // fetch all labs in database
 export const fetchLabDatabase = () => {
@@ -20,10 +21,18 @@ export const fetchAllStudentReport = (params) => {
 
 // publish lab (teacher)
 // TODO: modify URL
-export const publishLab = (data) => {
+export const publishLabCase = (data) => {
   return request('/list/1', {
     method: 'POST',
     prefix: API_LAB_COURSE_CASE,
     data,
+  })
+}
+
+// delete lab case (teacher)
+export const deleteLabCase = (param) => {
+  return request(SafeUrlAssembler('/detail/').segment(param).toString(), {
+    method: 'DELETE',
+    prefix: API_LAB_DATABASE_PREFIX,
   })
 }

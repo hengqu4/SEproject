@@ -33,14 +33,11 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
-  publishLabCase: generateEffect(function* (_, { call, put, select }) {
-    const newPublishLab = yield select((state) => state.lab.newPublishLab)
-
-    yield call(LabServices.publishLab, newPublishLab.payload)
-
-    yield put({
-      type: 'setPublishLab',
-    })
+  publishLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.publishLabCase, payload)
+  }),
+  deleteLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.deleteLabCase, payload)
   }),
 }
 
@@ -57,7 +54,10 @@ const reducers = {
   }),
   setPublishLab: generateReducer({
     attributeName: 'newPublishLab',
-    transformer: (payload) => payload || defaultPublishLab,
+    transformer: (payload) => {
+      console.log(defaultState)
+      return payload || defaultPublishLab
+    },
     defaultState,
   }),
 }
