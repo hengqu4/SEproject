@@ -89,7 +89,6 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           message: '实验发布失败',
           description: err.message,
         })
-        console.log('onError: ', err)
       },
       onSuccess: () => {
         notification.success({
