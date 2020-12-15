@@ -85,6 +85,16 @@ export default defineConfig({
                   path: '/course/empty',
                   component: './course/EmptyPage',
                 },
+                {
+                  name: '小节信息',
+                  path: '/course/chap-list',
+                  component: './course/teacher/ChapList',
+                },
+                {
+                  name: '编辑小节信息',
+                  path: '/course/ed-chap',
+                  component: './course/teacher/EditChap',
+                }
               ],
             },
             {
