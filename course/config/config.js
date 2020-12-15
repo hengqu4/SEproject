@@ -205,6 +205,7 @@ export default defineConfig({
               icon: 'table',
               path: '/storehouse',
               component: './storehouse/Overview',
+              authority: ['teacher'],
             },
             {
               name: '账户',
@@ -237,7 +238,7 @@ export default defineConfig({
                 {
                   name: '公告列表',
                   path: '/announcement/anc-list',
-                  component: './announcement/teacher/AncList', // authority: ['teacher'],
+                  component: './announcement/teacher/AncList',
                 },
                 {
                   name: '公告详情',
@@ -254,55 +255,55 @@ export default defineConfig({
               ],
             },
             {
-              name: 'result',
-              icon: 'CheckCircleOutlined',
-              path: '/result',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/result/success',
-                },
-                {
-                  name: 'success',
-                  path: '/result/success',
-                  component: './result/success',
-                },
-                {
-                  name: 'fail',
-                  path: '/result/fail',
-                  component: './result/fail',
-                },
-              ],
-            },
-            {
-              name: 'exception',
-              icon: 'warning',
-              path: '/exception',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/exception/403',
-                },
-                {
-                  name: '403',
-                  path: '/exception/403',
-                  component: './exception/403',
-                },
-                {
-                  name: '404',
-                  path: '/exception/404',
-                  component: './exception/404',
-                },
-                {
-                  name: '500',
-                  path: '/exception/500',
-                  component: './exception/500',
-                },
-              ],
-            },
-            {
               component: '404',
             },
+            // {
+            //   name: 'result',
+            //   icon: 'CheckCircleOutlined',
+            //   path: '/result',
+            //   routes: [
+            //     {
+            //       path: '/',
+            //       redirect: '/result/success',
+            //     },
+            //     {
+            //       name: 'success',
+            //       path: '/result/success',
+            //       component: './result/success',
+            //     },
+            //     {
+            //       name: 'fail',
+            //       path: '/result/fail',
+            //       component: './result/fail',
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'exception',
+            //   icon: 'warning',
+            //   path: '/exception',
+            //   routes: [
+            //     {
+            //       path: '/',
+            //       redirect: '/exception/403',
+            //     },
+            //     {
+            //       name: '403',
+            //       path: '/exception/403',
+            //       component: './exception/403',
+            //     },
+            //     {
+            //       name: '404',
+            //       path: '/exception/404',
+            //       component: './exception/404',
+            //     },
+            //     {
+            //       name: '500',
+            //       path: '/exception/500',
+            //       component: './exception/500',
+            //     },
+            //   ],
+            // },
           ],
         },
       ],
