@@ -1,144 +1,156 @@
-import { EllipsisOutlined } from '@ant-design/icons'
-import { Col, Dropdown, Row, Table, Button, Tabs } from 'antd'
-import React, { Component, Suspense } from 'react'
+import { Button, Tabs, Card, Radio, notification } from 'antd'
+import React, { useState } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
+import { Link } from 'react-router-dom'
 import { connect } from 'umi'
-import PageLoading from './components/PageLoading'
-import { getTimeDistance } from './utils/utils'
+import { useMount } from 'react-use'
 import styles from './style.less'
+import Pie from './components/Charts/Pie'
 
-const ProportionSales = React.lazy(() => import('./components/ProportionSales'))
+const salesTypeData = [
+  {
+    x: '90+',
+    y: 30,
+  },
+  {
+    x: '80~90',
+    y: 20,
+  },
+  {
+    x: '70~80',
+    y: 30,
+  },
+  {
+    x: '60~70',
+    y: 15,
+  },
+  {
+    x: '60-',
+    y: 5,
+  },
+  {
+    x: '未批改',
+    y: 10,
+  },
+]
 
-class AnalyseLab extends Component {
-  state = {
-    salesType: 'all',
-    rangePickerValue: getTimeDistance('year'),
+const { TabPane } = Tabs
+
+const AllLabCase = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  allLabsData: lab.allLabCaseList,
+})
+
+const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
+  const [analyseType, setAnalyseType] = useState(0)
+  const [currentLab, setCurrentLab] = useState()
+
+  const handleAnalyseChange = (e) => {
+    setAnalyseType(e.target.value)
+    // TODO: update analyseData
   }
 
-  reqRef = 0
-
-  timeoutId = 0
-
-  componentDidMount() {
-    const { dispatch } = this.props
-    this.reqRef = requestAnimationFrame(() => {
-      dispatch({
-        type: 'labsAndAnalyseLab/fetch',
-      })
-    })
+  const onLabTabChange = (key) => {
+    // TODO: change labs' data
+    setCurrentLab(key)
   }
 
-  componentWillUnmount() {
-    const { dispatch } = this.props
+  const onLinkClicked = () => {
+    // TODO: get currentLab course_case_id
+    console.log(currentLab == null ? allLabsData[0].course_case_id : currentLab)
+  }
+
+  useMount(() => {
     dispatch({
-      type: 'labsAndAnalyseLab/clear',
-    })
-    cancelAnimationFrame(this.reqRef)
-    clearTimeout(this.timeoutId)
-  }
-
-  handleChangeSalesType = (e) => {
-    this.setState({
-      salesType: e.target.value,
-    })
-  }
-
-  handleRangePickerChange = (rangePickerValue) => {
-    const { dispatch } = this.props
-    this.setState({
-      rangePickerValue,
-    })
-    dispatch({
-      type: 'labsAndAnalyseLab/fetchSalesData',
-    })
-  }
-
-  // TODO: otherLabs onClick func
-  otherLabOnClick = () => {}
-
-  selectDate = (type) => {
-    const { dispatch } = this.props
-    this.setState({
-      rangePickerValue: getTimeDistance(type),
-    })
-    dispatch({
-      type: 'labsAndAnalyseLab/fetchSalesData',
-    })
-  }
-
-  isActive = (type) => {
-    const { rangePickerValue } = this.state
-
-    if (!rangePickerValue) {
-      return ''
-    }
-
-    const value = getTimeDistance(type)
-
-    if (!value) {
-      return ''
-    }
-
-    if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return ''
-    }
-
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate
-    }
-
-    return ''
-  }
-
-  render() {
-    const { rangePickerValue, salesType } = this.state
-    const { labsAndAnalyseLab, loading } = this.props
-    const { salesTypeData, salesTypeDataOnline, otherLabsData } = labsAndAnalyseLab
-    let salesPieData
-    const columns = [
-      {
-        title: '其他实验',
-        dataIndex: 'name',
-        render: (text) => (
-          <a
-            onClick={() => {
-              this.otherLabOnClick()
-            }}
-          >
-            {text}
-          </a>
-        ),
+      type: 'lab/fetchAllLabCase',
+      payload: 1,
+      onError: (err) => {
+        notification.error({
+          message: '获取统计信息失败',
+          description: err.message,
+        })
       },
-    ]
+    })
+  })
 
-    if (salesType === 'all') {
-      salesPieData = salesTypeData
-    } else {
-      salesPieData = salesTypeDataOnline
-    }
-
-    return (
-      <GridContent>
-        <React.Fragment>
-          <Suspense fallback={null}>
-            <ProportionSales
-              salesType={salesType}
-              loading={loading}
-              salesPieData={salesPieData}
-              handleChangeSalesType={this.handleChangeSalesType}
-              otherLabsData={otherLabsData}
-            />
-          </Suspense>
-        </React.Fragment>
-      </GridContent>
-    )
-  }
+  return (
+    <GridContent>
+      <React.Fragment>
+        <Card
+          title='实验统计'
+          style={{
+            height: '100%',
+          }}
+          extra={
+            <div>
+              <Radio.Group value={analyseType} onChange={handleAnalyseChange}>
+                <Radio.Button value={0}> 得分分布 </Radio.Button>
+                <Radio.Button value={1}>提交情况</Radio.Button>
+              </Radio.Group>
+            </div>
+          }
+        >
+          <div>
+            <Tabs
+              tabPosition='left'
+              style={{
+                height: '100%',
+                width: '80%',
+              }}
+              size='large'
+              onChange={onLabTabChange}
+            >
+              {allLabsData.map((i) => (
+                <TabPane tab={i.case_id} key={i.course_case_id}>
+                  <div>
+                    <h4
+                      style={{
+                        marginTop: 8,
+                        marginBottom: 32,
+                      }}
+                    >
+                      统计数据
+                    </h4>
+                    <Pie
+                      hasLegend
+                      subTitle='总提交数'
+                      total={() => <p>{salesTypeData.reduce((pre, now) => now.y + pre, 0)}</p>}
+                      data={salesTypeData}
+                      valueFormat={(value) => <p>{value}</p>}
+                      height={248}
+                      lineWidth={4}
+                    />
+                    <Button
+                      type='primary'
+                      style={{
+                        height: 35,
+                        width: 100,
+                        marginLeft: 0,
+                      }}
+                    >
+                      发布成绩
+                    </Button>
+                    <Button
+                      type='link'
+                      style={{
+                        height: 35,
+                        width: 120,
+                        marginLeft: '50%',
+                      }}
+                    >
+                      <Link to='/labs/pending-list' onClick={onLinkClicked}>
+                        查看学生提交记录
+                      </Link>
+                    </Button>
+                  </div>
+                </TabPane>
+              ))}
+            </Tabs>
+          </div>
+        </Card>
+      </React.Fragment>
+    </GridContent>
+  )
 }
 
-export default connect(({ labsAndAnalyseLab, loading }) => ({
-  labsAndAnalyseLab,
-  loading: loading.effects['labsAndAnalyseLab/fetch'],
-}))(AnalyseLab)
+export default connect(AllLabCase)(AnalyseLabCase)

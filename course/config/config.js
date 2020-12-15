@@ -104,33 +104,39 @@ export default defineConfig({
               name: '实验',
               icon: 'cluster',
               path: '/labs',
+              authority: ['teacher', 'student'],
               routes: [
                 {
                   path: '/',
                   redirect: '/labs',
+                  authority: ['student'],
                 },
                 {
                   name: '实验列表',
                   path: '/labs/list',
-                  component: './labs/student/LabTable', // authority: ['student'],
+                  component: './labs/student/LabTable', 
+                  authority: ['teacher', 'student'],
                 },
                 {
                   name: '实验1',
                   path: '/labs/lab',
                   hideInMenu: true,
-                  component: './labs/student/Lab', // authority: ['student'],
+                  component: './labs/student/Lab', 
+                  authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   path: '/labs/create',
                   hideInMenu: true,
-                  component: './labs/teacher/CreateLab', // authority: ['teacher'],
+                  component: './labs/teacher/CreateLab', 
+                  authority: ['teacher'],
                 },
                 {
                   name: '实验分析页',
                   icon: 'smile',
                   path: '/labs/analyse',
                   component: './labs/teacher/AnalyseLab',
+                  authority: ['teacher'],
                 },
                 {
                   name: '提交列表',
@@ -138,18 +144,21 @@ export default defineConfig({
                   path: '/labs/pending-list',
                   hideInMenu: true,
                   component: './labs/teacher/PendingList',
+                  authority: ['teacher'],
                 },
                 {
                   name: '批改实验',
                   path: '/labs/mark',
                   hideInMenu: true,
-                  component: './labs/teacher/MarkLab', // authority: ['teacher'],
+                  component: './labs/teacher/MarkLab',
+                  authority: ['teacher'],
                 },
                 {
                   name: '所有实验',
                   path: '/labs/all',
                   hideInMenu: true,
                   component: './labs/teacher/AllLabList',
+                  authority: ['teacher'],
                 },
               ],
             },
@@ -196,6 +205,7 @@ export default defineConfig({
               icon: 'table',
               path: '/storehouse',
               component: './storehouse/Overview',
+              authority: ['teacher'],
             },
             {
               name: '账户',
@@ -228,7 +238,7 @@ export default defineConfig({
                 {
                   name: '公告列表',
                   path: '/announcement/anc-list',
-                  component: './announcement/teacher/AncList', // authority: ['teacher'],
+                  component: './announcement/teacher/AncList',
                 },
                 {
                   name: '公告详情',
@@ -245,55 +255,55 @@ export default defineConfig({
               ],
             },
             {
-              name: 'result',
-              icon: 'CheckCircleOutlined',
-              path: '/result',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/result/success',
-                },
-                {
-                  name: 'success',
-                  path: '/result/success',
-                  component: './result/success',
-                },
-                {
-                  name: 'fail',
-                  path: '/result/fail',
-                  component: './result/fail',
-                },
-              ],
-            },
-            {
-              name: 'exception',
-              icon: 'warning',
-              path: '/exception',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/exception/403',
-                },
-                {
-                  name: '403',
-                  path: '/exception/403',
-                  component: './exception/403',
-                },
-                {
-                  name: '404',
-                  path: '/exception/404',
-                  component: './exception/404',
-                },
-                {
-                  name: '500',
-                  path: '/exception/500',
-                  component: './exception/500',
-                },
-              ],
-            },
-            {
               component: '404',
             },
+            // {
+            //   name: 'result',
+            //   icon: 'CheckCircleOutlined',
+            //   path: '/result',
+            //   routes: [
+            //     {
+            //       path: '/',
+            //       redirect: '/result/success',
+            //     },
+            //     {
+            //       name: 'success',
+            //       path: '/result/success',
+            //       component: './result/success',
+            //     },
+            //     {
+            //       name: 'fail',
+            //       path: '/result/fail',
+            //       component: './result/fail',
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'exception',
+            //   icon: 'warning',
+            //   path: '/exception',
+            //   routes: [
+            //     {
+            //       path: '/',
+            //       redirect: '/exception/403',
+            //     },
+            //     {
+            //       name: '403',
+            //       path: '/exception/403',
+            //       component: './exception/403',
+            //     },
+            //     {
+            //       name: '404',
+            //       path: '/exception/404',
+            //       component: './exception/404',
+            //     },
+            //     {
+            //       name: '500',
+            //       path: '/exception/500',
+            //       component: './exception/500',
+            //     },
+            //   ],
+            // },
           ],
         },
       ],

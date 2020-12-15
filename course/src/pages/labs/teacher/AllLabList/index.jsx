@@ -1,12 +1,15 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input, Drawer } from 'antd'
+import { Button, Divider, message, Input, Drawer, notification } from 'antd'
 import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
+import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
-import { queryRule, updateRule, addRule, removeRule } from './service'
-
+import { connect } from 'umi'
+import Modal from 'antd/lib/modal/Modal'
+import { removeRule } from './service'
+import PublishMoal from './components/Publish'
 /**
  *  删除节点
  * @param selectedRows
@@ -30,13 +33,93 @@ const handleRemove = async (selectedRows) => {
   }
 }
 
-const TableList = () => {
+const FormatData = (allLabList) => {
+  const formattedLabList = []
+  for (let i = 0; i < allLabList.length; i++) {
+    formattedLabList.push({
+      key: allLabList[i].experiment_case_id,
+      name: allLabList[i].experiment_case_name,
+      desc: allLabList[i].experiment_case_description,
+      updatedAt: allLabList[i].case_created_timestamp,
+      status: 0,
+    })
+  }
+  return formattedLabList
+}
+
+const LabDatabase = ({ labDatabase }) => ({
+  isSuccess: labDatabase.isSuccess,
+  allLabList: labDatabase.allLabList,
+})
+
+const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [stepFormValues, setStepFormValues] = useState({})
+  const [publishModalVisible, handlePublishModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [publishCaseId, setPublishCaseId] = useState()
+  const [deleteCaseId, setDeleteCaseId] = useState()
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+
+  const getLabDatabaseList = () => {
+    dispatch({
+      type: 'labDatabase/fetchLabDatabase',
+      payload: {
+        allLabList,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取资料库实验列表失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  // FIXME: the dispatch will be invalid randomly
+  const publishLabCase = (payload) => {
+    dispatch({
+      type: 'lab/publishLabCase',
+      payload,
+      onError: (err) => {
+        notification.error({
+          message: '实验发布失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '实验发布成功',
+          description: '实验已发布',
+        })
+      },
+    })
+  }
+
+  const handleDelete = () => {
+    dispatch({
+      type: 'lab/deleteLabCase',
+      payload: deleteCaseId,
+      onSuccess: () => {
+        notification.success({
+          message: '实验删除成功',
+          description: '实验已删除',
+        })
+        getLabDatabaseList()
+      },
+      onError: (err) => {
+        notification.error({
+          message: '实验删除失败',
+          description: err.message,
+        })
+      },
+    })
+  }
+
   const columns = [
     {
       title: '实验名称',
@@ -64,7 +147,6 @@ const TableList = () => {
     {
       title: '创建时间',
       dataIndex: 'updatedAt',
-      sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -106,20 +188,49 @@ const TableList = () => {
           <a
             onClick={() => {
               handleUpdateModalVisible(true)
-              setStepFormValues(record)
             }}
           >
             查看
           </a>
           <Divider type='vertical' />
-          <a href=''>删除</a>
+          <a
+            onClick={() => {
+              setDeleteModalVisible(true)
+              setDeleteCaseId(record.key)
+            }}
+          >
+            删除
+          </a>
           <Divider type='vertical' />
-          <a>发布</a>
+          <a
+            onClick={() => {
+              handlePublishModalVisible(true)
+              setPublishCaseId(record.key)
+            }}
+          >
+            发布
+          </a>
         </>
       ),
       align: 'center',
     },
   ]
+
+  const handlePublish = (value) => {
+    const payload = {
+      case_id: publishCaseId,
+      case_start_timestamp: value[0].format(),
+      case_end_timestamp: value[1].format(),
+      course_id: 1,
+    }
+    publishLabCase(payload)
+    handlePublishModalVisible(false)
+  }
+
+  useMount(() => {
+    getLabDatabaseList()
+  })
+
   return (
     <PageContainer>
       <ProTable
@@ -134,7 +245,7 @@ const TableList = () => {
             </Link>
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allLabList)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -189,8 +300,30 @@ const TableList = () => {
           />
         )}
       </Drawer>
+      <PublishMoal
+        modelVisible={publishModalVisible}
+        handleOk={(value) => {
+          handlePublish(value)
+        }}
+        handleCancel={() => {
+          handlePublishModalVisible(false)
+        }}
+      />
+      <Modal
+        title='确认删除'
+        visible={deleteModalVisible}
+        onOk={() => {
+          setDeleteModalVisible(false)
+          handleDelete()
+        }}
+        onCancel={() => {
+          setDeleteModalVisible(false)
+        }}
+      >
+        <p>确认删除该实验吗?</p>
+      </Modal>
     </PageContainer>
   )
 }
 
-export default TableList
+export default connect(LabDatabase)(TableList)

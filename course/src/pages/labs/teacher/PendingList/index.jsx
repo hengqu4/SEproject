@@ -1,11 +1,32 @@
-import { Input } from 'antd'
-import React, { useRef } from 'react'
+import { Input, notification } from 'antd'
+import React, { useState, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import { Link } from 'react-router-dom'
-import { queryRule } from './service'
+import { useMount } from 'react-use'
+import { connect } from 'umi'
 
-const TableList = () => {
+const PendingListData = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  allPendingList: lab.allPendingList,
+})
+
+const FormatData = (allPendingList) => {
+  const formattedLabList = []
+  for (let i = 0; i < allPendingList.length; i++) {
+    const score = allPendingList[i].submission_score
+    formattedLabList.push({
+      key: allPendingList[i].submission_case_id,
+      name: allPendingList[i].submission_uploader,
+      startTime: allPendingList[i].submission_timestamp,
+      status: score === -1 ? 1 : 0,
+      score: score === -1 ? null : score,
+    })
+  }
+  return formattedLabList
+}
+
+const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
   const actionRef = useRef()
   const columns = [
     {
@@ -25,7 +46,7 @@ const TableList = () => {
       title: '提交时间',
       // dataIndex: 'updatedAt',
       dataIndex: 'startTime',
-      sorter: true,
+      sorter: false,
       valueType: 'dateTime',
       hideInForm: true,
       search: false,
@@ -60,6 +81,12 @@ const TableList = () => {
       },
     },
     {
+      title: '得分',
+      dataIndex: 'score',
+      sorter: true,
+      hideInForm: true,
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -74,6 +101,24 @@ const TableList = () => {
       ),
     },
   ]
+
+  const [loading, setLoading] = useState(true)
+  useMount(() => {
+    dispatch({
+      type: 'lab/fetchAllStudentReport',
+      payload: {
+        allPendingList,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取提交情况失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+  })
+
   return (
     <PageContainer>
       <ProTable
@@ -81,11 +126,11 @@ const TableList = () => {
         actionRef={actionRef}
         search={false}
         rowKey='key'
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allPendingList)}
         columns={columns}
       />
     </PageContainer>
   )
 }
 
-export default TableList
+export default connect(PendingListData)(TableList)
