@@ -60,7 +60,7 @@ const otherLabsData = [
   },
   {
     key: '5',
-    name: '第四次实验',
+    name: '第五次实验',
   },
 ]
 

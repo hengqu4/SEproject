@@ -19,7 +19,7 @@ const genList = (current, pageSize) => {
       owner: '曲丽丽',
       desc: '这是一段描述',
       callNo: Math.floor(Math.random() * 1000),
-      status: (Math.floor(Math.random() * 10) % 4).toString(),
+      status: (Math.floor(Math.random() * 10) % 2).toString(),
       startTime: Date.now() - Math.floor(Math.random() * 1000),
       createdAt: new Date(),
       progress: Math.ceil(Math.random() * 100),

@@ -73,3 +73,47 @@ export const deleteQuestion = (params) => {
     prefix: API_CONTEST_QUESTIONS_PREFIX,
   })
 }
+
+export const createContest = (data) => {
+  return request('/contest', {
+    method: 'POST',
+    prefix: API_CONTEST_PREFIX,
+    data,
+  })
+}
+
+export const fetchAllContests = (query) => {
+  // TODO: 修改url
+  return request('/contest/all', {
+    method: 'GET',
+    prefix: API_CONTEST_PREFIX,
+    params: query,
+  })
+}
+
+export const fetchAllStudents = (query) => {
+  // TODO: 修改url
+  return request('/students', {
+    method: 'GET',
+    prefix: API_CONTEST_PREFIX,
+    params: query,
+  })
+}
+
+export const fetchAllContestMatches = (query) => {
+  // TODO: 修改url
+  return request('/matchesByContest', {
+    method: 'GET',
+    prefix: API_CONTEST_PREFIX,
+    params: query,
+  })
+}
+
+export const fetchAllStudentMatches = (query) => {
+  // TODO: 修改url
+  return request('/matchesByStudent', {
+    method: 'GET',
+    prefix: API_CONTEST_PREFIX,
+    params: query,
+  })
+}

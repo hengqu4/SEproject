@@ -1,5 +1,5 @@
 import { EllipsisOutlined } from '@ant-design/icons'
-import { Col, Dropdown, Row, Table, Button } from 'antd'
+import { Col, Dropdown, Row, Table, Button, Tabs } from 'antd'
 import React, { Component, Suspense } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { connect } from 'umi'
@@ -123,28 +123,15 @@ class AnalyseLab extends Component {
     return (
       <GridContent>
         <React.Fragment>
-          <Row
-            gutter={24}
-            style={{
-              marginTop: 24,
-            }}
-          >
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <ProportionSales
-                  salesType={salesType}
-                  loading={loading}
-                  salesPieData={salesPieData}
-                  handleChangeSalesType={this.handleChangeSalesType}
-                />
-              </Suspense>
-            </Col>
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <Table columns={columns} dataSource={otherLabsData} />
-              </Suspense>
-            </Col>
-          </Row>
+          <Suspense fallback={null}>
+            <ProportionSales
+              salesType={salesType}
+              loading={loading}
+              salesPieData={salesPieData}
+              handleChangeSalesType={this.handleChangeSalesType}
+              otherLabsData={otherLabsData}
+            />
+          </Suspense>
         </React.Fragment>
       </GridContent>
     )

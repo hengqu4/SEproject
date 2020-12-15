@@ -1,81 +1,30 @@
-import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input } from 'antd'
+import { Input, notification } from 'antd'
 import React, { useState, useRef } from 'react'
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
+import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import CreateForm from './components/CreateForm'
-import UpdateForm from './components/UpdateForm'
-import { queryRule, updateRule, addRule, removeRule } from './service'
-import {Link} from 'react-router-dom'
-/**
- * 添加节点
- * @param fields
- */
+import { Link } from 'react-router-dom'
+import { useMount } from 'react-use'
+import { connect } from 'umi'
 
-// const handleAdd = async (fields) => {
-//   const hide = message.loading('正在添加');
+const PendingListData = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  allPendingList: lab.allPendingList,
+})
 
-//   try {
-//     await addRule({ ...fields });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-/**
- * 更新节点
- * @param fields
- */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置')
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+const FormatData = (allPendingList) => {
+  const formattedLabList = []
+  for (let i = 0; i < allPendingList.length; i++) {
+    formattedLabList.push({
+      key: allPendingList[i].submission_case_id,
+      name: allPendingList[i].submission_uploader,
+      startTime: allPendingList[i].submission_timestamp,
+      status: allPendingList[i].submission_score === -1 ? 1 : 0,
     })
-    hide()
-    message.success('配置成功')
-    return true
-  } catch (error) {
-    hide()
-    message.error('配置失败请重试！')
-    return false
   }
-}
-/**
- *  删除节点
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    })
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  } catch (error) {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  }
+  return formattedLabList
 }
 
-const TableList = () => {
-  const [createModalVisible, handleModalVisible] = useState(false)
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [stepFormValues, setStepFormValues] = useState({})
+const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
   const actionRef = useRef()
   const columns = [
     {
@@ -114,6 +63,22 @@ const TableList = () => {
       },
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      hideInForm: true,
+      sorter: true,
+      valueEnum: {
+        0: {
+          text: '已批改',
+          status: 'Finished',
+        },
+        1: {
+          text: '未批改',
+          status: 'Pending',
+        },
+      },
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -121,76 +86,43 @@ const TableList = () => {
       search: false,
       render: (_, record) => (
         <>
-          <Link to="/labs/mark" target="_blank">进入批改</Link>
+          <Link to='/labs/mark' target='_blank'>
+            进入批改
+          </Link>
         </>
       ),
     },
   ]
+
+  const [loading, setLoading] = useState(true)
+  useMount(() => {
+    dispatch({
+      type: 'lab/fetchAllStudentReport',
+      payload: {
+        allPendingList,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取提交情况失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+  })
+
   return (
     <PageContainer>
       <ProTable
-        headerTitle='待批改列表'
+        headerTitle='提交列表'
         actionRef={actionRef}
         search={false}
         rowKey='key'
-        pagination={false}
-        // toolBarRender={() => [
-        //   <Button
-        //     type='primary'
-        //     onClick={() => handleModalVisible(true)}
-        //   >
-        //     <PlusOutlined /> 编辑实验表格
-        //   </Button>,
-        // ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allPendingList)}
         columns={columns}
-        // rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
       />
-      {/*
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-
-            if (success) {
-              handleModalVisible(false);
-
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          rowKey="key"
-          type="form"
-          columns={columns}
-          rowSelection={{}}
-        />
-      </CreateForm>
-      */}
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value)
-
-            if (success) {
-              handleUpdateModalVisible(false)
-              setStepFormValues({})
-
-              if (actionRef.current) {
-                actionRef.current.reload()
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false)
-            setStepFormValues({})
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
     </PageContainer>
   )
 }
 
-export default TableList
+export default connect(PendingListData)(TableList)

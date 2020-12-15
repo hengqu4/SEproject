@@ -1,7 +1,7 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
-import { connect, FormattedMessage, formatMessage } from 'umi'
+import { connect } from 'umi'
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 // import ReactQuill from 'react-quill'

@@ -1,0 +1,39 @@
+.QuestionList {
+  max-height: 400px;
+  overflow-y: auto;
+  
+  .QuestionListItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    *:last-child {
+      margin: 0 20px;
+    }
+    
+    .QuestionContent {
+      flex: 1 0 70%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.SelectQuestionsBlock {
+  > *:not(:first-child) {
+    margin-top: 20px;
+  }
+}
+
+.StudentCardDescription {
+  margin: 1em 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
