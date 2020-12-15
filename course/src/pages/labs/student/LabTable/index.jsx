@@ -6,6 +6,7 @@ import ProTable from '@ant-design/pro-table'
 import { queryRule, updateRule, addRule, removeRule } from './service'
 import {Link} from 'react-router-dom'
 import CreateForm from './components/CreateForm'
+import Authorized from '@/components/Authorized/Authorized';
 
 /**
  *  删除节点
@@ -29,6 +30,7 @@ const handleRemove = async (selectedRows) => {
     return false
   }
 }
+const noMatch = <div />;
 
 const TableList = () => {
   const actionRef = useRef();
@@ -139,8 +141,17 @@ const TableList = () => {
   ]
   return (
     <PageContainer>
+      <Authorized authority={['student']} noMatch={noMatch}>
       <ProTable
-        headerTitle='查询表格'
+        actionRef={actionRef}
+        rowKey='key'
+        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        columns={columns}
+      />
+      </Authorized>
+
+      <Authorized authority={['teacher']} noMatch={noMatch}>
+      <ProTable
         actionRef={actionRef}
         rowKey='key'
         // pagination={false}
@@ -149,19 +160,14 @@ const TableList = () => {
             // onClick={() => handleJumpLab(true)}
           >
             <Link to="/labs/all">发布实验</Link>
-          </Button>,
-          <Button
-            type='primary'
-            // onClick={() => handleJumpLab(true)}
-          >
-            删除实验
-          </Button>,
+          </Button>
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
         // 删除选中实验
         rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
       />
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -190,6 +196,7 @@ const TableList = () => {
           </Button>
         </FooterToolbar>
       )}
+      </Authorized>
     </PageContainer>
   )
 }
