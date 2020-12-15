@@ -5,9 +5,19 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
+const defaultPublishLab = {
+  case_id: -1,
+  course_id: -1,
+  case_start_timestamp: null,
+  case_end_timestamp: null,
+  course_case_id: -1,
+}
+
 const defaultState = {
   isSuccess: false,
   allPendingList: [],
+  newPublishLab: defaultPublishLab,
+  allLabCaseList: [],
 }
 
 const effects = {
@@ -16,6 +26,25 @@ const effects = {
 
     yield put({
       type: 'setPendingList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
+  publishLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.publishLabCase, payload)
+  }),
+  deleteLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.deleteLabCase, payload)
+  }),
+  fetchAllLabCase: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchAllLabCase, payload)
+
+    yield put({
+      type: 'setAllLabCaseList',
       payload: res.data,
     })
 
@@ -36,6 +65,17 @@ const reducers = {
     attributeName: 'isSuccess',
     transformer: defaultObjectTransformer,
     defaultState,
+  }),
+  setPublishLab: generateReducer({
+    attributeName: 'newPublishLab',
+    transformer: (payload) => {
+      return payload || defaultPublishLab
+    },
+    defaultState,
+  }),
+  setAllLabCaseList: generateReducer({
+    attributeName: 'allLabCaseList',
+    transformer: defaultArrayTransformer,
   }),
 }
 
