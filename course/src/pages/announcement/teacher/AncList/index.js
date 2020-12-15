@@ -12,27 +12,27 @@ const columns = [
     {
         title: '标题',
         dataIndex: 'title',
-        key: 'title',
+        key: '1',
     },
     {
         title: '内容',
         dataIndex: 'content',
-        key: 'content',
+        key: '2',
     },
     {
         title: '日期',
         dataIndex: 'date',
-        key: 'date',
+        key: '3',
     },
     {
         title: '发布者',
         dataIndex: 'owner',
-        key: 'owner',
+        key: '4',
     },
     {
         title: '操作',
         dataIndex: 'opr',
-        key: 'opr',
+        key: '5',
         render: () => (
             <Space size="middle">
               <a href='http://localhost:8000/announcement/anc-list/anc-info'>查看详情</a>
@@ -52,28 +52,28 @@ const data = [
       owner: 'Dri',
     },
     {
-      key: '1',
+      key: '2',
       title: '作业',
       content: '第二次作业发啦',
       date: '2020.11.24',
       owner: 'Dri',
     },
     {
-        key: '1',
+        key: '3',
         title: '作业',
         content: '第三次作业发啦',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
-        key: '1',
+        key: '4',
         title: '作业',
         content: '第四次作业发啦',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
-        key: '1',
+        key: '5',
         title: '作业',
         content: '第五次作业发啦',
         date: '2020.11.24',
