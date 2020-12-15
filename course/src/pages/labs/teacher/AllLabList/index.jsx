@@ -80,7 +80,6 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
     })
   }
 
-  // FIXME: the dispatch will be invalid randomly
   const publishLabCase = (payload) => {
     dispatch({
       type: 'lab/publishLabCase',
@@ -90,6 +89,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
           message: '实验发布失败',
           description: err.message,
         })
+        console.log('onError: ', err)
       },
       onSuccess: () => {
         notification.success({
@@ -223,6 +223,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
       case_end_timestamp: value[1].format(),
       course_id: 1,
     }
+
     publishLabCase(payload)
     handlePublishModalVisible(false)
   }

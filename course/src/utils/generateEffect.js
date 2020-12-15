@@ -6,7 +6,7 @@ const generateEffect = (effect) => {
 
       onSuccess && onSuccess()
     } catch (err) {
-      onError && onError()
+      onError && onError(err)
     } finally {
       onFinish && onFinish()
     }
