@@ -30,9 +30,17 @@ export const publishLabCase = (data) => {
 }
 
 // delete lab case (teacher)
-export const deleteLabCase = (param) => {
-  return request(SafeUrlAssembler('/detail/').segment(param).toString(), {
+export const deleteLabCase = (courseId) => {
+  return request(SafeUrlAssembler('/detail/').segment(courseId).toString(), {
     method: 'DELETE',
     prefix: API_LAB_DATABASE_PREFIX,
+  })
+}
+
+// get all lab case (published)
+export const fetchAllLabCase = (courseId) => {
+  return request(SafeUrlAssembler('/list/').segment(courseId).toString(), {
+    method: 'GET',
+    prefix: API_LAB_COURSE_CASE,
   })
 }

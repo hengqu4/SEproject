@@ -17,6 +17,7 @@ const defaultState = {
   isSuccess: false,
   allPendingList: [],
   newPublishLab: defaultPublishLab,
+  allLabCaseList: [],
 }
 
 const effects = {
@@ -39,6 +40,19 @@ const effects = {
   deleteLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.deleteLabCase, payload)
   }),
+  fetchAllLabCase: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchAllLabCase, payload)
+
+    yield put({
+      type: 'setAllLabCaseList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
 }
 
 const reducers = {
@@ -55,10 +69,13 @@ const reducers = {
   setPublishLab: generateReducer({
     attributeName: 'newPublishLab',
     transformer: (payload) => {
-      console.log(defaultState)
       return payload || defaultPublishLab
     },
     defaultState,
+  }),
+  setAllLabCaseList: generateReducer({
+    attributeName: 'allLabCaseList',
+    transformer: defaultArrayTransformer,
   }),
 }
 
