@@ -3,7 +3,7 @@ import { defineConfig } from 'umi'
 import defaultSettings from './defaultSettings'
 import proxy from './proxy'
 
-const { REACT_APP_ENV } = process.env
+// const { REACT_APP_ENV } = process.env
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -42,6 +42,12 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
+              name: '分析页',
+              icon: 'smile',
+              path: '/dashboardanalysis',
+              component: './DashboardAnalysis',
+            },
+            {
               name: 'register-result',
               icon: 'smile',
               path: '/user/register-result',
@@ -52,6 +58,12 @@ export default defineConfig({
               icon: 'smile',
               path: '/user/register',
               component: './user/register',
+            },
+            {
+              name: 'Login',
+              icon: 'smile',
+              path: '/user/login',
+              component: './user/Login',
             },
             {
               component: '404',
@@ -361,6 +373,12 @@ export default defineConfig({
                   path: '/account/settings',
                   component: './account/settings',
                 },
+                {
+                  name: '分步表单',
+                  icon: 'smile',
+                  path: '/account/formstepform',
+                  component: './FormStepForm',
+                },
               ],
             },
             {
@@ -408,8 +426,15 @@ export default defineConfig({
   // @ts-ignore
   title: false,
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  // proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
+  },
+  // Proxy for integrated test
+  proxy: {
+    '/api/v1': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    },
   },
 })
