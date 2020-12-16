@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import styles from './index.less'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { connect } from 'dva'
+import { Link } from 'umi'
+import styles from './index.less'
 
 const namespace = 'login'
 
@@ -25,57 +26,68 @@ const mapDispatchToProps = (dispatch) => {
 
 const NormalLoginForm = (props) => {
   return (
-    <Form
-      name='normal_login'
-      className='login-form'
-      initialValues={{
-        remember: true,
-      }}
-      onFinish={props.onFinish}
-    >
-      <Form.Item
-        name='user_id'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Username!',
-          },
-        ]}
+    <div className={styles.main}>
+      <h3>登录</h3>
+      <Form
+        name='normal_login'
+        className='login-form'
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={props.onFinish}
       >
-        <Input prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
-      </Form.Item>
-      <Form.Item
-        name='password'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Password!',
-          },
-        ]}
-      >
-        <Input
-          prefix={<LockOutlined className='site-form-item-icon' />}
-          type='password'
-          placeholder='Password'
-        />
-      </Form.Item>
-      <Form.Item>
-        <Form.Item name='remember' valuePropName='checked' noStyle>
-          <Checkbox>Remember me</Checkbox>
+        <Form.Item
+          name='user_id'
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Username!',
+            },
+          ]}
+        >
+          <Input
+            size='large'
+            placeholder='用户名'
+            prefix={<UserOutlined className='site-form-item-icon' />}
+          />
+        </Form.Item>
+        <Form.Item
+          name='password'
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Password!',
+            },
+          ]}
+        >
+          <Input
+            size='large'
+            placeholder='密码'
+            prefix={<LockOutlined className='site-form-item-icon' />}
+            type='password'
+          />
+        </Form.Item>
+        <Form.Item>
+          <Form.Item name='remember' valuePropName='checked' noStyle>
+            <Checkbox>记住我</Checkbox>
+          </Form.Item>
+
+          {/* <a className='login-form-forgot' href=''>
+          Forgot password
+        </a> */}
         </Form.Item>
 
-        <a className='login-form-forgot' href=''>
-          Forgot password
-        </a>
-      </Form.Item>
-
-      <Form.Item>
-        <Button type='primary' htmlType='submit' className='login-form-button'>
-          Log in
-        </Button>
-        Or <a href=''>register now!</a>
-      </Form.Item>
-    </Form>
+        <Form.Item>
+          <Button size='large' type='primary' htmlType='submit' className={styles.submit}>
+            登录
+          </Button>
+          {/* Or{' '} */}
+          <Link className={styles.login} to='/user/register'>
+            现在就去注册！
+          </Link>
+        </Form.Item>
+      </Form>
+    </div>
   )
 }
 
@@ -83,7 +95,7 @@ const NormalLoginForm = (props) => {
 class LoginForm extends Component {
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <div id='components-form-demo-normal-login'>
           <NormalLoginForm onFinish={this.props.onFinish} />
         </div>
