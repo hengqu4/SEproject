@@ -1,6 +1,6 @@
 import { stringify } from 'querystring'
 import { history } from 'umi'
-import { userAccountLogin } from '@/services/login'
+import { userAccountLogin, userAccountLogout } from '@/services/login'
 import { setAuthority, AUTHORITY_LIST } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'
 
@@ -47,9 +47,10 @@ const Model = {
       }) // Login successfully
     },
 
-    logout() {
+    *logout(_, { call }) {
       const { redirect } = getPageQuery() // Note: There may be security issues, please note
-
+      const response = yield call(userAccountLogout)
+      console.log(response)
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',

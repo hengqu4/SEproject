@@ -7,37 +7,38 @@ const GlobalModel = {
     notices: [],
   },
   effects: {
-    *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices)
-      yield put({
-        type: 'saveNotices',
-        payload: data,
-      })
-      const unreadCount = yield select((state) => state.global.notices.filter((item) => !item.read).length)
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      })
-    },
+    // TODO: no need here for the effect for global notive
+    // *fetchNotices(_, { call, put, select }) {
+    //   const data = yield call(queryNotices)
+    //   yield put({
+    //     type: 'saveNotices',
+    //     payload: data,
+    //   })
+    //   const unreadCount = yield select((state) => state.global.notices.filter((item) => !item.read).length)
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: data.length,
+    //       unreadCount,
+    //     },
+    //   })
+    // },
 
-    *clearNotices({ payload }, { put, select }) {
-      yield put({
-        type: 'saveClearedNotices',
-        payload,
-      })
-      const count = yield select((state) => state.global.notices.length)
-      const unreadCount = yield select((state) => state.global.notices.filter((item) => !item.read).length)
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
-      })
-    },
+    // *clearNotices({ payload }, { put, select }) {
+    //   yield put({
+    //     type: 'saveClearedNotices',
+    //     payload,
+    //   })
+    //   const count = yield select((state) => state.global.notices.length)
+    //   const unreadCount = yield select((state) => state.global.notices.filter((item) => !item.read).length)
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: count,
+    //       unreadCount,
+    //     },
+    //   })
+    // },
 
     *changeNoticeReadState({ payload }, { put, select }) {
       const notices = yield select((state) =>
