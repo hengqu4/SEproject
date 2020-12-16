@@ -25,7 +25,7 @@ const MatchHistory = () => {
   )
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProCard
         title={viewMode === 'contest' ? '所有比赛' : '所有学生'}
         extra={cardExtra}

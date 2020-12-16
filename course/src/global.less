@@ -61,64 +61,52 @@ ol {
   display: flex !important;
   margin: 0 !important;
   align-items: center;
-  
+
   &:not(:last-of-type) {
     margin-bottom: 10px !important;
   }
+
+  &.modified {
+    
+    &.link {
+      color: @blue-6 !important;
+    }
   
-  &.link {
-    color: @blue-6 !important;
-  }
-
-  &.success {
-    color: @green-6 !important;
-  }
-
-  &.error {
-    color: @red-5 !important;
-  }
-
-  .ant-radio-checked {
-    &.ant-radio {
-      color: currentColor;
+    &.success {
+      color: @green-6 !important;
     }
-
-    .ant-radio-inner {
-      border-color: currentColor !important;
-
-      &::after {
+  
+    &.error {
+      color: @red-5 !important;
+    }
+  
+    .ant-radio-checked {
+      &.ant-radio {
+        color: currentColor !important;
+      }
+  
+      .ant-radio-inner {
+        border-color: currentColor !important;
+  
+        &::after {
+          background-color: currentColor !important;
+        }
+      }
+    }
+  
+    .ant-checkbox-checked {
+      &.ant-checkbox {
+        color: currentColor !important;
+      }
+  
+      .ant-checkbox-inner {
+        border-color: currentColor !important;
         background-color: currentColor !important;
+  
+        &::after {
+          background-color: currentColor !important;
+        }
       }
     }
   }
-
-  .ant-checkbox-checked {
-    &.ant-checkbox {
-      color: currentColor;
-    }
-
-    .ant-checkbox-inner {
-      border-color: currentColor !important;
-      background-color: currentColor !important;
-
-      &::after {
-        background-color: currentColor !important;
-      }
-    }
-  }
-}
-
-.match-rank-text-block {
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  height: 100%;
-}
-
-.match-score-block {
-  font-size: 20px;
-  line-height: 28px;
-  text-align: end;
-  padding: 10px;
-  margin-bottom: 20px;
 }
