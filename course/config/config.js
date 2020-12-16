@@ -69,7 +69,7 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/',
+              redirect: '/course',
             },
             {
               path: '/course',
