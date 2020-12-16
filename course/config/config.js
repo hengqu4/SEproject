@@ -69,7 +69,7 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/labs/list',
+              redirect: '/',
             },
             {
               path: '/course',
@@ -118,7 +118,7 @@ export default defineConfig({
                   authority: ['teacher', 'student'],
                 },
                 {
-                  name: '实验1',
+                  name: '实验详情',
                   path: '/labs/lab',
                   hideInMenu: true,
                   component: './labs/student/Lab', 

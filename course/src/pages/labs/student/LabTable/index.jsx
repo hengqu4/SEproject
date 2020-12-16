@@ -140,7 +140,7 @@ const TableList = () => {
     },
   ]
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <Authorized authority={['student']} noMatch={noMatch}>
       <ProTable
         actionRef={actionRef}

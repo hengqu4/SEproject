@@ -117,7 +117,7 @@ const Lab = (props) => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <Card bordered={false}>
         <Countdown 
           title="倒计时" 

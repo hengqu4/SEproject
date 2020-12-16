@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 export default {
-  'POST  /api/forms': (_, res) => {
+  'POST  /api/getLab': (_, res) => {
     res.send({
       message: 'Ok',
     })
