@@ -1,7 +1,7 @@
 import { stringify } from 'querystring'
 import { history } from 'umi'
-import { fakeAccountLogin } from '@/services/login'
-import { setAuthority } from '@/utils/authority'
+import { userAccountLogin } from '@/services/login'
+import { setAuthority, AUTHORITY_LIST } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'
 
 const Model = {
@@ -11,13 +11,10 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload)
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }) // Login successfully
+      const response = yield call(userAccountLogin, payload)
 
-      if (response.status === 'ok') {
+      console.log(response.isSuccess)
+      if (response.isSuccess) {
         const urlParams = new URL(window.location.href)
         const params = getPageQuery()
         let { redirect } = params
@@ -36,9 +33,18 @@ const Model = {
             return
           }
         }
-
+        console.log(redirect || '/')
         history.replace(redirect || '/')
       }
+
+      yield put({
+        type: 'changeLoginStatus',
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'multipart/form-data',
+        },
+        payload: response,
+      }) // Login successfully
     },
 
     logout() {
@@ -56,7 +62,9 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority)
+      console.log(payload)
+      setAuthority(AUTHORITY_LIST[Number(payload.data.character)])
+      console.log(`current authority is :${AUTHORITY_LIST[Number(payload.data.character)]}`)
       return { ...state, status: payload.status, type: payload.type }
     },
   },
