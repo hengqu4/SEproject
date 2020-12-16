@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi'
 import styles from './style.less'
 
+const namespace = 'register'
+
 const FormItem = Form.Item
 const { Option } = Select
 const InputGroup = Input.Group
@@ -25,23 +27,25 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   const confirmDirty = false
   let interval
   const [form] = Form.useForm()
-  useEffect(() => {
-    if (!userAndregister) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!userAndregister) {
+  //     return
+  //   }
 
-    const account = form.getFieldValue('mail')
+  //   const account = form.getFieldValue('mail')
+  //   // eslint-disable-next-line no-console
+  //   console.log('Received values of form: ', userAndregister)
+  //   if (userAndregister.isSuccess) {
+  //     message.success('注册成功！')
+  //     history.push({
+  //       pathname: '/user/register-result',
+  //       state: {
+  //         account,
+  //       },
+  //     })
+  //   }
+  // }, [userAndregister])
 
-    if (userAndregister.status === 'ok') {
-      message.success('注册成功！')
-      history.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      })
-    }
-  }, [userAndregister])
   useEffect(
     () => () => {
       clearInterval(interval)
@@ -78,8 +82,20 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
   const onFinish = (values) => {
     dispatch({
-      type: 'userAndregister/submit',
+      type: 'register/submit',
       payload: { ...values, prefix },
+    }).then((response) => {
+      console.log(response)
+      if (response.isSuccess) {
+        const account = response.data.user_id
+        message.success('注册成功！')
+        history.push({
+          pathname: '/user/register-result',
+          state: {
+            account,
+          },
+        })
+      }
     })
   }
 
@@ -143,7 +159,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
       <h3>注册</h3>
       <Form form={form} name='UserRegister' onFinish={onFinish}>
         <FormItem
-          name='mail'
+          name='email'
           rules={[
             {
               required: true,
@@ -156,6 +172,61 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           ]}
         >
           <Input size='large' placeholder='邮箱' />
+        </FormItem>
+        <FormItem
+          name='realname'
+          rules={[
+            {
+              required: true,
+              message: '请输入真实姓名！',
+            },
+          ]}
+        >
+          <Input size='large' placeholder='真实姓名' />
+        </FormItem>
+        <FormItem
+          name='school_id'
+          rules={[
+            {
+              required: true,
+              message: '请输入学校编号！',
+            },
+          ]}
+        >
+          <Input size='large' placeholder='学校编号' />
+        </FormItem>
+        <FormItem
+          name='university_id'
+          rules={[
+            {
+              required: true,
+              message: '请输入学院编号！',
+            },
+          ]}
+        >
+          <Input size='large' placeholder='学院编号' />
+        </FormItem>
+        <FormItem
+          name='character'
+          rules={[
+            {
+              required: true,
+              message: '请输入角色编号！',
+            },
+          ]}
+        >
+          <Input size='large' placeholder='角色编号' />
+        </FormItem>
+        <FormItem
+          name='personal_id'
+          rules={[
+            {
+              required: true,
+              message: '请输入学号！',
+            },
+          ]}
+        >
+          <Input size='large' placeholder='学号' />
         </FormItem>
         <Popover
           getPopupContainer={(node) => {
@@ -192,7 +263,11 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         >
           <FormItem
             name='password'
-            className={form.getFieldValue('password') && form.getFieldValue('password').length > 0 && styles.password}
+            className={
+              form.getFieldValue('password') &&
+              form.getFieldValue('password').length > 0 &&
+              styles.password
+            }
             rules={[
               {
                 validator: checkPassword,
@@ -216,7 +291,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         >
           <Input size='large' type='password' placeholder='确认密码' />
         </FormItem>
-        <InputGroup compact>
+        {/* <InputGroup compact>
           <Select
             size='large'
             value={prefix}
@@ -246,8 +321,8 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           >
             <Input size='large' placeholder='手机号' />
           </FormItem>
-        </InputGroup>
-        <Row gutter={8}>
+        </InputGroup> */}
+        {/* <Row gutter={8}>
           <Col span={16}>
             <FormItem
               name='captcha'
@@ -262,13 +337,24 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             </FormItem>
           </Col>
           <Col span={8}>
-            <Button size='large' disabled={!!count} className={styles.getCaptcha} onClick={onGetCaptcha}>
+            <Button
+              size='large'
+              disabled={!!count}
+              className={styles.getCaptcha}
+              onClick={onGetCaptcha}
+            >
               {count ? `${count} s` : '获取验证码'}
             </Button>
           </Col>
-        </Row>
+        </Row> */}
         <FormItem>
-          <Button size='large' loading={submitting} className={styles.submit} type='primary' htmlType='submit'>
+          <Button
+            size='large'
+            loading={submitting}
+            className={styles.submit}
+            type='primary'
+            htmlType='submit'
+          >
             注册
           </Button>
           <Link className={styles.login} to='/user/login'>
@@ -282,5 +368,5 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
 export default connect(({ userAndregister, loading }) => ({
   userAndregister,
-  submitting: loading.effects['userAndregister/submit'],
+  submitting: loading.effects['register/submit'],
 }))(Register)
