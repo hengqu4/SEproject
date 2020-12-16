@@ -15,6 +15,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFinish: (values) => {
+      // eslint-disable-next-line no-console
       console.log('Received values of form: ', values)
       dispatch({
         type: `${namespace}/login`,

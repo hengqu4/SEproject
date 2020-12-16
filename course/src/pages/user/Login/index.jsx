@@ -1,10 +1,11 @@
-import { PageContainer } from '@ant-design/pro-layout'
+// import { PageContainer } from '@ant-design/pro-layout'
 import React, { useState, useEffect } from 'react'
-import { Spin } from 'antd'
+// import { Spin } from 'antd'
 import styles from './index.less'
 import LoginForm from './FormNormalLogin/index'
+
 export default () => {
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
