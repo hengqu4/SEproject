@@ -217,7 +217,7 @@ const QuestionBank = ({
   )
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProCard>
         <Row gutter={16}>
           <Col span={4}>

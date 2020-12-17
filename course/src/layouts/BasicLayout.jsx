@@ -11,7 +11,8 @@ import { Result, Button } from 'antd'
 import Authorized from '@/utils/Authorized'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import { getAuthorityFromRouter } from '@/utils/utils'
-import logo from '../assets/logo.svg'
+// import logo from '../assets/logo.svg'
+import logo from '../assets/logoDark.png'
 
 const noMatch = (
   <Result
@@ -40,24 +41,18 @@ const menuDataRender = (menuList) =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright={`${new Date().getFullYear()} 蚂蚁金服体验技术部出品`}
+    copyright={`${new Date().getFullYear()} 同济大学软件学院`}
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
+        key: 'course',
+        title: '软件项目与过程管理',
+        // href: 'https://pro.ant.design',
         blankTarget: true,
       },
       {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
+        key: 'platform',
+        title: '虚拟仿真实验平台',
+        // href: 'https://ant.design',
         blankTarget: true,
       },
     ]}
@@ -115,15 +110,16 @@ const BasicLayout = (props) => {
           return <Link to={menuItemProps.path}>{defaultDom}</Link>
         }}
         breadcrumbRender={(routers = []) => [
-          {
-            path: '/',
-            breadcrumbName: '首页',
-          },
+          // {
+          //   path: '/',
+          //   breadcrumbName: '首页',
+          // },
           ...routers,
         ]}
         itemRender={(route, params, routes, paths) => {
           const first = routes.indexOf(route) === 0
-          return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>
+          // return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>
+          return first ? <span to={paths.join('/')}>{route.breadcrumbName}</span> : <span>{route.breadcrumbName}</span>
         }}
         footerRender={() => defaultFooterDom}
         menuDataRender={menuDataRender}
