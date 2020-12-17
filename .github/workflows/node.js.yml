@@ -28,5 +28,3 @@ jobs:
       working-directory: course
     - run: npm run build --if-present
       working-directory: course
-    - run: npm test
-      working-directory: course
