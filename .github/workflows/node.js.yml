@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
+    - run: yarn --frozen-lockfile
       working-directory: course
     - run: npm run build --if-present
       working-directory: course
