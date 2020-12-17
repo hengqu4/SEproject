@@ -3,7 +3,7 @@ import { defineConfig } from 'umi'
 import defaultSettings from './defaultSettings'
 import proxy from './proxy'
 
-const { REACT_APP_ENV } = process.env
+// const { REACT_APP_ENV } = process.env
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -42,9 +42,10 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: 'login',
-              path: '/user/login',
-              component: './user/login',
+              name: '分析页',
+              icon: 'smile',
+              path: '/dashboardanalysis',
+              component: './DashboardAnalysis',
             },
             {
               name: 'register-result',
@@ -55,6 +56,12 @@ export default defineConfig({
               name: 'register',
               path: '/user/register',
               component: './user/register',
+            },
+            {
+              name: 'Login',
+              icon: 'smile',
+              path: '/user/login',
+              component: './user/Login',
             },
             {
               component: '404',
@@ -72,18 +79,19 @@ export default defineConfig({
               redirect: '/course',
             },
             {
-              path: '/course',
-              name: '课程',
+              path: '/grade',
+              name: '成绩模块',
               icon: 'dashboard',
               routes: [
                 {
                   path: '/',
-                  redirect: '/course/empty',
+                  redirect: '/dashboard/analysis',
                 },
                 {
-                  name: '空白页面',
-                  path: '/course/empty',
-                  component: './course/EmptyPage',
+                  name: '成绩看板',
+                  icon: 'smile',
+                  path: '/grade/analysis',
+                  component: './dashboard/teacherDashboard',
                 },
               ],
             },
@@ -93,10 +101,10 @@ export default defineConfig({
               path: '/homework',
               routes: [
                 {
-                  name: '作业列表',
+                  name: '我的成绩',
                   icon: 'smile',
-                  path: '/homework/hw-list',
-                  component: './homework/teacher/HwList',
+                  path: '/grade/mygrade',
+                  component: './dashboard/studentDashboard',
                 },
               ],
             },
@@ -208,7 +216,82 @@ export default defineConfig({
               authority: ['teacher'],
             },
             {
-              name: '账户',
+              path: '/profile',
+              name: 'profile',
+              icon: 'profile',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/profile/basic',
+                },
+                {
+                  name: 'basic',
+                  icon: 'smile',
+                  path: '/profile/basic',
+                  component: './profile/basic',
+                },
+                {
+                  name: 'advanced',
+                  icon: 'smile',
+                  path: '/profile/advanced',
+                  component: './profile/advanced',
+                },
+              ],
+            },
+            {
+              name: 'result',
+              icon: 'CheckCircleOutlined',
+              path: '/result',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/result/success',
+                },
+                {
+                  name: 'success',
+                  icon: 'smile',
+                  path: '/result/success',
+                  component: './result/success',
+                },
+                {
+                  name: 'fail',
+                  icon: 'smile',
+                  path: '/result/fail',
+                  component: './result/fail',
+                },
+              ],
+            },
+            {
+              name: 'exception',
+              icon: 'warning',
+              path: '/exception',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/exception/403',
+                },
+                {
+                  name: '403',
+                  icon: 'smile',
+                  path: '/exception/403',
+                  component: './exception/403',
+                },
+                {
+                  name: '404',
+                  icon: 'smile',
+                  path: '/exception/404',
+                  component: './exception/404',
+                },
+                {
+                  name: '500',
+                  icon: 'smile',
+                  path: '/exception/500',
+                  component: './exception/500',
+                },
+              ],
+            },
+            {
+              name: '用户系统',
               icon: 'user',
               path: '/account',
               routes: [
@@ -216,17 +299,29 @@ export default defineConfig({
                   path: '/',
                   redirect: '/account/center',
                 },
+                // {
+                //   name: 'center',
+                //   icon: 'smile',
+                //   path: '/account/center',
+                //   component: './account/center',
+                // },
                 {
-                  name: '个人中心',
-                  icon: 'smile',
-                  path: '/account/center',
-                  component: './account/center',
-                },
-                {
-                  name: '个人设置',
+                  name: '账号设置',
                   icon: 'smile',
                   path: '/account/settings',
                   component: './account/settings',
+                },
+                {
+                  name: '导入单个账号',
+                  icon: 'smile',
+                  path: '/account/import',
+                  component: './account/bulkimport',
+                },
+                {
+                  name: '批量导入账号',
+                  icon: 'smile',
+                  path: '/account/bulkimport',
+                  component: './account/bulkimport',
                 },
               ],
             },
@@ -317,8 +412,15 @@ export default defineConfig({
   // @ts-ignore
   title: false,
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  // proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
+  },
+  // Proxy for integrated test
+  proxy: {
+    '/api/v1': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    },
   },
 })
