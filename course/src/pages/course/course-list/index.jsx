@@ -8,7 +8,7 @@ import ProDescriptions from '@ant-design/pro-descriptions'
 import CreateForm from './components/CreateForm'
 import UpdateForm from './components/UpdateForm'
 import { queryCourseList, updateCourseList, addCourseList, removeCourseList } from './service'
-import { fetchAllCourseInfo } from '@/services/course'
+// import { fetchAllCourseInfo } from '@/services/course'
 /**
  * 添加节点
  * @param fields
