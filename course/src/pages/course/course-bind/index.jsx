@@ -1,7 +1,9 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
-import { Spin } from 'antd';
+import { Spin, Divider } from 'antd';
 import styles from './index.less';
+import GridFlexOrder from './GridFlexOrder';
+import ButtonBlock from './ButtonBlock';
 export default () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -10,7 +12,9 @@ export default () => {
     }, 3000);
   }, []);
   return (
-    <PageContainer content="这是一个新页面，从这里进行开发！" className={styles.main}>
+    <PageContainer className={styles.main}>
+      <GridFlexOrder />
+      <ButtonBlock/>
       <div
         style={{
           paddingTop: 100,
