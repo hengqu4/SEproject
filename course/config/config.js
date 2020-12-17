@@ -81,8 +81,8 @@ export default defineConfig({
               redirect: '/labs/list',
             },
             {
-              path: '/dashboard',
-              name: 'dashboard',
+              path: '/grade',
+              name: '成绩模块',
               icon: 'dashboard',
               routes: [
                 {
@@ -90,22 +90,16 @@ export default defineConfig({
                   redirect: '/dashboard/analysis',
                 },
                 {
-                  name: 'analysis',
+                  name: '成绩看板',
                   icon: 'smile',
-                  path: '/dashboard/analysis',
-                  component: './dashboard/analysis',
+                  path: '/grade/analysis',
+                  component: './dashboard/teacherDashboard',
                 },
                 {
-                  name: 'monitor',
+                  name: '我的成绩',
                   icon: 'smile',
-                  path: '/dashboard/monitor',
-                  component: './dashboard/monitor',
-                },
-                {
-                  name: 'workplace',
-                  icon: 'smile',
-                  path: '/dashboard/workplace',
-                  component: './dashboard/workplace',
+                  path: '/grade/mygrade',
+                  component: './dashboard/studentDashboard',
                 },
               ],
             },
@@ -353,7 +347,7 @@ export default defineConfig({
               ],
             },
             {
-              name: 'account',
+              name: '用户系统',
               icon: 'user',
               path: '/account',
               routes: [
@@ -361,23 +355,29 @@ export default defineConfig({
                   path: '/',
                   redirect: '/account/center',
                 },
+                // {
+                //   name: 'center',
+                //   icon: 'smile',
+                //   path: '/account/center',
+                //   component: './account/center',
+                // },
                 {
-                  name: 'center',
-                  icon: 'smile',
-                  path: '/account/center',
-                  component: './account/center',
-                },
-                {
-                  name: 'settings',
+                  name: '账号设置',
                   icon: 'smile',
                   path: '/account/settings',
                   component: './account/settings',
                 },
                 {
-                  name: '分步表单',
+                  name: '导入单个账号',
                   icon: 'smile',
-                  path: '/account/formstepform',
-                  component: './FormStepForm',
+                  path: '/account/import',
+                  component: './account/bulkimport',
+                },
+                {
+                  name: '批量导入账号',
+                  icon: 'smile',
+                  path: '/account/bulkimport',
+                  component: './account/bulkimport',
                 },
               ],
             },
