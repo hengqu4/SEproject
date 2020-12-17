@@ -17,6 +17,15 @@ export async function userAccountLogin(data) {
   })
 }
 
+export async function userAccountLogout() {
+  return request('/logout/', {
+    method: 'POST',
+    prefix: API_USER_PREFIX,
+  }).catch(function (error) {
+    console.log(error)
+  })
+}
+
 // export async function getFakeCaptcha(mobile) {
 //   return request(`/api/login/captcha?mobile=${mobile}`)
 // }
