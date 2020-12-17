@@ -42,12 +42,6 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: '分析页',
-              icon: 'smile',
-              path: '/dashboardanalysis',
-              component: './DashboardAnalysis',
-            },
-            {
               name: 'register-result',
               path: '/user/register-result',
               component: './user/register-result',
@@ -85,13 +79,19 @@ export default defineConfig({
               routes: [
                 {
                   path: '/',
-                  redirect: '/dashboard/analysis',
+                  redirect: '/grade/analysis',
                 },
                 {
                   name: '成绩看板',
                   icon: 'smile',
                   path: '/grade/analysis',
                   component: './dashboard/teacherDashboard',
+                },
+                {
+                  name: '我的成绩',
+                  icon: 'smile',
+                  path: '/grade/mygrade',
+                  component: './dashboard/studentDashboard',
                 },
               ],
             },
@@ -100,12 +100,6 @@ export default defineConfig({
               icon: 'highlight',
               path: '/homework',
               routes: [
-                {
-                  name: '我的成绩',
-                  icon: 'smile',
-                  path: '/grade/mygrade',
-                  component: './dashboard/studentDashboard',
-                },
               ],
             },
             {
@@ -214,29 +208,6 @@ export default defineConfig({
               path: '/storehouse',
               component: './storehouse/Overview',
               authority: ['teacher'],
-            },
-            {
-              path: '/profile',
-              name: 'profile',
-              icon: 'profile',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/profile/basic',
-                },
-                {
-                  name: 'basic',
-                  icon: 'smile',
-                  path: '/profile/basic',
-                  component: './profile/basic',
-                },
-                {
-                  name: 'advanced',
-                  icon: 'smile',
-                  path: '/profile/advanced',
-                  component: './profile/advanced',
-                },
-              ],
             },
             {
               name: 'result',
