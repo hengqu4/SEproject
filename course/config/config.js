@@ -79,6 +79,35 @@ export default defineConfig({
               redirect: '/course',
             },
             {
+              name: '课程模块',
+              path: '/course',
+              icon: 'dashboard',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/course/course-list',
+                },
+                {
+                  name: '课程列表',
+                  icon: 'smile',
+                  path: '/course/course-list',
+                  component: './course/course-list',
+                },
+                {
+                  name: '课程编辑',
+                  icon: 'smile',
+                  path: '/course/course-edit/courseID=:courseID&',
+                  component: './course/course-edit',
+                },
+                {
+                  name: '绑定教师',
+                  icon: 'smile',
+                  path: '/course/course-bind',
+                  component: './course/course-bind',
+                },
+              ],
+            },
+            {
               path: '/grade',
               name: '成绩模块',
               icon: 'dashboard',
