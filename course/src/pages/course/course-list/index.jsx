@@ -1,96 +1,131 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input, Drawer } from 'antd'
-import React, { useState, useRef } from 'react'
-import routerRedux from 'dva/router'
+import { Button, Divider, message, Drawer, DatePicker } from 'antd'
+import React, { useState, useRef, useCallback } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
+import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
+import ProCard from '@ant-design/pro-card'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import CreateForm from './components/CreateForm'
 import UpdateForm from './components/UpdateForm'
-import { queryCourseList, updateCourseList, addCourseList, removeCourseList } from './service'
-import { fetchAllCourseInfo } from '@/services/course'
-/**
- * 添加节点
- * @param fields
- */
+// import { queryCourseList, updateCourseList, addCourseList, removeCourseList } from './service'
+import { parse } from 'url'
+import FormItem from 'antd/lib/form/FormItem'
+import connect from 'dva'
 
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加')
+const { RangePicker } = DatePicker
 
-  try {
-    await addCourseList({ ...fields })
-    hide()
-    message.success('添加成功')
-    return true
-  } catch (error) {
-    hide()
-    message.error('添加失败请重试！')
-    return false
-  }
-}
-/**
- * 更新节点
- * @param fields
- */
+const mapStateToProps = ({ Course }) => ({
+  courseList: Course.courseList,
+  newCourseInfo: Course.newCourseInfo,
+})
 
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置')
-
-  try {
-    await updateCourseList({
-      courseID: fields.courseID,
-      courseName: fields.courseName,
-      courseCredit: fields.courseCredit,
-      courseStudyTimeNeeded: fields.courseStudyTimeNeeded,
-      courseDescription: fields.courseDescription,
-      key: fields.key,
+const course_list = (courseList = [], newCourseInfo = {}, status, dispatch = () => {}) => {
+  /**
+   * 获取课程列表
+   */
+  const getCourseList = useCallback((req, res, u) => {
+    dispatch({
+      type: 'Course/getAllCourse',
+      onError: (err) => {
+        notification.error({
+          message: '获取课程列表失败',
+          description: err.message,
+        })
+      },
     })
-    hide()
-    message.success('配置成功')
-    return true
-  } catch (error) {
-    hide()
-    message.error('配置失败请重试！')
-    return false
-  }
-}
-/**
- *  删除节点
- * @param selectedRows
- */
 
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
+    let realUrl = u
 
-  try {
-    await removeCourseList({
-      key: selectedRows.map((row) => row.key),
+    if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
+      realUrl = req.url
+    }
+
+    const { current = 1, pageSize = 10 } = req.query
+    const params = parse(realUrl, true).query
+    let dataSource = [...courseList].slice((current - 1) * pageSize, current * pageSize)
+    const sorter = JSON.parse(params.sorter)
+
+    if (sorter) {
+      dataSource = dataSource.sort((prev, next) => {
+        let sortNumber = 0
+        Object.keys(sorter).forEach((key) => {
+          if (sorter[key] === 'descend') {
+            if (prev[key] - next[key] > 0) {
+              sortNumber += -1
+            } else {
+              sortNumber += 1
+            }
+
+            return
+          }
+
+          if (prev[key] - next[key] > 0) {
+            sortNumber += 1
+          } else {
+            sortNumber += -1
+          }
+        })
+        return sortNumber
+      })
+    }
+
+    if (params.filter) {
+      const filter = JSON.parse(params.filter)
+
+      if (Object.keys(filter).length > 0) {
+        dataSource = dataSource.filter((item) => {
+          return Object.keys(filter).some((key) => {
+            if (!filter[key]) {
+              return true
+            }
+
+            if (filter[key].includes(`${item[key]}`)) {
+              return true
+            }
+
+            return false
+          })
+        })
+      }
+    }
+
+    if (params.name) {
+      dataSource = dataSource.filter((data) => data.name.includes(params.name || ''))
+    }
+
+    const result = {
+      data: dataSource,
+      total: courseListDataSource.length,
+      success: true,
+      pageSize,
+      current: parseInt(`${params.currentPage}`, 10) || 1,
+    }
+    return res.json(result)
+  }, [courseList, dispatch])
+
+  /**
+   * 添加课程信息
+   * @param values
+   */
+  const addCourseInfo = useCallback((values) => {
+    dispatch({
+      type: 'Course/createNewCourse',
+      payload: values,
+      onError: (err) => {
+        notification.error({
+          message: '创建课程失败',
+          description: err.message,
+        })
+      },
+      onFinish: () => {
+        message.success('创建课程成功')
+      },
     })
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  } catch (error) {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  }
-}
+  }, [dispatch])
 
-// const handleEdit = (toEditCourse) => {
-//   this.props.dispatch(routerRedux.push({
-//     pathname: '/course-setting/course-edit',
-//     query: {
-//       courseID: toEditCourse.courseID,
-//       courseName: toEditCourse.courseName,
-//     }
-//   }));
-// }
-
-const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [toDeleteRowValue, setToDeleteRowValue] = useState({})
   const [stepFormValues, setStepFormValues] = useState({})
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -100,68 +135,36 @@ const TableList = () => {
       title: '课程ID',
       dataIndex: 'courseID',
       hideInForm: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '课程ID是必须项',
-          }
-        ]
-      },
+      formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
     },
     {
       title: '课程名称',
       dataIndex: 'courseName',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
+      formItemProps: { rules: [{ required: true }] },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>
       },
     },
     {
-      title: '教师姓名',
-      dataIndex: 'teacherName',
-      hideInForm: true,
-    },
-    {
       title: '课程学分',
       dataIndex: 'courseCredit',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
+      formItemProps: { rules: [{ required: true }] },
     },
     {
       title: '课程学时',
       dataIndex: 'courseStudyTimeNeeded',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
+      formItemProps: { rules: [{ required: true }] },
+    },
+    {
+      title: '课程类型',
+      dataIndex: 'courseType',
+      formItemProps: { rules: [{ required: true }] },
     },
     {
       title: '课程描述',
       dataIndex: 'courseDescription',
       valueType: 'textarea',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            max: 50,
-          }
-        ]
-      },
+      formItemProps: { rules: [{ required: true, max: 50 }] },
     },
     {
       title: '操作',
@@ -170,18 +173,10 @@ const TableList = () => {
       render: (_, record) => (
         <>
           <a
-            // onClick={ () => { handleEdit(record) } }
+          // onClick={ () => { handleEdit(record) } }
           >
-            切换</a>
-          <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              setToDeleteRowValue(record);
-              await handleRemove([toDeleteRowValue]);
-              actionRef.current.reloadAndRest();
-            }}
-          >
-            删除</a>
+            切换
+          </a>
         </>
       ),
     },
@@ -210,6 +205,10 @@ const TableList = () => {
     {
       title: '课程学时',
       dataIndex: 'courseStudyTimeNeeded',
+    },
+    {
+      title: '课程类型',
+      dataIndex: 'courseType',
     },
     {
       title: '课程描述',
@@ -245,20 +244,11 @@ const TableList = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a
-            
-          >
-            作业管理</a>
+          <a>作业管理</a>
           <Divider type='vertical' />
-          <a
-            
-          >
-            实验管理</a>
+          <a>实验管理</a>
           <Divider type='vertical' />
-          <a
-            
-          >
-            对抗练习</a>
+          <a>对抗练习</a>
         </>
       ),
     },
@@ -277,7 +267,7 @@ const TableList = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryCourseList({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => getCourseList({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -311,22 +301,69 @@ const TableList = () => {
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable
-          onSubmit={async (value) => {
-            const success = await handleAdd(value)
-
-            if (success) {
+        <ProCard>
+          <StepsForm
+            onFinish={async (values) => {
+              // console.log(values)
+              addCourseInfo(values)
               handleModalVisible(false)
-
-              if (actionRef.current) {
-                actionRef.current.reload()
-              }
-            }
-          }}
-          rowKey='key'
-          type='form'
-          columns={columns}
-        />
+            }}
+            formProps={{
+              validateMessages: {
+                required: '此项为必填项',
+              },
+            }}
+          >
+            <StepsForm.StepForm name='createStep1'>
+              <ProFormText
+                name='course_name'
+                label='课程名称'
+                width='m'
+                placeholder='请输入课程名称'
+                rules={[{ required: true }]}
+              />
+              <ProFormTextArea
+                name='course_description'
+                label='课程描述'
+                width='m'
+                placeholder='请输入课程描述'
+                rules={[{ required: true }]}
+              />
+            </StepsForm.StepForm>
+            <StepsForm.StepForm name='createStep2'>
+              <ProFormText
+                name='course_credit'
+                label='课程学分'
+                width='m'
+                placeholder='请输入课程学分'
+                rules={[{ required: true }]}
+              />
+              <ProFormText
+                name='course_study_time_needed'
+                label='课程学时'
+                width='m'
+                placeholder='请输入课程学时'
+                rules={[{ required: true }]}
+              />
+              <ProFormSelect
+                name='course_type'
+                label='课程类型'
+                width='m'
+                rules={[{ required: true }]}
+                initialValue='1'
+                options={[
+                  { value: '1', label: '必修' },
+                  { value: '2', label: '选修' },
+                ]}
+              />
+            </StepsForm.StepForm>
+            <StepsForm.StepForm name='createStep3'>
+              <FormItem name='course_time' label='课程开始结束时间' rules={[{ required: true }]}>
+                <RangePicker showTime />
+              </FormItem>
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ProCard>
       </CreateForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
@@ -377,4 +414,5 @@ const TableList = () => {
   )
 }
 
-export default TableList
+export default React.memo(connect(mapStateToProps)(course_list))
+// export default course_list
