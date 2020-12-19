@@ -6,9 +6,8 @@ import generateReducer, {
 } from '@/utils/generateReducer'
 import { cloneDeep } from 'lodash'
 
-
 const defaultCourseInfo = {
-  courseCreatorSchoolId: "tongji",
+  courseCreatorSchoolId: 'tongji',
   courseName: null,
   courseCredit: null,
   courseStudyTimeNeeded: null,
@@ -25,7 +24,7 @@ const defaultState = {
 }
 
 const effects = {
-  getAllCourse: generateEffect(function* (_ , { call, put }) {
+  getAllCourse: generateEffect(function* (_, { call, put }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseInfo)
     // CourseServices.fetchAllCourseInfo()
@@ -38,39 +37,46 @@ const effects = {
     //     console.log('error boy')
     //   }),
 
-    // console.log(res) 
+    console.log(res.data)
     yield put({
       type: 'setCourseList',
       payload: res.data,
     })
-    console.log(this.state.courseList)
   }),
 
-  createNewCourse: generateEffect(function* ({ payload }, { call, put, select }) {
+  createNewCourse: generateEffect(function* ({ payload }, { call, put }) {
     const newCourseInfoCopy = cloneDeep(payload)
-    
-    const course_creator_school_id = "tongji"
-    const course_start_time = newCourseInfoCopy.course_time[0]
-    const course_end_time = newCourseInfoCopy.course_time[1]
+
+    newCourseInfoCopy.course_creator_school_id = 'tongji'
+    newCourseInfoCopy.course_start_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+      newCourseInfoCopy.course_time[0],
+    )[0]
+    newCourseInfoCopy.course_end_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+      newCourseInfoCopy.course_time[1],
+    )[0]
+    newCourseInfoCopy.course_avatar = 'fake'
+    newCourseInfoCopy.course_credit = parseInt(newCourseInfoCopy.course_credit)
+    newCourseInfoCopy.course_study_time_needed = parseInt(
+      newCourseInfoCopy.course_study_time_needed,
+    )
     delete newCourseInfoCopy.course_time
 
-    console.log(newCourseInfoCopy)
+    yield call(CourseServices.publishCourse, newCourseInfoCopy)
+    // res = yield CourseServices.publishCourse(newCourseInfoCopy)
+    //   .then((response) => {
+    //     console.log(response)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
 
-    const res = yield call(CourseServices.publishCourse, {
+    const res = yield call(CourseServices.fetchAllCourseInfo)
 
-      courseInfo: {
-        ...newCourseInfoCopy,
-        course_creator_school_id,
-        course_start_time,
-        course_end_time,
-      }
-    })
-    
     yield put({
-      type: 'getAllCourse'
+      type: 'setCourseList',
+      payload: res.data,
     })
   }),
-
 }
 
 const reducers = {

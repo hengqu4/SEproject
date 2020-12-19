@@ -5,14 +5,14 @@ import { get } from 'lodash'
 import { func } from 'prop-types'
 
 export const fetchAllCourseInfo = () => {
-  return request('/course-info', {
+  return request('/course-info/', {
     method: 'GET',
     prefix: API_COURSE_PREFIX,
   })
 }
 
 export const publishCourse = (data) => {
-  return request('/course-info', {
+  return request('/course-info/', {
     method: 'POST',
     prefix: API_COURSE_PREFIX,
     data,

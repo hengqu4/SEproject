@@ -75,7 +75,7 @@ export default defineConfig({
             {
               name: '课程模块',
               path: '/course',
-              icon: 'dashboard',
+              icon: 'book',
               routes: [
                 {
                   path: '/',

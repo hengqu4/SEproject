@@ -1,15 +1,14 @@
 import React, { useState, useRef, useCallback } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Drawer, DatePicker } from 'antd'
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import ProTable from '@ant-design/pro-table'
-import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
+import { useMount } from 'react-use'
 import ProCard from '@ant-design/pro-card'
+import ProTable from '@ant-design/pro-table'
+import { PlusOutlined } from '@ant-design/icons'
 import ProDescriptions from '@ant-design/pro-descriptions'
-import CreateForm from './components/CreateForm'
-import UpdateForm from './components/UpdateForm'
-import { parse } from 'url'
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
+import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
+import { Button, Divider, Drawer, message, DatePicker, TimePicker } from 'antd'
 import FormItem from 'antd/lib/form/FormItem'
+import CreateForm from './components/CreateForm'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
@@ -17,122 +16,19 @@ const { RangePicker } = DatePicker
 
 const mapStateToProps = ({ Course }) => ({
   courseList: Course.courseList,
-  newCourseInfo: Course.newCourseInfo,
 })
 
-const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} }) => {
-  /**
-   * 获取课程列表
-   */
-  const getCourseList = useCallback(
-    async (req, res, u) => {
-      console.log('准备接受数据')
-      await dispatch({
-        type: 'Course/getAllCourse',
-        onError,
-        // onFinish: console.log(courseList)
-      })
-
-      let realUrl = u
-
-      if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
-        realUrl = req.url
-      }
-
-      const { current = 1, pageSize = 10 } = req.query
-      const params = parse(realUrl, true).query
-      let dataSource = [...courseList].slice((current - 1) * pageSize, current * pageSize)
-      const sorter = JSON.parse(params.sorter)
-
-      if (sorter) {
-        dataSource = dataSource.sort((prev, next) => {
-          let sortNumber = 0
-          Object.keys(sorter).forEach((key) => {
-            if (sorter[key] === 'descend') {
-              if (prev[key] - next[key] > 0) {
-                sortNumber += -1
-              } else {
-                sortNumber += 1
-              }
-
-              return
-            }
-
-            if (prev[key] - next[key] > 0) {
-              sortNumber += 1
-            } else {
-              sortNumber += -1
-            }
-          })
-          return sortNumber
-        })
-      }
-
-      if (params.filter) {
-        const filter = JSON.parse(params.filter)
-
-        if (Object.keys(filter).length > 0) {
-          dataSource = dataSource.filter((item) => {
-            return Object.keys(filter).some((key) => {
-              if (!filter[key]) {
-                return true
-              }
-
-              if (filter[key].includes(`${item[key]}`)) {
-                return true
-              }
-
-              return false
-            })
-          })
-        }
-      }
-
-      if (params.name) {
-        dataSource = dataSource.filter((data) => data.name.includes(params.name || ''))
-      }
-
-      const result = {
-        data: dataSource,
-        total: courseListDataSource.length,
-        success: true,
-        pageSize,
-        current: parseInt(`${params.currentPage}`, 10) || 1,
-      }
-      return res.json(result)
-    },
-    [courseList, dispatch],
-  )
-
-  /**
-   * 添加课程信息
-   * @param values
-   */
-  const addCourseInfo = useCallback(
-    (values) => {
-      dispatch({
-        type: 'Course/createNewCourse',
-        payload: values,
-        onError,
-        onFinish: () => {
-          // message.success('创建课程成功')
-          console.log(courseList)
-        },
-      })
-    },
-    [dispatch],
-  )
-
+const course_list = ({ courseList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false)
-  const [stepFormValues, setStepFormValues] = useState({})
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
+
   const columns = [
     {
       title: '课程ID',
       dataIndex: 'courseID',
+      sorter: true,
       hideInForm: true,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
     },
@@ -141,7 +37,16 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
       dataIndex: 'courseName',
       formItemProps: { rules: [{ required: true }] },
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>
+        return (
+          <a
+            onClick={() => {
+              // console.log(entity)
+              setRow(entity)
+            }}
+          >
+            {dom}
+          </a>
+        )
       },
     },
     {
@@ -171,11 +76,9 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a
-          // onClick={ () => { handleEdit(record) } }
-          >
-            切换
-          </a>
+          <a>切换</a>
+          <Divider type='vertical' />
+          <a>删除</a>
         </>
       ),
     },
@@ -190,12 +93,8 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
       dataIndex: 'courseName',
     },
     {
-      title: '教师ID',
-      dataIndex: 'teacherID',
-    },
-    {
-      title: '教师姓名',
-      dataIndex: 'teacherName',
+      title: '开课学校',
+      dataIndex: 'courseCreatorSchoolId'
     },
     {
       title: '课程学分',
@@ -252,21 +151,73 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
       ),
     },
   ]
+
+  useMount(() => {
+    console.log('准备接受数据')
+    dispatch({
+      type: 'Course/getAllCourse',
+      onError,
+    })
+  })
+
+  /**
+   * 格式化课程数据
+   * @param courseList
+   */
+  const FormatData = (courseList) => {
+    const formattedCourseList = []
+    for (let i = 0; i < courseList.length; i++) {
+      formattedCourseList.push({
+        key: i,
+        courseID: courseList[i].courseId,
+        courseName: courseList[i].courseName,
+        courseCredit: courseList[i].courseCredit,
+        courseStudyTimeNeeded: courseList[i].courseStudyTimeNeeded,
+        courseType: courseList[i].courseType,
+        courseDescription: courseList[i].courseDescription,
+        courseStartTime: courseList[i].courseStartTime,
+        courseEndTime: courseList[i].courseEndTime,
+        courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
+      })
+    }
+    return formattedCourseList
+  }
+
+  /**
+   * 添加课程信息
+   * @param values
+   */
+  const addCourseInfo = useCallback(
+    (values) => {
+      dispatch({
+        type: 'Course/createNewCourse',
+        payload: values,
+        onError,
+        onFinish: () => {
+          message.success('创建课程成功')
+          console.log(courseList)
+        },
+      })
+    },
+    [dispatch],
+  )
+
   return (
     <PageContainer>
       <ProTable
-        headerTitle='查询课程'
+        headerTitle='所有课程'
         actionRef={actionRef}
         rowKey='key'
-        search={{
-          labelWidth: 120,
-        }}
+        // search={{
+        //   labelWidth: 120,
+        // }}
+        search={false}
         toolBarRender={() => [
           <Button type='primary' onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => getCourseList({ ...params, sorter, filter })}
+        dataSource={FormatData(courseList)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -349,43 +300,25 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
                 label='课程类型'
                 width='m'
                 rules={[{ required: true }]}
-                initialValue='1'
+                initialValue='必修'
                 options={[
-                  { value: '1', label: '必修' },
-                  { value: '2', label: '选修' },
+                  { value: '必修', label: '必修' },
+                  { value: '选修', label: '选修' },
                 ]}
               />
             </StepsForm.StepForm>
             <StepsForm.StepForm name='createStep3'>
               <FormItem name='course_time' label='课程开始结束时间' rules={[{ required: true }]}>
-                <RangePicker showTime />
+                <RangePicker
+                  showTime
+                  format={'YYYY/MM/DD HH:mm'}
+                  placeholder={['开始时间', '结束时间']}
+                />
               </FormItem>
             </StepsForm.StepForm>
           </StepsForm>
         </ProCard>
       </CreateForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value)
-
-            if (success) {
-              handleUpdateModalVisible(false)
-              setStepFormValues({})
-
-              if (actionRef.current) {
-                actionRef.current.reload()
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false)
-            setStepFormValues({})
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
 
       <Drawer
         width={600}
@@ -402,6 +335,7 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
             request={async () => ({
               data: row || {},
             })}
+            // dataSource={row}
             params={{
               id: row?.courseID,
             }}
@@ -414,4 +348,3 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
 }
 
 export default connect(mapStateToProps)(course_list)
-// export default course_list
