@@ -1,6 +1,6 @@
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Tag, Space} from 'antd'
+import {Input, Button, Table, Tag, Space} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { Search } = Input;

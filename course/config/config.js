@@ -283,6 +283,18 @@ export default defineConfig({
               ],
             },
             {
+              path: '/file',
+              name: '文件',
+              icon: 'profile',
+              routes: [
+                {
+                  name: '文件列表',
+                  path: '/file/file-list',
+                  component: './file/teacher/FileList',
+                },
+              ],
+            },
+            {
               component: '404',
             },
             // {
