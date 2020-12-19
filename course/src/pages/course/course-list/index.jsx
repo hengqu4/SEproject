@@ -27,10 +27,10 @@ const course_list = ({ courseList = [], newCourseInfo = {}, dispatch = () => {} 
   const getCourseList = useCallback(
     async (req, res, u) => {
       console.log('准备接受数据')
-      dispatch({
+      await dispatch({
         type: 'Course/getAllCourse',
         onError,
-        onFinish: console.log(courseList)
+        // onFinish: console.log(courseList)
       })
 
       let realUrl = u

@@ -38,11 +38,12 @@ const effects = {
     //     console.log('error boy')
     //   }),
 
-    console.log(res) 
+    // console.log(res) 
     yield put({
       type: 'setCourseList',
       payload: res.data,
     })
+    console.log(this.state.courseList)
   }),
 
   createNewCourse: generateEffect(function* ({ payload }, { call, put, select }) {
