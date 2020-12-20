@@ -57,7 +57,7 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
 
   const onLinkClicked = () => {
     // TODO: get currentLab course_case_id
-    console.log(currentLab == null ? allLabsData[0].course_case_id : currentLab)
+    console.log(currentLab == null ? allLabsData[0].courseCaseid : currentLab)
   }
 
   useMount(() => {
@@ -101,7 +101,7 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
               onChange={onLabTabChange}
             >
               {allLabsData.map((i) => (
-                <TabPane tab={i.case_id} key={i.course_case_id}>
+                <TabPane tab={i.caseId} key={i.courseCaseId}>
                   <div>
                     <h4
                       style={{

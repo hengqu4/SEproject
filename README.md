@@ -1,5 +1,6 @@
 # SEproject
 
+![Node.js CI](https://github.com/hengqu4/SEproject/workflows/Node.js%20CI/badge.svg)
 ```json
 //若重新启动
 //在package.json中

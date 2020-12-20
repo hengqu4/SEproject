@@ -29,7 +29,7 @@ class Analysis extends Component {
     console.log(this.props, '*&*')
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
-        type: 'dashboardAndanalysis/fetch',
+        type: 'studentDashboard/fetch',
       })
     })
   }
@@ -38,7 +38,7 @@ class Analysis extends Component {
     const { dispatch } = this.props
     console.log(this.props, '*&*')
     dispatch({
-      type: 'dashboardAndanalysis/clear',
+      type: 'studentDashboard/clear',
     })
     cancelAnimationFrame(this.reqRef)
     clearTimeout(this.timeoutId)
@@ -63,7 +63,7 @@ class Analysis extends Component {
       rangePickerValue,
     })
     dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
+      type: 'studentDashboard/fetchSalesData',
     })
   }
 
@@ -74,7 +74,7 @@ class Analysis extends Component {
       rangePickerValue: getTimeDistance(type),
     })
     dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
+      type: 'studentDashboard/fetchSalesData',
     })
   }
 
@@ -107,7 +107,7 @@ class Analysis extends Component {
 
   render() {
     const { rangePickerValue, salesType, currentTabKey } = this.state
-    const { dashboardAndanalysis, loading } = this.props
+    const { studentDashboard, loading } = this.props
     const {
       visitData,
       visitData2,
@@ -118,7 +118,7 @@ class Analysis extends Component {
       salesTypeData,
       salesTypeDataOnline,
       salesTypeDataOffline,
-    } = dashboardAndanalysis
+    } = studentDashboard
     let salesPieData
 
     if (salesType === 'all') {
@@ -203,7 +203,7 @@ class Analysis extends Component {
   }
 }
 
-export default connect(({ dashboardAndanalysis, loading }) => ({
-  dashboardAndanalysis,
-  loading: loading.effects['dashboardAndanalysis/fetch'],
+export default connect(({ studentDashboard, loading }) => ({
+  studentDashboard,
+  loading: loading.effects['studentDashboard/fetch'],
 }))(Analysis)

@@ -37,10 +37,10 @@ const FormatData = (allLabList) => {
   const formattedLabList = []
   for (let i = 0; i < allLabList.length; i++) {
     formattedLabList.push({
-      key: allLabList[i].experiment_case_id,
-      name: allLabList[i].experiment_case_name,
-      desc: allLabList[i].experiment_case_description,
-      updatedAt: allLabList[i].case_created_timestamp,
+      key: allLabList[i].experimentCaseId,
+      name: allLabList[i].experimentCaseName,
+      desc: allLabList[i].experimentCaseDescription,
+      updatedAt: allLabList[i].caseCreatedTimestamp,
       status: 0,
     })
   }
@@ -217,10 +217,10 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
 
   const handlePublish = (value) => {
     const payload = {
-      case_id: publishCaseId,
-      case_start_timestamp: value[0].format(),
-      case_end_timestamp: value[1].format(),
-      course_id: 1,
+      caseId: publishCaseId,
+      caseStartTimestamp: value[0].format(),
+      caseEndTimestamp: value[1].format(),
+      courseId: 1,
     }
 
     publishLabCase(payload)

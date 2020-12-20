@@ -13,7 +13,7 @@ const initState = {
   radarData: [],
 }
 const Model = {
-  namespace: 'dashboardAndanalysis',
+  namespace: 'studentDashboard',
   state: initState,
   effects: {
     *fetch(_, { call, put }) {

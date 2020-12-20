@@ -42,12 +42,6 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: '分析页',
-              icon: 'smile',
-              path: '/dashboardanalysis',
-              component: './DashboardAnalysis',
-            },
-            {
               name: 'register-result',
               path: '/user/register-result',
               component: './user/register-result',
@@ -79,19 +73,54 @@ export default defineConfig({
               redirect: '/course',
             },
             {
+              name: '课程模块',
+              path: '/course',
+              icon: 'dashboard',
+              routes: [
+                {
+                  path: '/',
+                  redirect: '/course/course-list',
+                },
+                {
+                  name: '课程列表',
+                  icon: 'smile',
+                  path: '/course/course-list',
+                  component: './course/course-list',
+                },
+                {
+                  name: '课程编辑',
+                  icon: 'smile',
+                  path: '/course/course-edit/courseID=:courseID&',
+                  component: './course/course-edit',
+                },
+                {
+                  name: '绑定教师',
+                  icon: 'smile',
+                  path: '/course/course-bind',
+                  component: './course/course-bind',
+                },
+              ],
+            },
+            {
               path: '/grade',
               name: '成绩模块',
               icon: 'dashboard',
               routes: [
                 {
                   path: '/',
-                  redirect: '/dashboard/analysis',
+                  redirect: '/grade/analysis',
                 },
                 {
                   name: '成绩看板',
                   icon: 'smile',
                   path: '/grade/analysis',
                   component: './dashboard/teacherDashboard',
+                },
+                {
+                  name: '我的成绩',
+                  icon: 'smile',
+                  path: '/grade/mygrade',
+                  component: './dashboard/studentDashboard',
                 },
               ],
             },
@@ -100,12 +129,6 @@ export default defineConfig({
               icon: 'highlight',
               path: '/homework',
               routes: [
-                {
-                  name: '我的成绩',
-                  icon: 'smile',
-                  path: '/grade/mygrade',
-                  component: './dashboard/studentDashboard',
-                },
               ],
             },
             {
@@ -216,77 +239,26 @@ export default defineConfig({
               authority: ['teacher'],
             },
             {
-              path: '/profile',
-              name: 'profile',
+              path: '/announcement',
+              name: '公告',
               icon: 'profile',
               routes: [
                 {
-                  path: '/',
-                  redirect: '/profile/basic',
+                  name: '公告列表',
+                  path: '/announcement/anc-list',
+                  component: './announcement/teacher/AncList',
                 },
                 {
-                  name: 'basic',
-                  icon: 'smile',
-                  path: '/profile/basic',
-                  component: './profile/basic',
+                  name: '公告详情',
+                  path: '/announcement/anc-list/anc-info',
+                  hideInMenu: true,
+                  component: './announcement/teacher/AncInfo',
                 },
                 {
-                  name: 'advanced',
-                  icon: 'smile',
-                  path: '/profile/advanced',
-                  component: './profile/advanced',
-                },
-              ],
-            },
-            {
-              name: 'result',
-              icon: 'CheckCircleOutlined',
-              path: '/result',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/result/success',
-                },
-                {
-                  name: 'success',
-                  icon: 'smile',
-                  path: '/result/success',
-                  component: './result/success',
-                },
-                {
-                  name: 'fail',
-                  icon: 'smile',
-                  path: '/result/fail',
-                  component: './result/fail',
-                },
-              ],
-            },
-            {
-              name: 'exception',
-              icon: 'warning',
-              path: '/exception',
-              routes: [
-                {
-                  path: '/',
-                  redirect: '/exception/403',
-                },
-                {
-                  name: '403',
-                  icon: 'smile',
-                  path: '/exception/403',
-                  component: './exception/403',
-                },
-                {
-                  name: '404',
-                  icon: 'smile',
-                  path: '/exception/404',
-                  component: './exception/404',
-                },
-                {
-                  name: '500',
-                  icon: 'smile',
-                  path: '/exception/500',
-                  component: './exception/500',
+                  name: '编辑公告',
+                  path: '/announcement/anc-list/anc-edit',
+                  hideInMenu: true,
+                  component: './announcement/teacher/AncEdit',
                 },
               ],
             },
@@ -326,79 +298,8 @@ export default defineConfig({
               ],
             },
             {
-              path: '/announcement',
-              name: '公告',
-              icon: 'profile',
-              routes: [
-                {
-                  name: '公告列表',
-                  path: '/announcement/anc-list',
-                  component: './announcement/teacher/AncList',
-                },
-                {
-                  name: '公告详情',
-                  path: '/announcement/anc-list/anc-info',
-                  hideInMenu: true,
-                  component: './announcement/teacher/AncInfo',
-                },
-                {
-                  name: '编辑公告',
-                  path: '/announcement/anc-list/anc-edit',
-                  hideInMenu: true,
-                  component: './announcement/teacher/AncEdit',
-                },
-              ],
-            },
-            {
               component: '404',
             },
-            // {
-            //   name: 'result',
-            //   icon: 'CheckCircleOutlined',
-            //   path: '/result',
-            //   routes: [
-            //     {
-            //       path: '/',
-            //       redirect: '/result/success',
-            //     },
-            //     {
-            //       name: 'success',
-            //       path: '/result/success',
-            //       component: './result/success',
-            //     },
-            //     {
-            //       name: 'fail',
-            //       path: '/result/fail',
-            //       component: './result/fail',
-            //     },
-            //   ],
-            // },
-            // {
-            //   name: 'exception',
-            //   icon: 'warning',
-            //   path: '/exception',
-            //   routes: [
-            //     {
-            //       path: '/',
-            //       redirect: '/exception/403',
-            //     },
-            //     {
-            //       name: '403',
-            //       path: '/exception/403',
-            //       component: './exception/403',
-            //     },
-            //     {
-            //       name: '404',
-            //       path: '/exception/404',
-            //       component: './exception/404',
-            //     },
-            //     {
-            //       name: '500',
-            //       path: '/exception/500',
-            //       component: './exception/500',
-            //     },
-            //   ],
-            // },
           ],
         },
       ],
