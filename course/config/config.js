@@ -115,6 +115,12 @@ export default defineConfig({
                   component: './homework/teacher/HwInfo',
                 },
                 {
+                  name: '编辑作业详情',
+                  path: '/homework/hw-list/hw-edit',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwEdit',
+                },
+                {
                   name: '学生看到的作业列表',
                   icon: 'smile',
                   path: '/homework/hw-list1',
@@ -291,6 +297,11 @@ export default defineConfig({
                   name: '文件列表',
                   path: '/file/file-list',
                   component: './file/teacher/FileList',
+                },
+                {
+                  name: '编辑文件',
+                  path: '/file/file-edit',
+                  component: './file/teacher/FileEdit',
                 },
               ],
             },

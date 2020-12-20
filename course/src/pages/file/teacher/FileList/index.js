@@ -33,7 +33,7 @@ const columns = [
         key: '4',
     },
     {
-      title: '上传日期',
+      title: '日期',
       dataIndex: 'date',
       key: '5',
     },
@@ -110,7 +110,7 @@ const Bread = () => {
                   
             </div>
             <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-              <Button type="dashed" style={{width: '80%'}} onClick={() => {window.location.href="http://localhost:8000/announcement/anc-list/anc-edit"}}>
+              <Button type="dashed" style={{width: '80%'}} onClick={() => window.location.href='http://localhost:8000/file/file-edit'}>
                  + 添加
               </Button>
             </div> 

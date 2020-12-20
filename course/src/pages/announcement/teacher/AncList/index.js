@@ -10,23 +10,26 @@ const onSearch = value => console.log(value);
 
 const columns = [
     {
-        title: '标题',
+        title: '公告名称',
         dataIndex: 'title',
         key: '1',
+        render: (text, index) => {
+          return <a>{text}</a>
+        },
     },
     {
-        title: '内容',
+        title: '公告内容',
         dataIndex: 'content',
         key: '2',
     },
     {
-        title: '日期',
-        dataIndex: 'date',
-        key: '3',
+      title: '发布者',
+      dataIndex: 'owner',
+      key: '3',
     },
     {
-        title: '发布者',
-        dataIndex: 'owner',
+        title: '日期',
+        dataIndex: 'date',
         key: '4',
     },
     {
@@ -36,7 +39,7 @@ const columns = [
         render: () => (
             <Space size="middle">
               <a href='http://localhost:8000/announcement/anc-list/anc-info'>查看详情</a>
-              <a>编辑</a>
+              <a href='http://localhost:8000/announcement/anc-list/anc-edit'>编辑</a>
               <a>删除</a>
             </Space>
         ),
