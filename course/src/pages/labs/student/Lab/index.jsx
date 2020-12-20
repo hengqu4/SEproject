@@ -174,12 +174,13 @@ const Lab = (props) => {
               defaultValue={comment}
             />
           </FormItem>
+          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >
+          >*/}
             <Button>保存草稿</Button>
             <Button
               style={{
@@ -191,7 +192,8 @@ const Lab = (props) => {
             >
               提交作业
             </Button>
-          </FormItem>
+            {/*
+          </FormItem>*/}
         </Form>
       </Card>
     </PageContainer>

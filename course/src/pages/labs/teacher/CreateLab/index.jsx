@@ -108,12 +108,12 @@ const CreateLab = (props) => {
           <FormItem>
             <ProFormUploadDragger {...formItemLayout} max={4} label='上传附件' name='upload' />
           </FormItem>
-          <FormItem
+          {/*<FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >
+          >*/}
             <Button>取消创建</Button>
             <Button
               style={{
@@ -125,7 +125,7 @@ const CreateLab = (props) => {
             >
               创建实验
             </Button>
-          </FormItem>
+          {/*</FormItem>*/}
         </Form>
       </Card>
     </PageContainer>

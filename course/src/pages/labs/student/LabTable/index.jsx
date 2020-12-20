@@ -1,9 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input } from 'antd'
+import { Button, Divider, message, Input, notification } from 'antd'
 import React, { useState, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
+import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
-import { queryRule, updateRule, addRule, removeRule } from './service'
+// import { queryRule, updateRule, addRule, removeRule } from './service'
 import {Link} from 'react-router-dom'
 import CreateForm from './components/CreateForm'
 import Authorized from '@/components/Authorized/Authorized';
@@ -32,7 +33,26 @@ const handleRemove = async (selectedRows) => {
 }
 const noMatch = <div />;
 
-const TableList = () => {
+const FormatData = (labList) => {
+  const formattedLabList = []
+  for (let i = 0; i < labList.length; i++) {
+    formattedLabList.push({
+      key: labList[i].experiment_case_id,
+      name: labList[i].experiment_case_name,
+      desc: labList[i].experiment_case_description,
+      updatedAt: null,
+      status: 0,
+    })
+  }
+  return formattedLabList
+}
+
+const LabDatabase = ({ labDatabase }) => ({
+  isSuccess: labDatabase.isSuccess,
+  labList: labDatabase.labList,
+})
+
+const TableList = ({ labList = [], dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
