@@ -99,6 +99,16 @@ export default defineConfig({
                   path: '/course/course-bind',
                   component: './course/course-bind',
                 },
+                {
+                  name: '小节信息',
+                  path: '/course/chap-list',
+                  component: './course/teacher/ChapList',
+                },
+                {
+                  name: '编辑小节信息',
+                  path: '/course/ed-chap',
+                  component: './course/teacher/EditChap',
+                }
               ],
             },
             {
@@ -122,6 +132,30 @@ export default defineConfig({
                   path: '/grade/mygrade',
                   component: './dashboard/studentDashboard',
                 },
+                {
+                  name: '作业详情',
+                  path: '/homework/hw-list/hw-info',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwInfo',
+                },
+                {
+                  name: '编辑作业详情',
+                  path: '/homework/hw-list/hw-edit',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwEdit',
+                },
+                {
+                  name: '学生看到的作业列表',
+                  icon: 'smile',
+                  path: '/homework/hw-list1',
+                  component: './homework/student/HwList',
+                },
+                {
+                  name: '学生看到的作业详情',
+                  path: '/homework/hw-list1/hw-info',
+                  hideInMenu: true,
+                  component: './homework/student/HwInfo',
+                }
               ],
             },
             {
@@ -294,6 +328,23 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/account/bulkimport',
                   component: './account/bulkimport',
+                },
+              ],
+            },
+            {
+              path: '/file',
+              name: '文件',
+              icon: 'profile',
+              routes: [
+                {
+                  name: '文件列表',
+                  path: '/file/file-list',
+                  component: './file/teacher/FileList',
+                },
+                {
+                  name: '编辑文件',
+                  path: '/file/file-edit',
+                  component: './file/teacher/FileEdit',
                 },
               ],
             },
