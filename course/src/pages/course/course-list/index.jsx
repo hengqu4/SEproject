@@ -28,7 +28,6 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
     {
       title: '课程ID',
       dataIndex: 'courseID',
-      sorter: true,
       hideInForm: true,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
     },
@@ -68,6 +67,7 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
       title: '课程描述',
       dataIndex: 'courseDescription',
       valueType: 'textarea',
+      ellipsis: true,
       formItemProps: { rules: [{ required: true, max: 50 }] },
     },
     {

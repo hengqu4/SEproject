@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { fakeSubmitForm } from './service';
+// import { fakeSubmitForm } from './service';
 
 const Model = {
   namespace: 'courseSettingAndCourseEdit',

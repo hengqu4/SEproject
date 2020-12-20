@@ -77,6 +77,36 @@ const effects = {
       payload: res.data,
     })
   }),
+
+  updateSomeCourse: generateEffect(function* ({ payload }, { call, put }) {
+    console.log('开始更新数据')
+    const newValues = cloneDeep(payload)
+
+    for (var key in newValues) {
+      if (newValues[key] === undefined || newValues[key] === null) {
+        delete newValues[key]
+        continue
+      }
+      if (
+        key.toString() == 'courseID' ||
+        key.toString() == 'courseCredit' ||
+        key.toString() == 'courseStudyTimeNeeded'
+      ) {
+        newValues[key] = parseInt(newValues[key])
+      } else if (key.toString() == 'courseTime') {
+        newValues.courseStartTime = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+          newValues.courseTime[0],
+        )
+        newValues.courseEndTime = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+          newValues.courseTime[1],
+        )
+        delete newValues[key]
+      }
+    }
+    console.log(newValues)
+    yield call(CourseServices.updateCourseInfo, newValues)
+
+  }),
 }
 
 const reducers = {

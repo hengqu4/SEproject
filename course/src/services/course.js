@@ -26,11 +26,12 @@ export const fetchOneCourseInfo = (courseID) => {
   })
 }
 
-export const editCourseInfo = (data) => {
-  return request('/course-info/1', {
+export const updateCourseInfo = (data) => {
+  console.log(data)
+  return request(SafeUrlAssembler('/course-info/:course_id').param({course_id: data.courseID}).toString(), {
     method: 'PUT',
-    prefix: API_COURSE_PREFIX,
     data,
+    prefix: API_COURSE_PREFIX,
   })
 }
 
