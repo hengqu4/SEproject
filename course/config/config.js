@@ -132,6 +132,19 @@ export default defineConfig({
                   path: '/grade/mygrade',
                   component: './dashboard/studentDashboard',
                 },
+              ],
+            },
+            {
+              name: '作业',
+              icon: 'highlight',
+              path: '/homework',
+              routes: [
+                {
+                  name: '作业列表',
+                  icon: 'smile',
+                  path: '/homework/hw-list',
+                  component: './homework/teacher/HwList',
+                },
                 {
                   name: '作业详情',
                   path: '/homework/hw-list/hw-info',
@@ -156,13 +169,6 @@ export default defineConfig({
                   hideInMenu: true,
                   component: './homework/student/HwInfo',
                 }
-              ],
-            },
-            {
-              name: '作业',
-              icon: 'highlight',
-              path: '/homework',
-              routes: [
               ],
             },
             {
