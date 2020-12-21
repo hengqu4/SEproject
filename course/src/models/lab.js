@@ -5,12 +5,23 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
+// const defaultPublishLab = {
+//   case_id: -1,
+//   course_id: -1,
+//   case_start_timestamp: null,
+//   case_end_timestamp: null,
+//   course_case_id: -1,
+// }
+
 const defaultPublishLab = {
-  case_id: -1,
-  course_id: -1,
-  case_start_timestamp: null,
-  case_end_timestamp: null,
-  course_case_id: -1,
+  caseId: -1,
+  courseId: -1,
+  caseStartTimeStamp: null,
+  caseEndTimeStamp: null,
+  courseCaseId: -1,
+  experimentCaseDescription: null,
+  experimentName:" ",
+  experimentCaseName:" ",
 }
 
 const defaultState = {

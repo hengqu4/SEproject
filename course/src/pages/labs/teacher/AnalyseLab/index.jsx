@@ -101,7 +101,8 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
               onChange={onLabTabChange}
             >
               {allLabsData.map((i) => (
-                <TabPane tab={i.caseId} key={i.courseCaseId}>
+                // <TabPane tab={i.caseId} key={i.courseCaseId}>
+                <TabPane tab={i.experimentCaseName} key={i.courseCaseId}>
                   <div>
                     <h4
                       style={{

@@ -114,7 +114,6 @@ const CreateLab = (props) => {
               marginTop: 48,
             }}
           >*/}
-            <Button>取消创建</Button>
             <Button
               style={{
                 marginLeft: 16,

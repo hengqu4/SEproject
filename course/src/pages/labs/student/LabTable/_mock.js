@@ -24,7 +24,7 @@ const genList = (current, pageSize) => {
   return tableListDataSource
 }
 
-let tableListDataSource = genList(1, 34)
+let tableListDataSource = genList(1, 3)
 
 function getRule(req, res, u) {
   let realUrl = u

@@ -16,9 +16,9 @@ const FormatData = (allPendingList) => {
   for (let i = 0; i < allPendingList.length; i++) {
     const score = allPendingList[i].submission_score
     formattedLabList.push({
-      key: allPendingList[i].submission_case_id,
-      name: allPendingList[i].submission_uploader,
-      startTime: allPendingList[i].submission_timestamp,
+      key: allPendingList[i].submissionCaseId,
+      name: allPendingList[i].submissionUploader,
+      startTime: allPendingList[i].submissionTimestamp,
       status: score === -1 ? 1 : 0,
       score: score === -1 ? null : score,
     })

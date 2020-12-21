@@ -37,6 +37,16 @@ export const deleteLabCase = (courseId) => {
   })
 }
 
+// delete lab case (teacher)
+export const createLabCase = (data) => {
+  return request('/list/', {
+    method: 'POST',
+    prefix: API_LAB_DATABASE_PREFIX,
+    data,
+  })
+}
+
+
 // get all lab case (published)
 export const fetchAllLabCase = (courseId) => {
   return request(SafeUrlAssembler('/list/').segment(courseId).toString(), {
