@@ -20,8 +20,8 @@ const defaultPublishLab = {
   caseEndTimeStamp: null,
   courseCaseId: -1,
   experimentCaseDescription: null,
-  experimentName:" ",
-  experimentCaseName:" ",
+  experimentName:null,
+  experimentCaseName:null,
 }
 
 const defaultState = {
@@ -29,6 +29,7 @@ const defaultState = {
   allPendingList: [],
   newPublishLab: defaultPublishLab,
   allLabCaseList: [],
+  labCaseList:[],
 }
 
 const effects = {
@@ -50,6 +51,16 @@ const effects = {
   }),
   deleteLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.deleteLabCase, payload)
+    
+  }),
+  createLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.createLabCase, payload)
+    // yield call(LabServices.createLabCase, {
+    //   contest: {
+    //     ...newContestCopy,
+    //     courseId,
+    //   },
+    // })
   }),
   fetchAllLabCase: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.fetchAllLabCase, payload)
@@ -64,6 +75,22 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+
+  fetchLabCase: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchAllLabCase, payload)
+
+    yield put({
+      type: 'setLabCaseList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
+
+  
 }
 
 const reducers = {
@@ -86,6 +113,10 @@ const reducers = {
   }),
   setAllLabCaseList: generateReducer({
     attributeName: 'allLabCaseList',
+    transformer: defaultArrayTransformer,
+  }),
+  setLabCaseList: generateReducer({
+    attributeName: 'labCaseList',
     transformer: defaultArrayTransformer,
   }),
 }

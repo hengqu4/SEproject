@@ -20,17 +20,26 @@ import {
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
-import { connect } from 'umi'
+import { useMount } from 'react-use'
+import { connect, useParams, useRouteMatch, useLocation, Link, history } from 'umi'
 import styles from './style.less'
 
 const FormItem = Form.Item
 const { TextArea } = Input
 const { Paragraph } = Typography
 const { Countdown } = Statistic;
-const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
 
-const Lab = (props) => {
-  const { submitting } = props
+const LabCase = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  labsData: lab.labCaseList,
+})
+
+// const Lab = ({ labsData = [], dispatch = () => {} }) => {
+export const Lab = ({
+  labsData = [],
+  dispatch = () => {}
+}) => {
+  const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
   const formItemLayout = {
@@ -95,9 +104,6 @@ const Lab = (props) => {
     },
   ]
 
-  const desc = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
-  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
-
   const onFinish = (values) => {
     const { dispatch } = props
     dispatch({
@@ -116,21 +122,46 @@ const Lab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
 
+  useMount(() => {
+    console.log(params)
+    dispatch({
+      type: 'lab/fetchLabCase',
+      //  /api/v1/experiment/experiment-database/detail/7
+      payload: params,
+      onError: (err) => {
+        notification.error({
+          message: '获取实验列表失败',
+          description: err.message,
+        })
+      },
+    })
+  })
+    
+  const experimentName = "实验1"
+  const experimentCaseName = "案例名称案例名称"
+  const experimentCaseDescription = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
+  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
+  const caseEndTimestamp = "2020-12-22T09:00:00+08:00"
+  const endTime = Date.parse(caseEndTimestamp); 
+
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
+        <li>{deadline}</li>
         <Countdown 
           title="倒计时" 
           style={{position:'flxed',float:'right'}}
-          value={deadline} 
+          value={endTime}
           onFinish={onFinish} 
         />
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
-          <h2>实验1</h2>
-          <Paragraph>{desc}</Paragraph>
+          <h2>{experimentName}</h2>
+          <h3>{experimentCaseName}</h3>
+          <Paragraph>{experimentCaseDescription}</Paragraph>
           <div>
-            <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
-            <Tag icon={<UserOutlined />}>海纳</Tag>
+            <Tag icon={<ClockCircleOutlined />}>
+              截止时间：{endTime}
+            </Tag>
           
             <Button key='edit' type='link' icon={<EditTwoTone />}>
               编辑
@@ -188,7 +219,7 @@ const Lab = (props) => {
               }}
               type='primary'
               htmlType='submit'
-              loading={submitting}
+              // loading={submitting}
             >
               提交作业
             </Button>
@@ -200,6 +231,9 @@ const Lab = (props) => {
   )
 }
 
-export default connect(({ loading }) => ({
-  submitting: loading.effects['labsAndLab/submitRegularForm'],
-}))(Lab)
+
+export default connect(LabCase)(Lab)
+// export default connect(({ loading }) => ({
+//   submitting: loading.effects['labsAndLab/submitRegularForm'],
+// }))(Lab)
+

@@ -38,7 +38,8 @@ const FormatData = (allLabList) => {
   for (let i = 0; i < allLabList.length; i++) {
     formattedLabList.push({
       key: allLabList[i].experimentCaseId,
-      name: allLabList[i].experimentCaseName,
+      name: allLabList[i].experimentName,
+      caseName: allLabList[i].experimentCaseName,
       desc: allLabList[i].experimentCaseDescription,
       updatedAt: allLabList[i].caseCreatedTimestamp,
       status: 0,
@@ -138,10 +139,12 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
       align: 'center',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
+      title: '案例名称',
+      dataIndex: 'caseName',
       valueType: 'textarea',
-      align: 'center',
+      ellipsis: true,
+      search: false,
+      align:'center',
     },
     {
       title: '创建时间',

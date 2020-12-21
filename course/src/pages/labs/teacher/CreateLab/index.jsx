@@ -1,17 +1,50 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd'
+import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, Modal } from 'antd'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
-import { connect } from 'umi'
+import { connect, history } from 'umi'
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-// import ReactQuill from 'react-quill'
+import { useMount } from 'react-use'
 import styles from './style.less'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+// import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
 const FormItem = Form.Item
 const { Option } = Select
 const { RangePicker } = DatePicker
 const { TextArea } = Input
+const { confirm } = Modal;
+
+const mapStateToProps  = (labCase) =>  ({
+  experimentName: labCase.expName,
+  experimentCaseName: labCase.caseName,
+  experimentCaseDescription: labCase.caseDesc,
+  experimentCaseFileToken:labCase.caseFile,
+  // answerFileToken:labCase.answerFile,
+
+  // state: {},
+  // effects: {
+  //   *submitRegularForm({ payload }, { call }) {
+  //     yield call(fakeSubmitForm, payload)
+  //     message.success('提交实验作业成功')
+  //   },
+  // },
+})
+
+const FormatData = (labCase) => {
+  // const formattedLab = []
+  const formattedLab = {
+    experimentName: labCase.expName,
+    experimentCaseName: labCase.caseName,
+    experimentCaseDescription: labCase.caseDesc,
+    experimentCaseFileToken:"fake file token",
+    answerFileToken:"fake file token",
+    // experimentCaseFileToken:labCase.caseFile,
+    // answerFileToken:labCase.answerFile,
+  }
+  return formattedLab
+}
 
 const CreateLab = (props) => {
   const { submitting } = props
@@ -38,11 +71,23 @@ const CreateLab = (props) => {
     },
   }
 
-  const onFinish = (values) => {
+  const onFinish = (labCase) => {
+    console.log(labCase)
+    const data = FormatData(labCase)
+    console.log(data)
+    console.log(JSON.stringify(data))
     const { dispatch } = props
     dispatch({
-      type: 'labsAndCreateLab/submitRegularForm',
-      payload: values,
+      type: 'lab/createLabCase',
+      payload: data,
+      onError: (err) => {
+        notification.error({
+          message: '创建实验案例失败',
+          description: err.message,
+        }).then(
+          history.push('/labs/all')
+        )
+      },
     })
   }
 
@@ -56,6 +101,19 @@ const CreateLab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
 
+function showPromiseConfirm() {
+  confirm({
+    title: 'Do you want to delete these items?',
+    icon: <ExclamationCircleOutlined />,
+    content: 'When clicked the OK button, this dialog will be closed after 1 second',
+    onOk() {
+      return new Promise((resolve, reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+      }).catch(() => console.log('Oops errors!'));
+    },
+    onCancel() {},
+  });
+}
   return (
     <PageContainer>
       <Card bordered={false}>
@@ -76,7 +134,7 @@ const CreateLab = (props) => {
           <FormItem
             {...formItemLayout}
             label='实验标题'
-            name='title'
+            name='expName'
             rules={[
               {
                 required: true,
@@ -88,39 +146,59 @@ const CreateLab = (props) => {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label='实验描述'
-            name='description'
+            label='案例名称'
+            name='caseName'
             rules={[
               {
                 required: true,
-                message: '请输入实验描述',
+                message: '请输入案例名称',
               },
             ]}
+          >
+            <Input placeholder='请输入案例名称' />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                案例描述
+                <br/><em className={styles.optional}>（选填）</em>
+              </span>
+            }
+            name='caseDesc'
           >
             <TextArea
               style={{
                 minHeight: 32,
               }}
-              placeholder='请输入实验描述'
+              placeholder='请输入案例描述'
               rows={3}
             />
           </FormItem>
+
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label='上传附件' name='upload' />
+            <ProFormUploadDragger {...formItemLayout} max={4} label='实验附件' name='caseFile' />
           </FormItem>
+
+          <FormItem>
+            <ProFormUploadDragger {...formItemLayout} max={4} label='参考答案' name='answerFile' />
+          </FormItem>
+
           {/*<FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
           >*/}
+          
             <Button
               style={{
                 marginLeft: 16,
               }}
               type='primary'
               htmlType='submit'
-              loading={submitting}
+              // onClick={showPromiseConfirm}
+              // loading={submitting}
             >
               创建实验
             </Button>
@@ -131,6 +209,8 @@ const CreateLab = (props) => {
   )
 }
 
-export default connect(({ loading }) => ({
-  submitting: loading.effects['labsAndCreateLab/submitRegularForm'],
-}))(CreateLab)
+export default connect(mapStateToProps)(CreateLab)
+
+// export default connect(({ loading }) => ({
+//   submitting: loading.effects['labsAndCreateLab/submitRegularForm'],
+// }))(CreateLab)

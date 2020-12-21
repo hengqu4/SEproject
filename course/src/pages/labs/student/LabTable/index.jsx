@@ -2,10 +2,9 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, message, Input, notification } from 'antd'
 import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
-import {Link} from 'react-router-dom'
-import { connect } from 'umi'
+import { useMount } from 'react-use'
+import { connect,Link,history } from 'umi'
 import CreateForm from './components/CreateForm'
 import Authorized from '@/components/Authorized/Authorized';
 
@@ -76,8 +75,9 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
           },
         ],
       },
+      // <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> {item.name}</Link>
       render: (_, row) => row?.labTitle?.map(
-        (item) => <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> {item.name}</Link>
+        (item) => <Link to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> {item.name}</Link>
       ),
 
       align:'center',
@@ -90,15 +90,6 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       search: false,
       align:'center',
     },
-    // {
-    //   title: '实验描述',
-    //   dataIndex: 'desc',
-    //   valueType: 'textarea',
-    //   ellipsis: true,
-    //   search: false,
-    //   // copyable: true,
-    //   align:'center',
-    // },
     {
       title: '状态',
       dataIndex: 'status',
@@ -161,7 +152,7 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       valueType: 'option',
       search: false,
       render: (_, row) => row?.labTitle?.map(
-        (item) => <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> 进入实验</Link>
+        (item) => <Link to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> 进入实验</Link>
       ),
     },
   ]

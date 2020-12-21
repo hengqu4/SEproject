@@ -37,7 +37,7 @@ export const deleteLabCase = (courseId) => {
   })
 }
 
-// delete lab case (teacher)
+// create lab case (teacher)
 export const createLabCase = (data) => {
   return request('/list/', {
     method: 'POST',
@@ -46,10 +46,17 @@ export const createLabCase = (data) => {
   })
 }
 
-
 // get all lab case (published)
 export const fetchAllLabCase = (courseId) => {
   return request(SafeUrlAssembler('/list/').segment(courseId).toString(), {
+    method: 'GET',
+    prefix: API_LAB_COURSE_CASE,
+  })
+}
+
+// get a lab case (published)
+export const fetchLabCase = (courseId, courseCaseId) => {
+  return request(SafeUrlAssembler('/detail/').segment(courseId, courseCaseId).toString(), {
     method: 'GET',
     prefix: API_LAB_COURSE_CASE,
   })
