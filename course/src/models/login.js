@@ -73,8 +73,8 @@ const Model = {
     changeLoginStatus(state, { payload }) {
       console.log(payload)
       if (payload.isSuccess) {
-        setAuthority(AUTHORITY_LIST[Number(payload.data.character)])
-        console.log(`current authority is :${AUTHORITY_LIST[Number(payload.data.character)]}`)
+        setAuthority(AUTHORITY_LIST[Number(payload.data.character)-1])
+        console.log(`current authority is :${AUTHORITY_LIST[Number(payload.data.character)-1]}`)
       }
       return { ...state, status: payload.status, type: payload.type }
     },
