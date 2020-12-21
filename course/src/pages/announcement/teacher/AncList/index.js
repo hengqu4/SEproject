@@ -1,6 +1,6 @@
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Tag, Space} from 'antd'
+import {Input, Button, Table, Tag, Space} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
@@ -10,33 +10,36 @@ const onSearch = value => console.log(value);
 
 const columns = [
     {
-        title: '标题',
+        title: '公告名称',
         dataIndex: 'title',
-        key: 'title',
+        key: '1',
+        render: (text, index) => {
+          return <a>{text}</a>
+        },
     },
     {
-        title: '内容',
+        title: '公告内容',
         dataIndex: 'content',
-        key: 'content',
+        key: '2',
+    },
+    {
+      title: '发布者',
+      dataIndex: 'owner',
+      key: '3',
     },
     {
         title: '日期',
         dataIndex: 'date',
-        key: 'date',
-    },
-    {
-        title: '发布者',
-        dataIndex: 'owner',
-        key: 'owner',
+        key: '4',
     },
     {
         title: '操作',
         dataIndex: 'opr',
-        key: 'opr',
+        key: '5',
         render: () => (
             <Space size="middle">
               <a href='http://localhost:8000/announcement/anc-list/anc-info'>查看详情</a>
-              <a>编辑</a>
+              <a href='http://localhost:8000/announcement/anc-list/anc-edit'>编辑</a>
               <a>删除</a>
             </Space>
         ),
@@ -52,28 +55,28 @@ const data = [
       owner: 'Dri',
     },
     {
-      key: '1',
+      key: '2',
       title: '作业',
       content: '第二次作业发啦',
       date: '2020.11.24',
       owner: 'Dri',
     },
     {
-        key: '1',
+        key: '3',
         title: '作业',
         content: '第三次作业发啦',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
-        key: '1',
+        key: '4',
         title: '作业',
         content: '第四次作业发啦',
         date: '2020.11.24',
         owner: 'Dri',
     },
     {
-        key: '1',
+        key: '5',
         title: '作业',
         content: '第五次作业发啦',
         date: '2020.11.24',
