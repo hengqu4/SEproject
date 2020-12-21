@@ -12,7 +12,7 @@ export const fetchLabDatabase = () => {
 
 // fetch all students' report (teacher)
 // TODO: modify URL
-export const fetchAllStudentReport = (params) => {
+export const fetchAllStudentReport = (courseId) => {
   return request('/teacher/list/1', {
     method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
@@ -42,5 +42,13 @@ export const fetchAllLabCase = (courseId) => {
   return request(SafeUrlAssembler('/list/').segment(courseId).toString(), {
     method: 'GET',
     prefix: API_LAB_COURSE_CASE,
+  })
+}
+
+// publish lab remark (teacher)
+export const remarkSubmission = (courseCaseId) => {
+  return request(SafeUrlAssembler('/teacher/public/').segment(courseCaseId).toString(), {
+    method: 'PUT',
+    prefix: API_LAB_REPORT_PREFIX,
   })
 }
