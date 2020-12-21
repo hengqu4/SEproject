@@ -87,7 +87,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     }).then((response) => {
       console.log(response)
       if (response.isSuccess) {
-        const account = response.data.user_id
+        const account = response.data.userId
         message.success('注册成功！')
         history.push({
           pathname: '/user/register-result',
