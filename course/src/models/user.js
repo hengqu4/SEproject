@@ -28,9 +28,12 @@ const UserModel = {
   reducers: {
     saveCurrentUser(state, action) {
       console.log('!!!!!3')
-      const currentUser = {
-        name: action.payload.data.realname,
-        avatar: {},
+      let currentUser = {}
+      if (action.payload) {
+        currentUser = {
+          name: action.payload.data.realname,
+          avatar: {},
+        }
       }
       return { ...state, currentUser: currentUser || {} }
     },
