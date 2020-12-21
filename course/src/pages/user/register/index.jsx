@@ -1,4 +1,4 @@
-import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } from 'antd'
+import { Form, Button, Col, Input, Popover, Progress, Row, Select, message, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi'
 import styles from './style.less'
@@ -95,6 +95,13 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             account,
           },
         })
+      }
+      else {
+        const errorText = response.error.message
+        notification.error({
+          message: `注册失败`,
+          description: errorText,
+        })        
       }
     })
   }
