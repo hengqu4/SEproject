@@ -42,17 +42,17 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: 'register-result',
+              name: '注册结果',
               path: '/user/register-result',
               component: './user/register-result',
             },
             {
-              name: 'register',
+              name: '注册',
               path: '/user/register',
               component: './user/register',
             },
             {
-              name: 'Login',
+              name: '登录',
               icon: 'smile',
               path: '/user/login',
               component: './user/Login',

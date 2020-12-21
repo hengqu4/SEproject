@@ -8,7 +8,7 @@ const proSettings = {
   "menu": {
     "locale": true
   },
-  "title": "Lab",
+  "title": "虚仿平台",
   "pwa": false,
   "iconfontUrl": "",
   "splitMenus": false
