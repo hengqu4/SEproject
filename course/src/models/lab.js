@@ -55,12 +55,9 @@ const effects = {
   }),
   createLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.createLabCase, payload)
-    // yield call(LabServices.createLabCase, {
-    //   contest: {
-    //     ...newContestCopy,
-    //     courseId,
-    //   },
-    // })
+  }),
+  submitLabCase: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.submitLabCase, payload)
   }),
   fetchAllLabCase: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.fetchAllLabCase, payload)
@@ -77,7 +74,7 @@ const effects = {
   }),
 
   fetchLabCase: generateEffect(function* ({ payload }, { call, put }) {
-    const res = yield call(LabServices.fetchAllLabCase, payload)
+    const res = yield call(LabServices.fetchLabCase, payload)
 
     yield put({
       type: 'setLabCaseList',

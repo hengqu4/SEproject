@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useMemo, useCallback, useRef } from 'react'
 import {
   Button,
   Card,
@@ -15,8 +15,8 @@ import {
   Tag,
   PageHeader,
   Typography,
+  notification 
 } from 'antd'
-
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
@@ -29,16 +29,22 @@ const { TextArea } = Input
 const { Paragraph } = Typography
 const { Countdown } = Statistic;
 
-const LabCase = ({ lab }) => ({
+const FormatData = (courseCaseId,userId,fileUpload) => {
+  const formattedLab = {
+    courseCaseId: courseCaseId,
+    submissionUploader: userId,
+    submissionFileToken: "student submit fake token"
+  }
+  return formattedLab
+}
+
+const LabCase = ({ lab,user }) => ({
   isSuccess: lab.isSuccess,
-  labsData: lab.labCaseList,
+  labData: lab.labCaseList,
+  currentUser: user.currentUser,
 })
 
-// const Lab = ({ labsData = [], dispatch = () => {} }) => {
-export const Lab = ({
-  labsData = [],
-  dispatch = () => {}
-}) => {
+const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
   const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
@@ -104,12 +110,26 @@ export const Lab = ({
     },
   ]
 
-  const onFinish = (values) => {
-    const { dispatch } = props
+  const onFinish = (form) => {
+    // console.log(params.courseCaseId)
+    // console.log(currentUser.id)
+    // console.log(form.fileUpload)
+    console.log(params.courseCaseId,currentUser.id,form.fileUpload)
+    const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload)
+    // const { dispatch } = props
+
     dispatch({
-      type: 'labsAndLab/submitRegularForm',
-      payload: values,
-    })
+      type: 'lab/submitLabCase',
+      payload: submitData,
+      onError: (err) => {
+        notification.error({
+          message: '学生提交实验案例失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      history.push('/labs/list')
+    )
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -124,43 +144,40 @@ export const Lab = ({
 
   useMount(() => {
     console.log(params)
+    console.log(params.courseCaseId)
+
     dispatch({
       type: 'lab/fetchLabCase',
-      //  /api/v1/experiment/experiment-database/detail/7
-      payload: params,
+      payload: params.courseCaseId,
       onError: (err) => {
         notification.error({
-          message: '获取实验列表失败',
+          message: '获取实验详情失败',
           description: err.message,
         })
       },
-    })
+    }).then(
+      console.log(`labData`),
+      console.log(labData)
+    )
   })
-    
-  const experimentName = "实验1"
-  const experimentCaseName = "案例名称案例名称"
-  const experimentCaseDescription = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
-  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
-  const caseEndTimestamp = "2020-12-22T09:00:00+08:00"
-  const endTime = Date.parse(caseEndTimestamp); 
-
+  
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
-        <li>{deadline}</li>
+        <li>{JSON.stringify(currentUser)}</li>
         <Countdown 
           title="倒计时" 
           style={{position:'flxed',float:'right'}}
-          value={endTime}
+          value={Date.parse(labData.caseEndTimestamp)}
           onFinish={onFinish} 
         />
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
-          <h2>{experimentName}</h2>
-          <h3>{experimentCaseName}</h3>
-          <Paragraph>{experimentCaseDescription}</Paragraph>
+          <h2>{labData.experimentName}</h2>
+          <h3>{labData.experimentCaseName}</h3>
+          <Paragraph>{labData.experimentCaseDescription}</Paragraph>
           <div>
             <Tag icon={<ClockCircleOutlined />}>
-              截止时间：{endTime}
+              截止时间：{labData.endTime}
             </Tag>
           
             <Button key='edit' type='link' icon={<EditTwoTone />}>
@@ -190,21 +207,28 @@ export const Lab = ({
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='upload' />
+            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='fileUpload' disabled={Date.now()>Date.parse(labData.caseEndTimestamp) || labData.isSubmit}/>
           </FormItem>
+
+          {labData.isPublicScore?(
           <FormItem {...formItemLayout} label='实验得分' name='labScore'>
             <Statistic value={5} suffix='/ 100' />
           </FormItem>
-          <FormItem {...formItemLayout} label='教师评语' name='labReview'>
+          ):null}
+          
+          {labData.isPublicScore?(
+          <FormItem {...formItemLayout} label='教师评语' name='submissionComments'>
             <TextArea
               style={{
                 minHeight: 32,
               }}
               rows={4}
               readOnly="readOnly"
-              defaultValue={comment}
+              defaultValue={"comment"}
             />
           </FormItem>
+          ):null}
+  
           {/*
           <FormItem
             {...submitFormLayout}
@@ -212,7 +236,6 @@ export const Lab = ({
               marginTop: 48,
             }}
           >*/}
-            <Button>保存草稿</Button>
             <Button
               style={{
                 marginLeft: 16,
@@ -231,9 +254,4 @@ export const Lab = ({
   )
 }
 
-
 export default connect(LabCase)(Lab)
-// export default connect(({ loading }) => ({
-//   submitting: loading.effects['labsAndLab/submitRegularForm'],
-// }))(Lab)
-

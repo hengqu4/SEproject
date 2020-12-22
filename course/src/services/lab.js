@@ -1,4 +1,9 @@
-import { API_LAB_REPORT_PREFIX, API_LAB_DATABASE_PREFIX, API_LAB_COURSE_CASE } from '@/url-prefixes'
+import {
+  API_LAB_REPORT_PREFIX,
+  API_LAB_DATABASE_PREFIX,
+  API_LAB_COURSE_CASE,
+  API_LAB_COURSE_CASE_STUDENT
+} from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
 
@@ -12,8 +17,8 @@ export const fetchLabDatabase = () => {
 
 // fetch all students' report (teacher)
 // TODO: modify URL
-export const fetchAllStudentReport = (params) => {
-  return request('/teacher/list/1', {
+export const fetchAllStudentReport = (courseCaseId) => {
+  return request(SafeUrlAssembler('/teacher/list').segment(courseCaseId).toString(), {
     method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
   })
@@ -55,9 +60,18 @@ export const fetchAllLabCase = (courseId) => {
 }
 
 // get a lab case (published)
-export const fetchLabCase = (courseId, courseCaseId) => {
-  return request(SafeUrlAssembler('/detail/').segment(courseId, courseCaseId).toString(), {
+export const fetchLabCase = (courseCaseId) => {
+  return request(SafeUrlAssembler('/detail/').segment(courseCaseId).toString(), {
     method: 'GET',
-    prefix: API_LAB_COURSE_CASE,
+    prefix: API_LAB_COURSE_CASE_STUDENT,
+  })
+}
+
+// submit a lab case (student)
+export const submitLabCase = (data) => {
+  return request('/student/list/', {
+    method: 'POST',
+    prefix: API_LAB_REPORT_PREFIX ,
+    data,
   })
 }

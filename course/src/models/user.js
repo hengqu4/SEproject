@@ -30,6 +30,7 @@ const UserModel = {
       console.log('!!!!!3')
       const currentUser = {
         name: action.payload.data.realname,
+        id: action.payload.data.userId,
         avatar: {},
       }
       return { ...state, currentUser: currentUser || {} }

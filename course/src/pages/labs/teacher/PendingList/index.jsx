@@ -4,7 +4,7 @@ import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import { Link } from 'react-router-dom'
 import { useMount } from 'react-use'
-import { connect } from 'umi'
+import { connect, useParams } from 'umi'
 
 const PendingListData = ({ lab }) => ({
   isSuccess: lab.isSuccess,
@@ -27,6 +27,7 @@ const FormatData = (allPendingList) => {
 }
 
 const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
+  const params = useParams()
   const actionRef = useRef()
   const columns = [
     {
@@ -104,11 +105,14 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
 
   const [loading, setLoading] = useState(true)
   useMount(() => {
+    console.log(params.courseCaseId)
+    const courseCaseId = params.courseCaseId
     dispatch({
       type: 'lab/fetchAllStudentReport',
-      payload: {
-        allPendingList,
-      },
+      payload: courseCaseId,
+      // {
+      //   allPendingList,
+      // },
       onError: (err) => {
         notification.error({
           message: '获取提交情况失败',
@@ -121,6 +125,7 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
 
   return (
     <PageContainer>
+      <li>{params.courseCaseId}</li>
       <ProTable
         headerTitle='提交列表'
         actionRef={actionRef}

@@ -33,10 +33,22 @@ const handleRemove = async (selectedRows) => {
 
 const noMatch = <div />;
 
+const handleStatus = (startTime,endTime)=> {
+  const nowTime = Date.now()
+  if(nowTime>startTime && nowTime<endTime){
+    return 1
+  }
+  else if(nowTime>=endTime){
+    return 2
+  }
+  return 0
+}
+
 const FormatData = (allLabsData) => {
   const formattedLabList = []
   for (let i = 0; i < allLabsData.length; i++) {
     formattedLabList.push({
+      key: allLabsData[i].courseCaseId,
       labTitle: [{ 
         name: allLabsData[i].experimentName,
         courseId: allLabsData[i].courseId,
@@ -45,9 +57,9 @@ const FormatData = (allLabsData) => {
       // labTitle: allLabsData[i].experimentName,
       caseName: allLabsData[i].experimentCaseName,
       desc: allLabsData[i].experimentCaseDescription,
-      status: 0,
       startTime: allLabsData[i].caseStartTimestamp,
       endTime: allLabsData[i].caseEndTimestamp,
+      status: handleStatus(Date.parse(allLabsData[i].caseStartTimestamp),Date.parse(allLabsData[i].caseEndTimestamp)),
     })
   }
   return formattedLabList
@@ -77,7 +89,7 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       },
       // <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> {item.name}</Link>
       render: (_, row) => row?.labTitle?.map(
-        (item) => <Link to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> {item.name}</Link>
+        (item) => <Link key="nameJumpLab" to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> {item.name}</Link>
       ),
 
       align:'center',
@@ -104,8 +116,9 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
           status: 'Processing',
         },
         2: {
-          text: '已完成',
-          status: 'Success',
+          text: '已截止',
+          // status: 'Success',
+          status: 'Warning',
         },
         3: {
           text: '已批改',
@@ -152,7 +165,7 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       valueType: 'option',
       search: false,
       render: (_, row) => row?.labTitle?.map(
-        (item) => <Link to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> 进入实验</Link>
+        (item) => <Link key="optionJumpLab" to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> 进入实验</Link>
       ),
     },
   ]
@@ -168,7 +181,10 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
           description: err.message,
         })
       },
-    })
+    }).then(
+      console.log("allLabsData"),
+      console.log(allLabsData)
+    )
   })
 
   return (

@@ -1,9 +1,9 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, Modal } from 'antd'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
-import { connect, history } from 'umi'
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
+import { connect, history } from 'umi'
 import { useMount } from 'react-use'
 import styles from './style.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -16,32 +16,13 @@ const { RangePicker } = DatePicker
 const { TextArea } = Input
 const { confirm } = Modal;
 
-const mapStateToProps  = (labCase) =>  ({
-  experimentName: labCase.expName,
-  experimentCaseName: labCase.caseName,
-  experimentCaseDescription: labCase.caseDesc,
-  experimentCaseFileToken:labCase.caseFile,
-  // answerFileToken:labCase.answerFile,
-
-  // state: {},
-  // effects: {
-  //   *submitRegularForm({ payload }, { call }) {
-  //     yield call(fakeSubmitForm, payload)
-  //     message.success('提交实验作业成功')
-  //   },
-  // },
-})
-
 const FormatData = (labCase) => {
-  // const formattedLab = []
   const formattedLab = {
     experimentName: labCase.expName,
     experimentCaseName: labCase.caseName,
     experimentCaseDescription: labCase.caseDesc,
     experimentCaseFileToken:"fake file token",
     answerFileToken:"fake file token",
-    // experimentCaseFileToken:labCase.caseFile,
-    // answerFileToken:labCase.answerFile,
   }
   return formattedLab
 }
@@ -73,22 +54,21 @@ const CreateLab = (props) => {
 
   const onFinish = (labCase) => {
     console.log(labCase)
-    const data = FormatData(labCase)
-    console.log(data)
-    console.log(JSON.stringify(data))
+    console.log(FormatData(labCase))
+    
     const { dispatch } = props
     dispatch({
       type: 'lab/createLabCase',
-      payload: data,
+      payload: FormatData(labCase),
       onError: (err) => {
         notification.error({
-          message: '创建实验案例失败',
+          message: '教师创建实验案例失败',
           description: err.message,
-        }).then(
-          history.push('/labs/all')
-        )
+        })
       },
-    })
+    }).then(
+      history.push('/labs/all')
+    )
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -115,8 +95,8 @@ function showPromiseConfirm() {
   });
 }
   return (
-    <PageContainer>
-      <Card bordered={false}>
+    <PageContainer title={false}>
+      <Card title="创建实验" bordered={false}>
         <Form
           hideRequiredMark
           style={{
@@ -202,6 +182,7 @@ function showPromiseConfirm() {
             >
               创建实验
             </Button>
+            
           {/*</FormItem>*/}
         </Form>
       </Card>
@@ -209,8 +190,4 @@ function showPromiseConfirm() {
   )
 }
 
-export default connect(mapStateToProps)(CreateLab)
-
-// export default connect(({ loading }) => ({
-//   submitting: loading.effects['labsAndCreateLab/submitRegularForm'],
-// }))(CreateLab)
+export default connect(null)(CreateLab)

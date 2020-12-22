@@ -163,7 +163,7 @@ export default defineConfig({
                   authority: ['teacher'],
                 },
                 {
-                  name: '实验分析页',
+                  name: '实验分析',
                   icon: 'smile',
                   path: '/labs/analyse',
                   component: './labs/teacher/AnalyseLab',
@@ -172,7 +172,7 @@ export default defineConfig({
                 {
                   name: '提交列表',
                   icon: 'smile',
-                  path: '/labs/pending-list',
+                  path: '/labs/pending-list/:courseCaseId',
                   // hideInMenu: true,
                   component: './labs/teacher/PendingList',
                   authority: ['teacher'],
