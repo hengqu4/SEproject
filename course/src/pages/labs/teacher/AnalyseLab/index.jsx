@@ -4,8 +4,8 @@ import { GridContent } from '@ant-design/pro-layout'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
 import { useMount } from 'react-use'
-import styles from './style.less'
 import Pie from './components/Charts/Pie'
+import Submit from './components/Submit'
 
 const salesTypeData = [
   {
@@ -44,6 +44,7 @@ const AllLabCase = ({ lab }) => ({
 const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
+  const [submitVisible, setSubmitVisible] = useState(false)
 
   const handleAnalyseChange = (e) => {
     setAnalyseType(e.target.value)
@@ -57,7 +58,32 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
 
   const onLinkClicked = () => {
     // TODO: get currentLab course_case_id
-    console.log(currentLab == null ? allLabsData[0].courseCaseid : currentLab)
+    console.log(currentLab == null ? allLabsData[0].courseCaseId : currentLab)
+  }
+
+  const onSubmitCanceled = () => {
+    setSubmitVisible(false)
+  }
+
+  const onSubmitOk = () => {
+    const labKey = currentLab == null ? allLabsData[0].courseCaseId : currentLab
+    dispatch({
+      type: 'lab/remarkSubmission',
+      payload: labKey,
+      onError: (err) => {
+        notification.error({
+          message: '得分发布失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '得分发布成功',
+          description: '得分已发布',
+        })
+      },
+    })
+    setSubmitVisible(false)
   }
 
   useMount(() => {
@@ -127,6 +153,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                         width: 100,
                         marginLeft: 0,
                       }}
+                      onClick={() => {
+                        setSubmitVisible(true)
+                      }}
                     >
                       发布成绩
                     </Button>
@@ -138,7 +167,14 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                         marginLeft: '50%',
                       }}
                     >
-                      <Link to='/labs/pending-list' onClick={onLinkClicked}>
+                      <Link
+                        to={{
+                          pathname: `/labs/pending-list/${
+                            currentLab == null ? allLabsData[0].courseCaseId : currentLab
+                          }`,
+                        }}
+                        onClick={onLinkClicked}
+                      >
                         查看学生提交记录
                       </Link>
                     </Button>
@@ -148,6 +184,11 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
             </Tabs>
           </div>
         </Card>
+        <Submit
+          modelVisible={submitVisible}
+          handleOk={onSubmitOk}
+          handleCancel={onSubmitCanceled}
+        />
       </React.Fragment>
     </GridContent>
   )
