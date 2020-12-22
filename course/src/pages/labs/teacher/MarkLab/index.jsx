@@ -22,7 +22,7 @@ import { useMount } from 'react-use'
 import React from 'react'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
-import PDFViewer from './PDFViewer'
+// import PDFViewer from './PDFViewer'
 import styles from './style.less'
 
 const FormItem = Form.Item
