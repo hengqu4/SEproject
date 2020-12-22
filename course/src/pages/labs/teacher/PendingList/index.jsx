@@ -14,7 +14,7 @@ const PendingListData = ({ lab }) => ({
 const FormatData = (allPendingList) => {
   const formattedLabList = []
   for (let i = 0; i < allPendingList.length; i++) {
-    const score = allPendingList[i].submission_score
+    const score = allPendingList[i].submissionScore
     formattedLabList.push({
       key: allPendingList[i].submissionCaseId,
       name: allPendingList[i].submissionUploader,
@@ -95,24 +95,24 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
       search: false,
       render: (_, record) => (
         <>
-          <Link to='/labs/mark' target='_blank'>
+          <Link
+            to={{
+              // /:courseCaseId/:submissionCaseId
+              pathname: '/labs/mark',
+            }}
+            target='_blank'
+          >
             进入批改
           </Link>
         </>
       ),
     },
   ]
-
   const [loading, setLoading] = useState(true)
   useMount(() => {
-    console.log(params.courseCaseId)
-    const courseCaseId = params.courseCaseId
     dispatch({
       type: 'lab/fetchAllStudentReport',
-      payload: courseCaseId,
-      // {
-      //   allPendingList,
-      // },
+      payload: params.currentLab,
       onError: (err) => {
         notification.error({
           message: '获取提交情况失败',
@@ -122,10 +122,8 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
       onFinish: setLoading.bind(this, false),
     })
   })
-
   return (
     <PageContainer>
-      <li>{params.courseCaseId}</li>
       <ProTable
         headerTitle='提交列表'
         actionRef={actionRef}
@@ -137,5 +135,4 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
     </PageContainer>
   )
 }
-
 export default connect(PendingListData)(TableList)

@@ -1,0 +1,112 @@
+@import '~antd/es/style/themes/default.less';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
+  }
+}
+
+.question-options-block {
+  padding: 20px 20px 0 20px;
+}
+
+.question-option {
+  display: flex !important;
+  margin: 0 !important;
+  align-items: center;
+
+  &:not(:last-of-type) {
+    margin-bottom: 10px !important;
+  }
+
+  &.modified {
+    
+    &.link {
+      color: @blue-6 !important;
+    }
+  
+    &.success {
+      color: @green-6 !important;
+    }
+  
+    &.error {
+      color: @red-5 !important;
+    }
+  
+    .ant-radio-checked {
+      &.ant-radio {
+        color: currentColor !important;
+      }
+  
+      .ant-radio-inner {
+        border-color: currentColor !important;
+  
+        &::after {
+          background-color: currentColor !important;
+        }
+      }
+    }
+  
+    .ant-checkbox-checked {
+      &.ant-checkbox {
+        color: currentColor !important;
+      }
+  
+      .ant-checkbox-inner {
+        border-color: currentColor !important;
+        background-color: currentColor !important;
+  
+        &::after {
+          background-color: currentColor !important;
+        }
+      }
+    }
+  }
+}

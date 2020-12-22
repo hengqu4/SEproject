@@ -31,7 +31,7 @@ export default defineConfig({
   routes: [
     {
       path: '/',
-      component: '../layouts/BlankLayout',
+      component: '../layouts/SecurityLayout',
       routes: [
         {
           path: '/user',
@@ -42,17 +42,17 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: 'register-result',
+              name: '注册结果',
               path: '/user/register-result',
               component: './user/register-result',
             },
             {
-              name: 'register',
+              name: '注册',
               path: '/user/register',
               component: './user/register',
             },
             {
-              name: 'Login',
+              name: '登录',
               icon: 'smile',
               path: '/user/login',
               component: './user/Login',
@@ -66,7 +66,7 @@ export default defineConfig({
           path: '/',
           component: '../layouts/BasicLayout',
           Routes: ['src/pages/Authorized'],
-          authority: ['admin', 'user'],
+          authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
           routes: [
             {
               path: '/',
@@ -99,6 +99,16 @@ export default defineConfig({
                   path: '/course/course-bind',
                   component: './course/course-bind',
                 },
+                {
+                  name: '小节信息',
+                  path: '/course/chap-list',
+                  component: './course/teacher/ChapList',
+                },
+                {
+                  name: '编辑小节信息',
+                  path: '/course/ed-chap',
+                  component: './course/teacher/EditChap',
+                },
               ],
             },
             {
@@ -129,6 +139,36 @@ export default defineConfig({
               icon: 'highlight',
               path: '/homework',
               routes: [
+                {
+                  name: '作业列表',
+                  icon: 'smile',
+                  path: '/homework/hw-list',
+                  component: './homework/teacher/HwList',
+                },
+                {
+                  name: '作业详情',
+                  path: '/homework/hw-list/hw-info',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwInfo',
+                },
+                {
+                  name: '编辑作业详情',
+                  path: '/homework/hw-list/hw-edit',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwEdit',
+                },
+                {
+                  name: '学生看到的作业列表',
+                  icon: 'smile',
+                  path: '/homework/hw-list1',
+                  component: './homework/student/HwList',
+                },
+                {
+                  name: '学生看到的作业详情',
+                  path: '/homework/hw-list1/hw-info',
+                  hideInMenu: true,
+                  component: './homework/student/HwInfo',
+                },
               ],
             },
             {
@@ -145,21 +185,21 @@ export default defineConfig({
                 {
                   name: '实验列表',
                   path: '/labs/list',
-                  component: './labs/student/LabTable', 
+                  component: './labs/student/LabTable',
                   authority: ['teacher', 'student'],
                 },
                 {
                   name: '实验详情',
                   path: '/labs/lab/:courseId/:courseCaseId',
                   hideInMenu: true,
-                  component: './labs/student/Lab', 
+                  component: './labs/student/Lab',
                   authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   path: '/labs/create',
-                  // hideInMenu: true,
-                  component: './labs/teacher/CreateLab', 
+                  hideInMenu: true,
+                  component: './labs/teacher/CreateLab',
                   authority: ['teacher'],
                 },
                 {
@@ -172,8 +212,8 @@ export default defineConfig({
                 {
                   name: '提交列表',
                   icon: 'smile',
-                  path: '/labs/pending-list/:courseCaseId',
-                  // hideInMenu: true,
+                  path: '/labs/pending-list/:currentLab',
+                  hideInMenu: true,
                   component: './labs/teacher/PendingList',
                   authority: ['teacher'],
                 },
@@ -294,6 +334,23 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/account/bulkimport',
                   component: './account/bulkimport',
+                },
+              ],
+            },
+            {
+              path: '/file',
+              name: '文件',
+              icon: 'profile',
+              routes: [
+                {
+                  name: '文件列表',
+                  path: '/file/file-list',
+                  component: './file/teacher/FileList',
+                },
+                {
+                  name: '编辑文件',
+                  path: '/file/file-edit',
+                  component: './file/teacher/FileEdit',
                 },
               ],
             },

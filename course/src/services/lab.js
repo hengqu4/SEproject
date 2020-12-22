@@ -16,14 +16,12 @@ export const fetchLabDatabase = () => {
 }
 
 // fetch all students' report (teacher)
-// TODO: modify URL
-export const fetchAllStudentReport = (courseCaseId) => {
-  return request(SafeUrlAssembler('/teacher/list').segment(courseCaseId).toString(), {
+export const fetchAllStudentReport = (courseId) => {
+  return request(SafeUrlAssembler('/teacher/list/').segment(courseId).toString(), {
     method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
   })
 }
-
 // publish lab (teacher)
 // TODO: modify URL
 export const publishLabCase = (data) => {
@@ -59,6 +57,13 @@ export const fetchAllLabCase = (courseId) => {
   })
 }
 
+// publish lab remark (teacher)
+export const remarkSubmission = (courseCaseId) => {
+  return request(SafeUrlAssembler('/teacher/public/').segment(courseCaseId).toString(), {
+    method: 'PUT',
+    prefix: API_LAB_REPORT_PREFIX,
+  })
+}
 // get a lab case (published)
 export const fetchLabCase = (courseCaseId) => {
   return request(SafeUrlAssembler('/detail/').segment(courseCaseId).toString(), {

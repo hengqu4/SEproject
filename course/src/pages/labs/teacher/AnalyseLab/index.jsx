@@ -1,12 +1,12 @@
 import { Button, Tabs, Card, Radio, notification } from 'antd'
 import React, { useState } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
+import { ArrowRightOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { connect, history } from 'umi'
+import { connect } from 'umi'
 import { useMount } from 'react-use'
-import { ArrowRightOutlined} from '@ant-design/icons'
-import styles from './style.less'
 import Pie from './components/Charts/Pie'
+import Submit from './components/Submit'
 
 const salesTypeData = [
   {
@@ -45,6 +45,7 @@ const AllLabCase = ({ lab }) => ({
 const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
+  const [submitVisible, setSubmitVisible] = useState(false)
 
   const handleAnalyseChange = (e) => {
     setAnalyseType(e.target.value)
@@ -58,14 +59,32 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
 
   const onLinkClicked = () => {
     // TODO: get currentLab course_case_id
-    const courseCaseId = currentLab == null ? allLabsData[0].courseCaseid : currentLab
-    console.log(courseCaseId)
-    history.push({
-      pathname: '/labs/pending-list',
-      query: {
-        courseCaseId: courseCaseId,
+    console.log(currentLab == null ? allLabsData[0].courseCaseId : currentLab)
+  }
+
+  const onSubmitCanceled = () => {
+    setSubmitVisible(false)
+  }
+
+  const onSubmitOk = () => {
+    const labKey = currentLab == null ? allLabsData[0].courseCaseId : currentLab
+    dispatch({
+      type: 'lab/remarkSubmission',
+      payload: labKey,
+      onError: (err) => {
+        notification.error({
+          message: '得分发布失败',
+          description: err.message,
+        })
       },
-    });
+      onSuccess: () => {
+        notification.success({
+          message: '得分发布成功',
+          description: '得分已发布',
+        })
+      },
+    })
+    setSubmitVisible(false)
   }
 
   useMount(() => {
@@ -78,10 +97,7 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
           description: err.message,
         })
       },
-    }).then(
-      // <li>{JSON.stringify(allLabsData)}</li>
-      console.log(allLabsData)
-    )
+    })
   })
 
   return (
@@ -89,9 +105,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
       <React.Fragment>
         <Card
           title='实验统计'
-          // style={{
-          //   height: 700,
-          // }}
+          style={{
+            height: '100%',
+          }}
           extra={
             <div>
               <Radio.Group value={analyseType} onChange={handleAnalyseChange}>
@@ -112,7 +128,6 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
               onChange={onLabTabChange}
             >
               {allLabsData.map((i) => (
-                // <TabPane tab={i.caseId} key={i.courseCaseId}>
                 <TabPane tab={i.experimentName} key={i.courseCaseId}>
                   <div>
                     <span
@@ -123,12 +138,20 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                     >
                       统计数据
                     </span>
-                    <Button type='primary' style={{marginLeft: "60%"}}>
+                    
+                    <Button
+                      type='primary'
+                      style={{marginLeft: "60%"}}
+                      onClick={() => {
+                        setSubmitVisible(true)
+                      }}
+                    >
                       发布成绩
                     </Button>
                     <Link
+                      to={{pathname: `/labs/pending-list/${currentLab == null ? allLabsData[0].courseCaseId : currentLab}`}}
+                      onClick={onLinkClicked}
                       style={{marginLeft: 16}}
-                      to={`/labs/pending-list/${currentLab == null ? allLabsData[0].courseCaseid : currentLab}`}
                     >
                       查看学生提交记录<ArrowRightOutlined />
                     </Link>
@@ -149,6 +172,11 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
             </Tabs>
           </div>
         </Card>
+        <Submit
+          modelVisible={submitVisible}
+          handleOk={onSubmitOk}
+          handleCancel={onSubmitCanceled}
+        />
       </React.Fragment>
     </GridContent>
   )

@@ -8,30 +8,7 @@ import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
 import Modal from 'antd/lib/modal/Modal'
-import { removeRule } from './service'
 import PublishMoal from './components/Publish'
-/**
- *  删除节点
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    })
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  } catch (error) {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  }
-}
 
 const FormatData = (allLabList) => {
   const formattedLabList = []
@@ -270,15 +247,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
             </div>
           }
         >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState)
-              setSelectedRows([])
-              actionRef.current?.reloadAndRest?.()
-            }}
-          >
-            批量删除
-          </Button>
+          <Button>批量删除</Button>
         </FooterToolbar>
       )}
       <Drawer

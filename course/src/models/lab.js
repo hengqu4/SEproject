@@ -86,8 +86,16 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
-
   
+
+  remarkSubmission: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.remarkSubmission, payload)
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
 }
 
 const reducers = {
