@@ -8,22 +8,25 @@ import { cloneDeep } from 'lodash'
 
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
+  courseId: 1,
   courseName: null,
   courseCredit: null,
   courseStudyTimeNeeded: null,
   courseDescription: null,
-  courseType: null,
+  courseType: '必修',
   courseStartTime: null,
   courseEndTime: null,
-  courseAvatar: null,
+  courseAvatar: false,
 }
 
 const defaultState = {
-  newCourseInfo: defaultCourseInfo,
+  currentCourseInfo: defaultCourseInfo,
   courseList: [],
+  courseTeachList: [],    //course-teach的list
 }
 
 const effects = {
+  //获取全部课程信息
   getAllCourse: generateEffect(function* (_, { call, put }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseInfo)
@@ -37,13 +40,32 @@ const effects = {
     //     console.log('error boy')
     //   }),
 
-    console.log(res.data)
+    // console.log(res.data)
     yield put({
       type: 'setCourseList',
       payload: res.data,
     })
   }),
 
+  //获取当前课程信息
+  getCurrentCourseInfo: generateEffect(function* ({ payload }, { call, put, select }) {
+    // console.log(payload)
+    const courseList = yield select((state) => state.Course.courseList)
+    // console.log(courseList)
+    const currentCourse = courseList[payload]
+    // console.log(currentCourse)
+    const res = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+
+    // console.log(res.data)
+    yield put({
+      type: 'setCurrentCourse',
+      payload: currentCourse,
+    })
+    // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
+    // console.log(currentCourseInfo)
+  }),
+
+  //创建新课程
   createNewCourse: generateEffect(function* ({ payload }, { call, put }) {
     const newCourseInfoCopy = cloneDeep(payload)
 
@@ -61,7 +83,7 @@ const effects = {
     )
     delete newCourseInfoCopy.course_time
 
-    yield call(CourseServices.publishCourse, newCourseInfoCopy)
+    const newCourseInfo = yield call(CourseServices.publishCourse, newCourseInfoCopy)
     // res = yield CourseServices.publishCourse(newCourseInfoCopy)
     //   .then((response) => {
     //     console.log(response)
@@ -76,9 +98,14 @@ const effects = {
       type: 'setCourseList',
       payload: res.data,
     })
+
+    yield call(CourseServices.publishGradeWeight, newCourseInfo.data)
+    const gradeWeight = yield call(CourseServices.fetchGradeWeight, newCourseInfo.data)
+    console.log(gradeWeight)
   }),
 
-  updateSomeCourse: generateEffect(function* ({ payload }, { call, put }) {
+  //编辑课程信息
+  updateSomeCourse: generateEffect(function* ({ payload }, { call }) {
     console.log('开始更新数据')
     const newValues = cloneDeep(payload)
 
@@ -105,16 +132,77 @@ const effects = {
     }
     console.log(newValues)
     yield call(CourseServices.updateCourseInfo, newValues)
-
   }),
+
+  //获取全部绑定关系列表
+  getAllCourseTeach: generateEffect(function* (_, { call, put }) {
+    console.log('开始接受数据')
+    const res = yield call(CourseServices.fetchAllCourseTeach)
+
+    console.log(res.data)
+
+    yield put({
+      type: 'setCourseTeachList',
+      payload: res.data,
+    })
+  }),
+
+  //新建一个课程绑定
+  createNewCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
+    const newCourseTeachCopy = cloneDeep(payload)
+
+    newCourseTeachCopy.course_id = parseInt(newCourseTeachCopy.courseID)
+    delete newCourseTeachCopy.courseID
+    newCourseTeachCopy.teacher_id = parseInt(newCourseTeachCopy.teacherID)
+    delete newCourseTeachCopy.teacherID
+
+    // console.log(newCourseTeachCopy)
+
+    yield call(CourseServices.publishCourseTeach, newCourseTeachCopy)
+
+    const res = yield call(CourseServices.fetchAllCourseTeach)
+
+    yield put({
+      type: 'setCourseTeachList',
+      payload: res.data,
+    })
+  }),
+
+  //删除一个课程绑定
+  deleteCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
+    
+    console.log(payload)
+
+    yield call(CourseServices.deleteCourseTeach, payload)
+
+    const res = yield call(CourseServices.fetchAllCourseTeach)
+
+    yield put({
+      type: 'setCourseTeachList',
+      payload: res.data,
+    })
+  })
 }
 
 const reducers = {
   setCourseList: generateReducer({
     attributeName: 'courseList',
     transformer: defaultArrayTransformer,
-    // defaultState,
+    defaultState,
   }),
+
+  setCurrentCourse: generateReducer({
+    attributeName: 'currentCourseInfo',
+    // transformer: defaultObjectTransformer,
+    transformer: (payload) => payload || defaultCourseInfo,
+    defaultState
+  }),
+
+  setCourseTeachList: generateReducer({
+    attributeName: 'courseTeachList',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  })
 }
 
 export default {

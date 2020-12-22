@@ -8,17 +8,89 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
 import { Button, Divider, Drawer, message, DatePicker, TimePicker } from 'antd'
 import FormItem from 'antd/lib/form/FormItem'
-import CreateForm from './components/CreateForm'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
 const { RangePicker } = DatePicker
 
 const mapStateToProps = ({ Course }) => ({
+  currentCourseInfo: Course.currentCourseInfo,
   courseList: Course.courseList,
 })
 
-const course_list = ({ courseList = [], dispatch = () => {} }) => {
+const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
+  
+  /**
+   * 设置当前课程
+   * @param courseID
+   */
+  const setCurrentCourse = useCallback(
+    (index) => {
+      console.log(index)
+      dispatch({
+        type: 'Course/getCurrentCourseInfo',
+        payload: index,
+        onError,
+        onFinish: () => {
+          message.success('切换当前课程成功')
+          // console.log(currentCourseInfo)
+        }
+      })
+    },
+    [currentCourseInfo, dispatch],
+  )
+
+  useMount(() => {
+    console.log('准备接受数据')
+    dispatch({
+      type: 'Course/getAllCourse',
+      onError,
+      onFinish: setCurrentCourse(0),
+    })
+  })
+
+  /**
+   * 格式化课程数据
+   * @param courseList
+   */
+  const FormatData = (courseList) => {
+    const formattedCourseList = []
+    for (let i = 0; i < courseList.length; i++) {
+      formattedCourseList.push({
+        key: i,
+        courseID: courseList[i].courseId,
+        courseName: courseList[i].courseName,
+        courseCredit: courseList[i].courseCredit,
+        courseStudyTimeNeeded: courseList[i].courseStudyTimeNeeded,
+        courseType: courseList[i].courseType,
+        courseDescription: courseList[i].courseDescription,
+        courseStartTime: courseList[i].courseStartTime,
+        courseEndTime: courseList[i].courseEndTime,
+        courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
+      })
+    }
+    return formattedCourseList
+  }
+
+  /**
+   * 添加课程信息
+   * @param values
+   */
+  const addCourseInfo = useCallback(
+    (values) => {
+      dispatch({
+        type: 'Course/createNewCourse',
+        payload: values,
+        onError,
+        onFinish: () => {
+          message.success('创建课程成功')
+          console.log(courseList)
+        },
+      })
+    },
+    [dispatch],
+  )
+
   const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -76,7 +148,7 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a>切换</a>
+          <a onClick={() => {setCurrentCourse(record.key)}}>切换</a>
           <Divider type='vertical' />
           <a>删除</a>
         </>
@@ -94,7 +166,7 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
     },
     {
       title: '开课学校',
-      dataIndex: 'courseCreatorSchoolId'
+      dataIndex: 'courseCreatorSchoolId',
     },
     {
       title: '课程学分',
@@ -152,56 +224,6 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
     },
   ]
 
-  useMount(() => {
-    console.log('准备接受数据')
-    dispatch({
-      type: 'Course/getAllCourse',
-      onError,
-    })
-  })
-
-  /**
-   * 格式化课程数据
-   * @param courseList
-   */
-  const FormatData = (courseList) => {
-    const formattedCourseList = []
-    for (let i = 0; i < courseList.length; i++) {
-      formattedCourseList.push({
-        key: i,
-        courseID: courseList[i].courseId,
-        courseName: courseList[i].courseName,
-        courseCredit: courseList[i].courseCredit,
-        courseStudyTimeNeeded: courseList[i].courseStudyTimeNeeded,
-        courseType: courseList[i].courseType,
-        courseDescription: courseList[i].courseDescription,
-        courseStartTime: courseList[i].courseStartTime,
-        courseEndTime: courseList[i].courseEndTime,
-        courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
-      })
-    }
-    return formattedCourseList
-  }
-
-  /**
-   * 添加课程信息
-   * @param values
-   */
-  const addCourseInfo = useCallback(
-    (values) => {
-      dispatch({
-        type: 'Course/createNewCourse',
-        payload: values,
-        onError,
-        onFinish: () => {
-          message.success('创建课程成功')
-          console.log(courseList)
-        },
-      })
-    },
-    [dispatch],
-  )
-
   return (
     <PageContainer>
       <ProTable
@@ -212,11 +234,6 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
         //   labelWidth: 120,
         // }}
         search={false}
-        toolBarRender={() => [
-          <Button type='primary' onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
         dataSource={FormatData(courseList)}
         columns={columns}
         rowSelection={{
@@ -250,75 +267,6 @@ const course_list = ({ courseList = [], dispatch = () => {} }) => {
           </Button>
         </FooterToolbar>
       )}
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProCard>
-          <StepsForm
-            onFinish={async (values) => {
-              // console.log(values)
-              addCourseInfo(values)
-              handleModalVisible(false)
-            }}
-            formProps={{
-              validateMessages: {
-                required: '此项为必填项',
-              },
-            }}
-          >
-            <StepsForm.StepForm name='createStep1'>
-              <ProFormText
-                name='course_name'
-                label='课程名称'
-                width='m'
-                placeholder='请输入课程名称'
-                rules={[{ required: true }]}
-              />
-              <ProFormTextArea
-                name='course_description'
-                label='课程描述'
-                width='m'
-                placeholder='请输入课程描述'
-                rules={[{ required: true }]}
-              />
-            </StepsForm.StepForm>
-            <StepsForm.StepForm name='createStep2'>
-              <ProFormText
-                name='course_credit'
-                label='课程学分'
-                width='m'
-                placeholder='请输入课程学分'
-                rules={[{ required: true }]}
-              />
-              <ProFormText
-                name='course_study_time_needed'
-                label='课程学时'
-                width='m'
-                placeholder='请输入课程学时'
-                rules={[{ required: true }]}
-              />
-              <ProFormSelect
-                name='course_type'
-                label='课程类型'
-                width='m'
-                rules={[{ required: true }]}
-                initialValue='必修'
-                options={[
-                  { value: '必修', label: '必修' },
-                  { value: '选修', label: '选修' },
-                ]}
-              />
-            </StepsForm.StepForm>
-            <StepsForm.StepForm name='createStep3'>
-              <FormItem name='course_time' label='课程开始结束时间' rules={[{ required: true }]}>
-                <RangePicker
-                  showTime
-                  format={'YYYY/MM/DD HH:mm'}
-                  placeholder={['开始时间', '结束时间']}
-                />
-              </FormItem>
-            </StepsForm.StepForm>
-          </StepsForm>
-        </ProCard>
-      </CreateForm>
 
       <Drawer
         width={600}

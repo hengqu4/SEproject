@@ -1,9 +1,8 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi'
-import defaultSettings from './defaultSettings'
-import proxy from './proxy'
+import { defineConfig } from 'umi';
+import defaultSettings from './defaultSettings';
+import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
 
-// const { REACT_APP_ENV } = process.env
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -76,6 +75,7 @@ export default defineConfig({
               name: '课程模块',
               path: '/course',
               icon: 'book',
+              authority: ['teacher', 'student', 'principle'],
               routes: [
                 {
                   path: '/',
@@ -84,20 +84,36 @@ export default defineConfig({
                 {
                   name: '课程列表',
                   icon: 'smile',
+                  path: '/course/course-list-teacher',
+                  component: './course/course-list-teacher',
+                  authority: ['teacher'],
+                },
+                // {
+                //   name: '课程信息',
+                //   icon: 'smile',
+                //   path: '/course/course-info',
+                //   component: '',
+                // },
+                {
+                  name: '课程列表',
+                  icon: 'smile',
                   path: '/course/course-list',
-                  component: './course/course-list',
+                  component: './course/course-list-principle',
+                  authority: ['principle'],
                 },
                 {
                   name: '课程编辑',
                   icon: 'smile',
-                  path: '/course/course-edit/courseID=:courseID&',
+                  path: '/course/course-edit',
                   component: './course/course-edit',
+                  authority: ['principle'],
                 },
                 {
                   name: '绑定教师',
                   icon: 'smile',
                   path: '/course/course-bind',
                   component: './course/course-bind',
+                  authority: ['principle'],
                 },
               ],
             },
@@ -128,8 +144,7 @@ export default defineConfig({
               name: '作业',
               icon: 'highlight',
               path: '/homework',
-              routes: [
-              ],
+              routes: [],
             },
             {
               name: '实验',
@@ -145,21 +160,21 @@ export default defineConfig({
                 {
                   name: '实验列表',
                   path: '/labs/list',
-                  component: './labs/student/LabTable', 
+                  component: './labs/student/LabTable',
                   authority: ['teacher', 'student'],
                 },
                 {
                   name: '实验详情',
                   path: '/labs/lab',
                   hideInMenu: true,
-                  component: './labs/student/Lab', 
+                  component: './labs/student/Lab',
                   authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   path: '/labs/create',
                   hideInMenu: true,
-                  component: './labs/teacher/CreateLab', 
+                  component: './labs/teacher/CreateLab',
                   authority: ['teacher'],
                 },
                 {
@@ -270,8 +285,7 @@ export default defineConfig({
                 {
                   path: '/',
                   redirect: '/account/center',
-                },
-                // {
+                }, // {
                 //   name: 'center',
                 //   icon: 'smile',
                 //   path: '/account/center',
@@ -324,4 +338,4 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
-})
+});

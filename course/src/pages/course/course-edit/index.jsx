@@ -1,14 +1,14 @@
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { Button, Card, DatePicker, Input, Form, message, InputNumber, Select } from 'antd'
-import { connect} from 'umi'
+import { connect } from 'umi'
 import UploadAvatar from './UploadAvatar'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { TextArea } = Input
 
-const CourseEdit = ({ dispatch = () => {} }) => {
+const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
   const [form] = Form.useForm()
   const formItemLayout = {
     labelCol: {
@@ -45,7 +45,9 @@ const CourseEdit = ({ dispatch = () => {} }) => {
   }
 
   const onFinish = (values) => {
+    values.courseID = currentCourseId
     console.log('准备更新数据')
+    // console.log(values)
     dispatch({
       type: 'Course/updateSomeCourse',
       payload: values,
@@ -59,6 +61,10 @@ const CourseEdit = ({ dispatch = () => {} }) => {
     console.log('Failed:', errorInfo)
   }
 
+  const currentCourseId = currentCourseInfo.courseId
+
+  console.log(currentCourseId)
+
   return (
     <PageContainer>
       <Card bordered={false}>
@@ -71,13 +77,8 @@ const CourseEdit = ({ dispatch = () => {} }) => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          <FormItem
-            {...formItemLayout}
-            label='课程ID'
-            name='courseID'
-            rules={[{ required: true, message: '请输入要编辑的课程ID' }]}
-          >
-            <Input placeholder='请输入要编辑的课程ID' />
+          <FormItem {...formItemLayout} label='课程ID' name='courseID'>
+            <span>{currentCourseId}</span>
           </FormItem>
           <FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
             <UploadAvatar />
@@ -173,4 +174,6 @@ const CourseEdit = ({ dispatch = () => {} }) => {
   )
 }
 
-export default connect(({ Course }) => ({}))(CourseEdit)
+export default connect(({ Course }) => ({ currentCourseInfo: Course.currentCourseInfo }))(
+  CourseEdit,
+)

@@ -19,8 +19,29 @@ export const publishCourse = (data) => {
   })
 }
 
-export const fetchOneCourseInfo = (courseID) => {
-  return request('/course-info/1', {
+export const publishGradeWeight = (params) => {
+  console.log(params)
+  return request(SafeUrlAssembler('/api/v1/grade/gradeweight/:course_id').param({ course_id: params.courseId }).toString(), {
+    method: 'POST',
+  })
+  // return request('/api/v1/grade/gradeweight/1', {
+  //   method: 'POST',
+  // })
+}
+
+export const fetchGradeWeight = (params) => {
+  console.log(params)
+  return request(SafeUrlAssembler('/api/v1/grade/gradeweight/:course_id').param({ course_id: params.courseId }).toString(), {
+    method: 'GET',
+  })
+  // return request('/api/v1/grade/gradeweight/1', {
+  //   method: 'GET',
+  // })
+}
+
+export const fetchOneCourseInfo = (params) => {
+  console.log(params)
+  return request(SafeUrlAssembler('/course-info/:course_id').param({course_id: params.courseId}).toString(), {
     method: 'GET',
     prefix: API_COURSE_PREFIX,
   })
@@ -43,13 +64,17 @@ export const fetchAllCourseTeach = () => {
 }
 
 export const publishCourseTeach = (data) => {
-  return request('/teach', {
+  return request('/teach/', {
     method: 'POST',
     prefix: API_COURSE_PREFIX,
     data,
   })
 }
 
-// export const deleteCourseTeach = () => {
-
-// }
+export const deleteCourseTeach = (params) => {
+  console.log(params) 
+  return request(SafeUrlAssembler('/teach/:course_teach_id').param({course_teach_id: params}).toString(), {
+    method: 'DELETE',
+    prefix: API_COURSE_PREFIX,
+  })
+ }
