@@ -167,7 +167,14 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                         marginLeft: '50%',
                       }}
                     >
-                      <Link to='/labs/pending-list' onClick={onLinkClicked}>
+                      <Link
+                        to={{
+                          pathname: `/labs/pending-list/${
+                            currentLab == null ? allLabsData[0].courseCaseId : currentLab
+                          }`,
+                        }}
+                        onClick={onLinkClicked}
+                      >
                         查看学生提交记录
                       </Link>
                     </Button>

@@ -128,8 +128,7 @@ export default defineConfig({
               name: '作业',
               icon: 'highlight',
               path: '/homework',
-              routes: [
-              ],
+              routes: [],
             },
             {
               name: '实验',
@@ -145,21 +144,21 @@ export default defineConfig({
                 {
                   name: '实验列表',
                   path: '/labs/list',
-                  component: './labs/student/LabTable', 
+                  component: './labs/student/LabTable',
                   authority: ['teacher', 'student'],
                 },
                 {
                   name: '实验详情',
                   path: '/labs/lab',
                   hideInMenu: true,
-                  component: './labs/student/Lab', 
+                  component: './labs/student/Lab',
                   authority: ['student'],
                 },
                 {
                   name: '创建实验',
                   path: '/labs/create',
                   hideInMenu: true,
-                  component: './labs/teacher/CreateLab', 
+                  component: './labs/teacher/CreateLab',
                   authority: ['teacher'],
                 },
                 {
@@ -172,7 +171,7 @@ export default defineConfig({
                 {
                   name: '提交列表',
                   icon: 'smile',
-                  path: '/labs/pending-list',
+                  path: '/labs/pending-list/:currentLab',
                   hideInMenu: true,
                   component: './labs/teacher/PendingList',
                   authority: ['teacher'],

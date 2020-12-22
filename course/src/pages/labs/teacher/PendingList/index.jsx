@@ -4,7 +4,7 @@ import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import { Link } from 'react-router-dom'
 import { useMount } from 'react-use'
-import { connect } from 'umi'
+import { connect, useParams } from 'umi'
 
 const PendingListData = ({ lab }) => ({
   isSuccess: lab.isSuccess,
@@ -14,11 +14,11 @@ const PendingListData = ({ lab }) => ({
 const FormatData = (allPendingList) => {
   const formattedLabList = []
   for (let i = 0; i < allPendingList.length; i++) {
-    const score = allPendingList[i].submission_score
+    const score = allPendingList[i].submissionScore
     formattedLabList.push({
-      key: allPendingList[i].submission_case_id,
-      name: allPendingList[i].submission_uploader,
-      startTime: allPendingList[i].submission_timestamp,
+      key: allPendingList[i].submissionCaseId,
+      name: allPendingList[i].submissionUploader,
+      startTime: allPendingList[i].submissionTimestamp,
       status: score === -1 ? 1 : 0,
       score: score === -1 ? null : score,
     })
@@ -27,6 +27,7 @@ const FormatData = (allPendingList) => {
 }
 
 const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
+  const params = useParams()
   const actionRef = useRef()
   const columns = [
     {
@@ -94,7 +95,12 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
       search: false,
       render: (_, record) => (
         <>
-          <Link to='/labs/mark' target='_blank'>
+          <Link
+            to={{
+              pathname: '/labs/mark',
+            }}
+            target='_blank'
+          >
             进入批改
           </Link>
         </>
@@ -106,9 +112,7 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllStudentReport',
-      payload: {
-        allPendingList,
-      },
+      payload: params.currentLab,
       onError: (err) => {
         notification.error({
           message: '获取提交情况失败',

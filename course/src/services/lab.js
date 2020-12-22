@@ -11,9 +11,8 @@ export const fetchLabDatabase = () => {
 }
 
 // fetch all students' report (teacher)
-// TODO: modify URL
 export const fetchAllStudentReport = (courseId) => {
-  return request('/teacher/list/1', {
+  return request(SafeUrlAssembler('/teacher/list/').segment(courseId).toString(), {
     method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
   })
