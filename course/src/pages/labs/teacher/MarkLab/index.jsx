@@ -122,12 +122,8 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
       },
     }).then(
       history.push({
-        pathname: '/labs/pending-list/'+ params.courseCaseId,
-        // query: {
-        //   a: 'b',
-        // },
+        pathname: `/labs/pending-list/${params.courseCaseId}`
       })
-      // history.push('/labs/pending-list/'+ params.courseCaseId)
     )
   } 
   const onFinishFailed = (errorInfo) => {
@@ -166,9 +162,10 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
   ]
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <Card bordered={false}>
         <li>{JSON.stringify(params)}</li>
+        <li>{JSON.stringify(labData)}</li>
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
           <h2>{labData.experimentName}</h2>
           <h3>{labData.experimentCaseName}</h3>

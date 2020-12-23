@@ -44,8 +44,12 @@ const handleStatus = (startTime,endTime)=> {
   return 0
 }
 
-const FormatData = (allLabsData) => {
+const FormatData = (allLabsData, mySubmission, currentUser) => {
+  const submitList = []
   const formattedLabList = []
+  for (let i = 0; i < mySubmission.length; i++) {
+    submitList.push(mySubmission[i].courseCaseId)
+  }
   for (let i = 0; i < allLabsData.length; i++) {
     formattedLabList.push({
       key: allLabsData[i].courseCaseId,
@@ -54,7 +58,7 @@ const FormatData = (allLabsData) => {
         courseId: allLabsData[i].courseId,
         courseCaseId: allLabsData[i].courseCaseId,
       }],
-      // labTitle: allLabsData[i].experimentName,
+      submitStatus:currentUser.character==4?(submitList.includes(allLabsData[i].courseCaseId)?1:0):null,
       caseName: allLabsData[i].experimentCaseName,
       desc: allLabsData[i].experimentCaseDescription,
       startTime: allLabsData[i].caseStartTimestamp,
@@ -65,12 +69,14 @@ const FormatData = (allLabsData) => {
   return formattedLabList
 }
 
-const AllLabCase = ({ lab }) => ({
+const AllLabCase = ({ lab, user }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
+  mySubmission: lab.mySubmissionList,
+  currentUser: user.currentUser,
 })
 
-const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
+const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
@@ -87,7 +93,6 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
           },
         ],
       },
-      // <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> {item.name}</Link>
       render: (_, row) => row?.labTitle?.map(
         (item) => <Link key="nameJumpLab" to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> {item.name}</Link>
       ),
@@ -117,7 +122,6 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
         },
         2: {
           text: '已截止',
-          // status: 'Success',
           status: 'Warning',
         },
         3: {
@@ -136,13 +140,13 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       dataIndex: 'submitStatus',
       hideInForm: true,
       valueEnum: {
-        3: {
-          text: '已提交',
-          status: 'Success',
-        },
-        4: {
+        0: {
           text: '未提交',
           status: 'Error',
+        },
+        1: {
+          text: '已提交',
+          status: 'Success',
         },
       },
       align:'center',
@@ -189,7 +193,6 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllLabCase',
-      //  api/v1/experiment/course-cases/list/1
       payload: 1,
       onError: (err) => {
         notification.error({
@@ -201,6 +204,23 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       console.log("allLabsData"),
       console.log(allLabsData)
     )
+
+    if(currentUser.character == 4){
+    dispatch({
+      type: 'lab/fetchMySubmissionList',
+      onError: (err) => {
+        notification.error({
+          message: '获取我的提交记录失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      console.log("mySubmission")
+    )
+    }
+    else{
+      console.log("不是学生账号")
+    }
   })
 
   return (
@@ -209,12 +229,12 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       <ProTable
         actionRef={actionRef}
         rowKey='key'
-        dataSource={FormatData(allLabsData)}
+        dataSource={FormatData(allLabsData,mySubmission,currentUser)}
         columns={columns}
       />
       </Authorized>
 
-      <Authorized authority={['teacher']} noMatch={noMatch}>
+      <Authorized authority={['teacher','teachingAssistant','principal']} noMatch={noMatch}>
       <ProTable
         actionRef={actionRef}
         rowKey='key'
@@ -226,7 +246,7 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
             <Link to="/labs/all">发布实验</Link>
           </Button>
         ]}
-        dataSource={FormatData(allLabsData)}
+        dataSource={FormatData(allLabsData, mySubmission,currentUser)}
         columns={columns}
         // 删除选中实验
         rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}

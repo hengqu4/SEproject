@@ -212,7 +212,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   })
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable
         headerTitle='所有实验'
         actionRef={actionRef}

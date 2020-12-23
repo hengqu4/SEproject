@@ -24,12 +24,25 @@ const defaultPublishLab = {
   submissionCaseId: 2,
 }
 
+const defaultLabMark = {
+  courseCaseId: -1,
+  submissionCaseId: -1,
+  submissionComments: null,
+  submissionFileToken: null,
+  submissionIsPublic: false,
+  submissionScore: -1,
+  submissionTimestamp: null,
+  submissionUploader: -1
+}
+
 const defaultState = {
   isSuccess: false,
   allPendingList: [],
   newPublishLab: defaultPublishLab,
+  newLabMark: defaultLabMark,
   allLabCaseList: [],
-  labCaseList:[],
+  labCaseList: [],
+  mySubmissionList:[],
 }
 
 const effects = {
@@ -73,7 +86,20 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+  
+  fetchMySubmissionList: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchMySubmissionList, payload)
 
+    yield put({
+      type: 'setMySubmissionList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
   fetchMySubmission: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.fetchMySubmission, payload)
 
@@ -154,6 +180,10 @@ const reducers = {
   }),
   setLabCaseList: generateReducer({
     attributeName: 'labCaseList',
+    transformer: defaultArrayTransformer,
+  }),
+  setMySubmissionList: generateReducer({
+    attributeName: 'mySubmissionList',
     transformer: defaultArrayTransformer,
   }),
 }

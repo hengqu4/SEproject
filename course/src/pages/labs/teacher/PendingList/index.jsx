@@ -134,7 +134,7 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllStudentReport',
-      payload: params.currentLab,
+      payload: params.courseCaseId,
       onError: (err) => {
         notification.error({
           message: '获取提交情况失败',
@@ -145,7 +145,7 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
     })
   })
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable
         headerTitle='提交列表'
         actionRef={actionRef}

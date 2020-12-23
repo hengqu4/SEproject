@@ -104,7 +104,7 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
     <GridContent>
       <React.Fragment>
         <Card
-          title='实验统计'
+          title='学生实验得分统计'
           style={{
             height: '100%',
           }}
