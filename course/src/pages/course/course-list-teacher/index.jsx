@@ -1,17 +1,12 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { useMount } from 'react-use'
-import ProCard from '@ant-design/pro-card'
 import ProTable from '@ant-design/pro-table'
-import { PlusOutlined } from '@ant-design/icons'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
-import { Button, Divider, Drawer, message, DatePicker, TimePicker } from 'antd'
-import FormItem from 'antd/lib/form/FormItem'
+import { Button, Divider, Drawer, message, DatePicker } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
-const { RangePicker } = DatePicker
 
 const mapStateToProps = ({ Course }) => ({
   currentCourseInfo: Course.currentCourseInfo,

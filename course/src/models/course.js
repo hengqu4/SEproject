@@ -22,7 +22,7 @@ const defaultCourseInfo = {
 const defaultState = {
   currentCourseInfo: defaultCourseInfo,
   courseList: [],
-  courseTeachList: [],    //course-teach的list
+  courseTeachList: [], //course-teach的list
 }
 
 const effects = {
@@ -40,10 +40,11 @@ const effects = {
     //     console.log('error boy')
     //   }),
 
+    console.log(res)
     // console.log(res.data)
     yield put({
       type: 'setCourseList',
-      payload: res.data,
+      payload: res,
     })
   }),
 
@@ -83,7 +84,11 @@ const effects = {
     )
     delete newCourseInfoCopy.course_time
 
+    console.log(newCourseInfoCopy)
+
     const newCourseInfo = yield call(CourseServices.publishCourse, newCourseInfoCopy)
+
+    console.log(newCourseInfo)
     // res = yield CourseServices.publishCourse(newCourseInfoCopy)
     //   .then((response) => {
     //     console.log(response)
@@ -92,16 +97,16 @@ const effects = {
     //     console.log(error)
     //   })
 
+    yield call(CourseServices.publishGradeWeight, newCourseInfo)
+    const gradeWeight = yield call(CourseServices.fetchGradeWeight, newCourseInfo)
+    console.log(gradeWeight)
+
     const res = yield call(CourseServices.fetchAllCourseInfo)
 
     yield put({
       type: 'setCourseList',
-      payload: res.data,
+      payload: res,
     })
-
-    yield call(CourseServices.publishGradeWeight, newCourseInfo.data)
-    const gradeWeight = yield call(CourseServices.fetchGradeWeight, newCourseInfo.data)
-    console.log(gradeWeight)
   }),
 
   //编辑课程信息
@@ -170,7 +175,6 @@ const effects = {
 
   //删除一个课程绑定
   deleteCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
-    
     console.log(payload)
 
     yield call(CourseServices.deleteCourseTeach, payload)
@@ -181,7 +185,12 @@ const effects = {
       type: 'setCourseTeachList',
       payload: res.data,
     })
-  })
+  }),
+
+  // deleteManyCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
+  //   console.log(payload)
+
+  // }),
 }
 
 const reducers = {
@@ -195,14 +204,14 @@ const reducers = {
     attributeName: 'currentCourseInfo',
     // transformer: defaultObjectTransformer,
     transformer: (payload) => payload || defaultCourseInfo,
-    defaultState
+    defaultState,
   }),
 
   setCourseTeachList: generateReducer({
     attributeName: 'courseTeachList',
     transformer: defaultArrayTransformer,
     defaultState,
-  })
+  }),
 }
 
 export default {

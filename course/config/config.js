@@ -75,7 +75,7 @@ export default defineConfig({
               name: '课程模块',
               path: '/course',
               icon: 'book',
-              authority: ['teacher', 'student', 'principle'],
+              authority: ['teacher', 'teachingAssistant','student', 'principle'],
               routes: [
                 {
                   path: '/',
@@ -86,9 +86,8 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/course/course-list-teacher',
                   component: './course/course-list-teacher',
-                  authority: ['teacher'],
-                },
-                // {
+                  authority: ['teacher', 'teachingAssistant'],
+                }, // {
                 //   name: '课程信息',
                 //   icon: 'smile',
                 //   path: '/course/course-info',
@@ -114,6 +113,13 @@ export default defineConfig({
                   path: '/course/course-bind',
                   component: './course/course-bind',
                   authority: ['principle'],
+                },
+                {
+                  name: '课程信息',
+                  icon: 'smile',
+                  path: '/course/course-info',
+                  component: './course/course-info',
+                  authority: ['student'],
                 },
               ],
             },
