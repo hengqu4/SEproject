@@ -206,7 +206,7 @@ const students = (function () {
       Mock.mock({
         userId: '@id',
         email: '@email',
-        personal_id: '@id',
+        personalId: '@id',
         realname: '@cname',
         nickname: '@cname',
         avatar: '@image',
@@ -279,7 +279,7 @@ const matches = (function () {
 })()
 
 export default {
-  [`GET ${API_CONTEST_PREFIX}/matches/:matchId`]: studentMatchDetail,
+  [`GET ${API_CONTEST_PREFIX}/match/:matchId`]: studentMatchDetail,
   [`GET ${API_CONTEST_PREFIX}/matches`]: studentMatchHistory,
   [`GET ${API_CONTEST_PREFIX}/contest`]: (req, res) => {
     const contest = omit(currentContest, ['questions'])
@@ -287,10 +287,10 @@ export default {
     res.json({
       contest,
       bIsParticipated: false,
-      bIsParticipating: true,
+      bIsParticipating: false,
     })
   },
-  [`GET ${API_CONTEST_QUESTIONS_PREFIX}/questions`]: (req, res) => {
+  [`GET ${API_CONTEST_QUESTIONS_PREFIX}/question`]: (req, res) => {
     let { pageSize, pageNum, questionType } = req.query
 
     pageSize = +pageSize
@@ -384,11 +384,12 @@ export default {
       ...omit(contest, ['randomQuestions', 'questions']),
       questions: contestQuestions,
       publisherId: 1,
+      contestId: 1,
     }
 
     res.json({ message: 'ok' })
   },
-  [`GET ${API_CONTEST_PREFIX}/contest/all`]: { contests },
+  [`GET ${API_CONTEST_PREFIX}/contest/end`]: { contests },
   [`GET ${API_CONTEST_PREFIX}/students`]: (req, res) => {
     let { pageSize, pageNum } = req.query
 
@@ -407,28 +408,7 @@ export default {
       },
     })
   },
-  [`GET ${API_CONTEST_PREFIX}/matchesByContest`]: (req, res) => {
-    /* eslint-disable-next-line */
-    let { pageSize, pageNum, contestId } = req.query
-
-    pageSize = +pageSize
-    pageNum = +pageNum
-
-    const contestMatches = matches.filter((m) => m.contestId === contestId)
-
-    res.json({
-      matches: contestMatches.slice(
-        (pageNum - 1) * pageSize,
-        Math.min(pageNum * pageSize, contestMatches.length),
-      ),
-      pagination: {
-        pageNum,
-        pageSize,
-        total: contestMatches.length,
-      },
-    })
-  },
-  [`GET ${API_CONTEST_PREFIX}/matchesByStudent`]: (req, res) => {
+  [`GET ${API_CONTEST_PREFIX}/matches/student`]: (req, res) => {
     const { studentId } = req.query
 
     const student = students.find((s) => s.userId === studentId)
@@ -444,7 +424,31 @@ export default {
           m.participants.find((p) => p.userId === studentId),
           ['rank', 'score'],
         ),
+        matchTag: m.matchId,
       })),
+    })
+  },
+  [`GET ${API_CONTEST_PREFIX}/matches/:contestId`]: (req, res) => {
+    const { contestId } = req.params
+    let { pageSize, pageNum } = req.query
+
+    pageSize = +pageSize
+    pageNum = +pageNum
+
+    const contestMatches = matches
+      .filter((m) => m.contestId === contestId)
+      .map((m) => ({ ...m, matchTag: m.matchId }))
+
+    res.json({
+      matches: contestMatches.slice(
+        (pageNum - 1) * pageSize,
+        Math.min(pageNum * pageSize, contestMatches.length),
+      ),
+      pagination: {
+        pageNum,
+        pageSize,
+        total: contestMatches.length,
+      },
     })
   },
   [`GET ${API_MATCH_PREFIX}/userindex`]: {
@@ -453,18 +457,20 @@ export default {
   [`POST ${API_MATCH_PREFIX}/start`]: {
     channelId: 1,
   },
-  [`POST ${API_MATCH_PREFIX}/questions`]: (req, res) => {
+  [`GET ${API_CONTEST_PREFIX}/contest/questions/student/:contestId`]: (req, res) => {
     const matchQuestions = currentContest.questions.map((q) => omit(q, ['questionAnswer']))
 
-    const match = {
-      ...currentContest,
-      questions: matchQuestions,
-      matchId: 1,
-      timeStamp: Date.now() + 5 * 60 * 1000,
-    }
-
     res.json({
-      match,
+      questions: matchQuestions,
+    })
+  },
+  [`GET ${API_MATCH_PREFIX}/channel`]: {
+    channelId: 1,
+  },
+  [`GET ${API_CONTEST_PREFIX}/matchId`]: (req, res) => {
+    res.json({
+      matchId: 1,
+      timeStamp: Date.now(),
     })
   },
 }

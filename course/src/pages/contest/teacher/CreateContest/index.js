@@ -2,9 +2,9 @@ import React, { useState, useRef, useCallback } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Steps, Row, Col, message } from 'antd'
-import BasicInfo from '@/pages/contest/components/ContestBasicInfo'
-import SelectQuestions from '@/pages/contest/components/SelectQuestions'
-import ConfirmCreateQuestion from '@/pages/contest/components/ConfrimCreateContest'
+import BasicInfo from '@/pages/contest/teacher/CreateContest/components/ContestBasicInfo'
+import SelectQuestions from '@/pages/contest/teacher/CreateContest/components/SelectQuestions'
+import ConfirmCreateQuestion from '@/pages/contest/teacher/CreateContest/components/ConfrimCreateContest'
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { connect } from 'umi'
 import { useMount } from 'react-use'
@@ -13,6 +13,7 @@ import onError from '@/utils/onError'
 
 const mapStateToProps = ({ Contest = {} }) => ({
   newContest: Contest.newContest,
+  selectedQuestions: Contest.selectedQuestions,
   questions: Contest.questions,
   currentContest: Contest.currentContest,
 })
@@ -24,6 +25,7 @@ const stepsDom = stepTitles.map((title) => <Steps.Step title={title} key={title}
 export const Match = ({
   newContest = {},
   questions = [],
+  selectedQuestions = [],
   currentContest = {},
   dispatch = () => {},
 }) => {
@@ -68,7 +70,7 @@ export const Match = ({
         return
       }
     } else if (step === 1) {
-      if (!newContest.randomQuestions && !newContest.questions.length) {
+      if (selectedQuestions?.length === 0) {
         message.error('请先选择题目')
         return
       }
@@ -93,15 +95,12 @@ export const Match = ({
   const selectQuestionsDom = <SelectQuestions onNextStep={onStepChange.bind(this, 2)} />
   const descriptionsDom = (
     <ConfirmCreateQuestion
-      questions={questions}
-      newContest={newContest}
+      newContest={{ ...newContest, questions: selectedQuestions }}
       onConfirm={handleConfirmCreateContest}
     />
   )
 
   const domItems = [basicInfoDom, selectQuestionsDom, descriptionsDom]
-
-  console.log('currentContest: ', currentContest)
 
   return (
     <PageContainer title={false}>

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { Modal, Table, Space, Avatar, Divider } from 'antd'
-import moment from 'moment'
+import formatTime from '@/utils/formatTime'
 
 const ModalStudentMatches = ({ studentMatches = [], student = {} }, ref) => {
   const [visible, setVisible] = useState(false)
@@ -46,7 +46,7 @@ const ModalStudentMatches = ({ studentMatches = [], student = {} }, ref) => {
         title: '对抗时间',
         dataIndex: 'timeStamp',
         key: 'timeStamp',
-        render: (timeStr) => moment(timeStr).format('YYYY-MM-DD HH:mm'),
+        render: (timeStr) => formatTime(timeStr),
       },
       {
         title: '参赛人数',

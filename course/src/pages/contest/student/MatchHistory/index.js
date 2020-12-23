@@ -4,9 +4,9 @@ import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Table, Space, message, notification, Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import moment from 'moment'
+import formatTime from '@/utils/formatTime'
 import { connect } from 'umi'
-import MatchDetail from '@/pages/contest/components/MatchDetail'
+import MatchDetail from '@/pages/contest/student/MatchHistory/components/MatchDetail'
 
 const mapStateToProps = ({ Contest }) => ({
   dataSource: Contest.studentMatchHistory,
@@ -69,7 +69,7 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
         title: '测试时间',
         dataIndex: 'timeStamp',
         key: 'timeStamp',
-        render: (text) => <span>{moment(text).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (text) => <span>{formatTime(text)}</span>,
       },
       {
         title: '排名',

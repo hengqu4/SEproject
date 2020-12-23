@@ -4,8 +4,8 @@ import { List, Avatar, Card, Space, message } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 import onError from '@/utils/onError'
 import { useMount } from 'react-use'
-import ModalStudentMatches from '@/pages/contest/components/ModalStudentMatches'
-import classes from './style.less'
+import ModalStudentMatches from '@/pages/contest/teacher/MatchHistory/components/ModalStudentMatches'
+import classes from '@/pages/contest/teacher/MatchHistory/style.less'
 
 const mapStateToProps = ({ Contest }) => ({
   students: Contest.students,
@@ -51,12 +51,16 @@ const StudentMatches = ({
 
   const handleViewStudentMatches = useCallback(
     (student) => {
+      // TODO: 获取课程id
+      const courseId = 1
+
       const dismiss = message.info('正在加载该学生的比赛信息')
       setCurrStudent(student)
       dispatch({
         type: 'Contest/fetchStudentMatches',
         payload: {
           studentId: student.userId,
+          courseId,
         },
         onError,
         onFinish: () => {
@@ -93,7 +97,7 @@ const StudentMatches = ({
           <Card.Meta
             avatar={<Avatar src={student.avatar} />}
             title={student.realname}
-            description={student.personal_id}
+            description={student.personalId}
           />
           <p className={classes.StudentCardDescription}>邮箱：{student.email}</p>
           <p className={classes.StudentCardDescription}>昵称：{student.nickname}</p>

@@ -1,6 +1,6 @@
 import useWebSocket from 'react-use-websocket'
 import { useCallback, useMemo } from 'react'
-import MatchingStatus from '@/pages/contest/student/Contest/MatchingStatus'
+import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import onError from '@/utils/onError'
 
 const useMatchWebSocket = ({
@@ -66,7 +66,7 @@ const useMatchWebSocket = ({
 
   const onOpen = useCallback(() => {
     let newStatus = MatchingStatus.SEARCHING_ROOM
-    if (reconnect) {
+    if (reconnect.current) {
       newStatus = MatchingStatus.ANSWERING
     }
 

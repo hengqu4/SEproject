@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react'
 /* eslint-disable-next-line */
 import { Modal, Spin, Tag, List, Button, Avatar } from 'antd'
 import Mock from 'mockjs'
-import MatchingStatus from '@/pages/contest/student/Contest/MatchingStatus'
+import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import { connect } from 'umi'
 
 const nicknames = 'ABCDEFGHIJKLMNOPQ'.split('')
