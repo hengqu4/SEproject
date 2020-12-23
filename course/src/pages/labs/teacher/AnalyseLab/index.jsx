@@ -39,12 +39,68 @@ const { TabPane } = Tabs
 const AllLabCase = ({ lab }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
+  labStatistics: lab.labStatistics,
 })
 
-const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
+const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
+  const [labAnalyseDataSum, setLabAnalyseDataSum] = useState(0)
+  const [labAnalyseDataArray, setAnalyseDataArray] = useState([])
   const [submitVisible, setSubmitVisible] = useState(false)
+  const [labAnaylyseDataTitle, setLabAnaylyseDataTitle] = useState('提交总数')
+
+  const fetchLabStatistics = () => {
+    dispatch({
+      type: 'lab/fetchLabStatistics',
+      payload: currentLab == null ? allLabsData[0].courseCaseId : currentLab,
+      onError: (err) => {
+        notification.error({
+          message: '获取统计信息失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        console.log(labStatistics)
+      },
+    })
+  }
+
+  const modifyStatistics = (prop) => {
+    if (prop.scoreDistributed == null) {
+      setAnalyseDataArray([])
+      setLabAnalyseDataSum(0)
+      return
+    }
+    const statisticsData = [
+      {
+        x: '90+',
+        y: prop.scoreDistributed[4],
+      },
+      {
+        x: '80~90',
+        y: prop.scoreDistributed[3],
+      },
+      {
+        x: '70~80',
+        y: prop.scoreDistributed[2],
+      },
+      {
+        x: '60~70',
+        y: prop.scoreDistributed[1],
+      },
+      {
+        x: '60-',
+        y: prop.scoreDistributed[0],
+      },
+      {
+        x: '未批改',
+        y: prop.unremarkedNum,
+      },
+    ]
+    setAnalyseDataArray(statisticsData)
+    setLabAnalyseDataSum(labStatistics.remarkedNum + labStatistics.unremarkedNum)
+  }
 
   const handleAnalyseChange = (e) => {
     setAnalyseType(e.target.value)
@@ -96,6 +152,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
           description: err.message,
         })
       },
+      onSuccess: () => {
+        modifyStatistics(labStatistics)
+      },
     })
   })
 
@@ -139,9 +198,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                     </h4>
                     <Pie
                       hasLegend
-                      subTitle='总提交数'
-                      total={() => <p>{salesTypeData.reduce((pre, now) => now.y + pre, 0)}</p>}
-                      data={salesTypeData}
+                      subTitle={labAnaylyseDataTitle}
+                      total={() => <p>{labAnalyseDataSum}</p>}
+                      data={labAnalyseDataArray}
                       valueFormat={(value) => <p>{value}</p>}
                       height={248}
                       lineWidth={4}

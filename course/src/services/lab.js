@@ -1,4 +1,9 @@
-import { API_LAB_REPORT_PREFIX, API_LAB_DATABASE_PREFIX, API_LAB_COURSE_CASE } from '@/url-prefixes'
+import {
+  API_LAB_REPORT_PREFIX,
+  API_LAB_DATABASE_PREFIX,
+  API_LAB_COURSE_CASE,
+  API_LAB_STATISTICS,
+} from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
 
@@ -49,5 +54,13 @@ export const remarkSubmission = (courseCaseId) => {
   return request(SafeUrlAssembler('/teacher/public/').segment(courseCaseId).toString(), {
     method: 'PUT',
     prefix: API_LAB_REPORT_PREFIX,
+  })
+}
+
+// get lab statistics
+export const fetchLabStatistics = (courseCaseId) => {
+  return request(SafeUrlAssembler('/').segment(courseCaseId).toString(), {
+    method: 'GET',
+    prefix: API_LAB_STATISTICS,
   })
 }
