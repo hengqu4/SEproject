@@ -377,8 +377,7 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      // target: 'http://localhost:8000',
-      target: 'http://192.168.106.128:8000',
+      target: 'http://localhost:8000',
       changeOrigin: true,
     },
   },
