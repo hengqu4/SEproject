@@ -227,13 +227,13 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
           ):null}
 
           
-          {/*
+          
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >*/}
+          >
           {Date.now()>Date.parse(labData.caseStartTimestamp)&&Date.now()<Date.parse(labData.caseEndTimestamp) && !labData.isSubmit?(
             <Button
               style={{
@@ -245,11 +245,10 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
             >
               提交作业
             </Button>
-          ):
-          <p>本实验尚未开始进行或您已提交过实验报告</p>
+          ):<p>本实验尚未开始进行或您已提交过实验报告</p>
           }
-            {/*
-          </FormItem>*/}
+            
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>

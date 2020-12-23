@@ -164,8 +164,10 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
+      {/*
         <li>{JSON.stringify(params)}</li>
         <li>{JSON.stringify(labData)}</li>
+      */}
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
           <h2>{labData.experimentName}</h2>
           <h3>{labData.experimentCaseName}</h3>
@@ -174,9 +176,6 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
             <Tag icon={<UserOutlined />}>
               {labData.submissionUploader}  张三
             </Tag>
-            <Button key='edit' type='link' icon={<EditTwoTone />}>
-              编辑
-            </Button>
             <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()}>
               返回
             </Button>
@@ -197,11 +196,6 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
-          {/*
-          <FormItem {...formItemLayout} name='pdf'>
-            <PDFViewer />
-          </FormItem>
-          */}
           <FormItem {...formItemLayout} label='下载实验报告' name='labSubmitFile'>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
@@ -233,27 +227,28 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
               rows={4}
             />
           </FormItem>
-          {/*<FormItem
+          <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >*/}
+          >
             <Button
               type='primary'
               htmlType='submit'
             >
-              确认
+              确认批改
             </Button>
+            {/*
             <Button
               style={{
                 marginLeft: 16,
               }}
             >
               下一份
-            </Button>
+            </Button>*/}
           
-          {/*</FormItem>*/}
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>
