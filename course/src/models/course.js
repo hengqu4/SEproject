@@ -144,11 +144,11 @@ const effects = {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseTeach)
 
-    console.log(res.data)
+    console.log(res)
 
     yield put({
       type: 'setCourseTeachList',
-      payload: res.data,
+      payload: res,
     })
   }),
 
