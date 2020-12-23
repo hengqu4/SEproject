@@ -1,6 +1,7 @@
 import { Button, Tabs, Card, Radio, notification } from 'antd'
 import React, { useState } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
+import { ArrowRightOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
 import { useMount } from 'react-use'
@@ -41,7 +42,7 @@ const AllLabCase = ({ lab }) => ({
   allLabsData: lab.allLabCaseList,
 })
 
-const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
+const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
   const [submitVisible, setSubmitVisible] = useState(false)
@@ -127,16 +128,35 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
               onChange={onLabTabChange}
             >
               {allLabsData.map((i) => (
-                <TabPane tab={i.caseId} key={i.courseCaseId}>
+                <TabPane tab={i.experimentName} key={i.courseCaseId}>
                   <div>
-                    <h4
+                    <span
                       style={{
                         marginTop: 8,
                         marginBottom: 32,
                       }}
                     >
                       统计数据
-                    </h4>
+                    </span>
+
+                    <Button
+                      type='primary'
+                      style={{ marginLeft: "60%" }}
+                      onClick={() => {
+                        setSubmitVisible(true)
+                      }}
+                    >
+                      发布成绩
+                    </Button>
+                    <Link
+                      to={{ pathname: `/labs/pending-list/${currentLab == null ? allLabsData[0].courseCaseId : currentLab}` }}
+                      onClick={onLinkClicked}
+                      style={{ marginLeft: 16 }}
+                    >
+                      查看学生提交记录<ArrowRightOutlined />
+                    </Link>
+                  </div>
+                  <div style={{ marginTop: 40 }}>
                     <Pie
                       hasLegend
                       subTitle='总提交数'
@@ -146,38 +166,6 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => {} }) => {
                       height={248}
                       lineWidth={4}
                     />
-                    <Button
-                      type='primary'
-                      style={{
-                        height: 35,
-                        width: 100,
-                        marginLeft: 0,
-                      }}
-                      onClick={() => {
-                        setSubmitVisible(true)
-                      }}
-                    >
-                      发布成绩
-                    </Button>
-                    <Button
-                      type='link'
-                      style={{
-                        height: 35,
-                        width: 120,
-                        marginLeft: '50%',
-                      }}
-                    >
-                      <Link
-                        to={{
-                          pathname: `/labs/pending-list/${
-                            currentLab == null ? allLabsData[0].courseCaseId : currentLab
-                          }`,
-                        }}
-                        onClick={onLinkClicked}
-                      >
-                        查看学生提交记录
-                      </Link>
-                    </Button>
                   </div>
                 </TabPane>
               ))}

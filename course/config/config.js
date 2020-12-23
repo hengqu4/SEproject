@@ -190,7 +190,7 @@ export default defineConfig({
                 },
                 {
                   name: '实验详情',
-                  path: '/labs/lab',
+                  path: '/labs/lab/:courseId/:courseCaseId',
                   hideInMenu: true,
                   component: './labs/student/Lab',
                   authority: ['student'],
@@ -203,7 +203,7 @@ export default defineConfig({
                   authority: ['teacher'],
                 },
                 {
-                  name: '实验分析页',
+                  name: '实验分析',
                   icon: 'smile',
                   path: '/labs/analyse',
                   component: './labs/teacher/AnalyseLab',
@@ -220,14 +220,14 @@ export default defineConfig({
                 {
                   name: '批改实验',
                   path: '/labs/mark',
-                  hideInMenu: true,
+                  // hideInMenu: true,
                   component: './labs/teacher/MarkLab',
                   authority: ['teacher'],
                 },
                 {
                   name: '所有实验',
                   path: '/labs/all',
-                  hideInMenu: true,
+                  // hideInMenu: true,
                   component: './labs/teacher/AllLabList',
                   authority: ['teacher'],
                 },
@@ -377,7 +377,8 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      target: 'http://localhost:8000',
+      // target: 'http://localhost:8000',
+      target: 'http://192.168.106.128:8000',
       changeOrigin: true,
     },
   },

@@ -32,6 +32,7 @@ const UserModel = {
       if (action.payload) {
         currentUser = {
           name: action.payload.data.realname,
+          id: action.payload.data.userId,
           avatar: {},
         }
       }

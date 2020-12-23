@@ -26,7 +26,7 @@ const FormatData = (allPendingList) => {
   return formattedLabList
 }
 
-const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
+const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
   const params = useParams()
   const actionRef = useRef()
   const columns = [
@@ -97,6 +97,7 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
         <>
           <Link
             to={{
+              // /:courseCaseId/:submissionCaseId
               pathname: '/labs/mark',
             }}
             target='_blank'
@@ -107,7 +108,6 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
       ),
     },
   ]
-
   const [loading, setLoading] = useState(true)
   useMount(() => {
     dispatch({
@@ -122,7 +122,6 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
       onFinish: setLoading.bind(this, false),
     })
   })
-
   return (
     <PageContainer>
       <ProTable
@@ -136,5 +135,4 @@ const TableList = ({ allPendingList = [], dispatch = () => {} }) => {
     </PageContainer>
   )
 }
-
 export default connect(PendingListData)(TableList)
