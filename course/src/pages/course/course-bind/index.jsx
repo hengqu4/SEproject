@@ -55,7 +55,7 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
   useMount(() => {
     console.log('准备接受数据')
     dispatch({
-      type: 'Course/getAllCourseTeach', //这里需要修改
+      type: 'Course/getAllCourseTeach', 
       onError,
     })
   })
@@ -87,9 +87,11 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
       dispatch({
         type: 'Course/createNewCourseTeach',
         payload: values,
-        onError,
+        onError: () => {
+          message.error('创建课程绑定失败')
+        },
         onFinish: () => {
-          message.success('创建课程成功')
+          message.success('创建课程绑定成功')
           console.log(courseTeachList)
         },
       })

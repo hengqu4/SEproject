@@ -148,7 +148,7 @@ const effects = {
 
     yield put({
       type: 'setCourseTeachList',
-      payload: res,
+      payload: res.data,
     })
   }),
 
