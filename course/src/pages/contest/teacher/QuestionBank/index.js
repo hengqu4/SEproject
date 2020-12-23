@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
-import { useMount, useUnmount, use } from 'react-use'
+import { useMount, useUnmount } from 'react-use'
 import { Table, Space, Popconfirm, Button, message, Select, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
@@ -211,6 +211,8 @@ const QuestionBank = ({
     () => ({
       ...pagination,
       onChange: getQuestions,
+      onShowSizeChange: getQuestions,
+      showSizeChanger: true,
       current: pagination.pageNum,
     }),
     [pagination, getQuestions],
@@ -222,10 +224,8 @@ const QuestionBank = ({
         <Row gutter={16}>
           <Col span={4}>
             <Select
-              allowClear
               defaultValue={filters.questionType}
               style={{ width: '100%' }}
-              onClear={() => handleFiltersChange('questionType', undefined)}
               placeholder='题目类型'
               onChange={(value) => {
                 handleFiltersChange('questionType', value)

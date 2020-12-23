@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import { connect } from 'umi'
 import MatchQuestions from '@/pages/contest/components/MatchQuestions'
 import { useMount } from 'react-use'
@@ -11,14 +11,18 @@ import moment from 'moment'
 const { Countdown } = Statistic
 
 const mapStateToProps = ({ Contest }) => ({
-  currentMatch: Contest.currentMatch,
-  channelId: Contest.channelId,
+  currentContest: Contest.currentContest,
+  matchQuestions: Contest.matchQuestions,
+  matchId: Contest.matchId,
+  matchTimeStamp: Contest.matchTimeStamp,
   matchQuestionAnswers: Contest.matchQuestionAnswers,
 })
 
 const MatchQuestionsWrapper = ({
-  currentMatch = {},
-  channelId = null,
+  currentContest = {},
+  matchQuestions = [],
+  matchId = -1,
+  matchTimeStamp = -1,
   matchQuestionAnswers = [],
   dispatch = () => {},
 }) => {
@@ -30,18 +34,21 @@ const MatchQuestionsWrapper = ({
 
     // TODO: 获取userId
     const studentId = 1
+    const { contestId } = currentContest
+
+    console.log('currentContest: ', currentContest)
 
     dispatch({
-      type: 'Contest/fetchCurrentMatch',
+      type: 'Contest/connectToMatch',
       payload: {
         studentId,
-        channelId,
+        contestId,
       },
       onSuccess: setSubmitBtnActive.bind(this, true),
       onError,
       onFinish: setLoading.bind(this, false),
     })
-  }, [channelId, dispatch])
+  }, [currentContest, dispatch])
 
   const onUserAnswerChange = (questionId, newAnswer) => {
     const answersCopy = cloneDeep(matchQuestionAnswers)
@@ -56,7 +63,7 @@ const MatchQuestionsWrapper = ({
       })
     }
 
-    storage(`match${currentMatch.matchId}`, answersCopy)
+    storage(`match${matchId}`, answersCopy)
   }
 
   useMount(() => {
@@ -76,16 +83,13 @@ const MatchQuestionsWrapper = ({
           <header style={{ textAlign: 'right' }}>
             <Countdown
               title='倒计时'
-              value={moment(currentMatch.timeStamp)}
+              value={moment(matchTimeStamp).add(3, 'minutes')}
               onFinish={handleTimeEnd}
             />
           </header>
           <Divider />
           <article>
-            <MatchQuestions
-              questions={currentMatch.questions}
-              onUserAnsewrChange={onUserAnswerChange}
-            />
+            <MatchQuestions questions={matchQuestions} onUserAnsewrChange={onUserAnswerChange} />
           </article>
           <Divider />
           <footer style={{ textAlign: 'center' }}>

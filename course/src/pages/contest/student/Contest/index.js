@@ -5,11 +5,11 @@ import { notification, Spin, Row, Col, Button } from 'antd'
 import ProCard from '@ant-design/pro-card'
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { connect } from 'umi'
-import ModalMatching from '@/pages/contest/components/ModalMatching'
+import ModalMatching from '@/pages/contest/student/Contest/components/ModalMatching'
 import onError from '@/utils/onError'
-import useMatchWebSocket from '@/pages/contest/hooks/useMatchWebSocket'
-import MatchQuestionsWrapper from '@/pages/contest/components/MatchQuestionsWapper'
-import MatchingStatus from './MatchingStatus'
+import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWebSocket'
+import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
+import MatchingStatus from './matchingStatus'
 
 const mapStateToProps = ({ Contest }) => ({
   currentContest: Contest.currentContest,
@@ -65,7 +65,7 @@ const Contest = ({
     channelId,
     dispatch,
     clearStatus: handleCancelMatching,
-    reconnect: reconnectRef.current,
+    reconnect: reconnectRef,
   })
 
   const handleModalOpen = useCallback(() => {
@@ -78,7 +78,7 @@ const Contest = ({
     const { contestId } = currentContest
 
     dispatch({
-      type: 'Contest/fetchChannelId',
+      type: 'Contest/startMatching',
       payload: {
         studentId,
         contestId,
@@ -92,6 +92,28 @@ const Contest = ({
       },
     })
   }, [dispatch, currentContest])
+
+  const handleReconnect = useCallback(() => {
+    reconnectRef.current = true
+
+    // TODO: 获取studentId
+    const studentId = 1
+
+    dispatch({
+      type: 'Contest/fetchChannelId',
+      payload: {
+        studentId,
+      },
+      onError: (err) => {
+        reconnectRef.current = false
+        onError(err)
+        dispatch({
+          type: 'Contest/setMatchingStatus',
+          payload: MatchingStatus.IDLE,
+        })
+      },
+    })
+  })
 
   const currentContestValid = useMemo(() => Object.keys(currentContest).length !== 0, [
     currentContest,
@@ -118,10 +140,7 @@ const Contest = ({
 
     if (participating) {
       btnText = '您正在参加一场对抗，点击继续'
-      btnAttrs.onClick = () => {
-        reconnectRef.current = true
-        handleModalOpen()
-      }
+      btnAttrs.onClick = handleReconnect
     } else if (participated) {
       btnText = '您已参加过该比赛'
       btnAttrs.disabled = true
@@ -135,7 +154,7 @@ const Contest = ({
         <Button {...btnAttrs}>{btnText}</Button>
       </div>
     )
-  }, [loading, currentContestValid, participated, participating, handleModalOpen])
+  }, [loading, currentContestValid, participated, participating, handleModalOpen, handleReconnect])
 
   const contentDom = useMemo(() => {
     if (status === MatchingStatus.ANSWERING) {

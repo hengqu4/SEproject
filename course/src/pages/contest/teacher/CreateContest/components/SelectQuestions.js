@@ -1,18 +1,20 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { Spin, Transfer, message, Button, Space, Select } from 'antd'
+import { Spin, Transfer, message, Button, Select } from 'antd'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
+// import RangeNumber from '@/pages/contest/components/RangeNumber'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 import { useMount } from 'react-use'
 import pick from 'lodash/pick'
 import scrollToEnd from '@/utils/scrollToEnd'
-import classes from './style.less'
+import classes from '@/pages/contest/teacher/CreateContest/style.less'
 
 const mapStateToProps = ({ Contest }) => ({
   questions: Contest.questions,
   pagination: Contest.questionPagination,
   questionDetail: Contest.questionDetail,
   newContest: Contest.newContest,
+  selectedQuestions: Contest.selectedQuestions,
   filters: Contest.filters,
 })
 
@@ -20,12 +22,14 @@ const SelectQuestions = ({
   questions = [],
   pagination,
   newContest,
+  selectedQuestions = [],
   filters = {},
   dispatch = () => {},
   questionDetail = {},
   onNextStep = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
+  const [randomQuestions, setRandomQuestions] = useState(false)
   const modalRef = useRef(null)
 
   useMount(() => {
@@ -86,10 +90,12 @@ const SelectQuestions = ({
   const onChange = useCallback(
     (questionIds) => {
       const allIds = questions.map((q) => q.questionId)
-      const newTargetKeys = questionIds.filter((id) => allIds.includes(id))
+      const newSelectedQuestions = questionIds
+        .filter((id) => allIds.includes(id))
+        .map((id) => questions.find((q) => q.questionId === id))
       dispatch({
-        type: 'Contest/setNewContestQuestions',
-        payload: newTargetKeys,
+        type: 'Contest/setSelectedQuestions',
+        payload: newSelectedQuestions,
       })
     },
     [questions, dispatch],
@@ -111,19 +117,6 @@ const SelectQuestions = ({
     [dispatch],
   )
 
-  const handleRandomQuestionsChange = useCallback(
-    (value) => {
-      dispatch({
-        type: 'Contest/setNewContest',
-        payload: {
-          ...newContest,
-          randomQuestions: value,
-        },
-      })
-    },
-    [dispatch, newContest],
-  )
-
   const onModalOk = useCallback((_, closeModal) => {
     closeModal && closeModal()
   }, [])
@@ -143,18 +136,21 @@ const SelectQuestions = ({
           defaultValue={false}
           placeholder='出题方式'
           style={{ width: '100%' }}
-          onChange={handleRandomQuestionsChange}
+          onChange={setRandomQuestions.bind(this)}
         >
           <Select.Option value>随机出题</Select.Option>
           <Select.Option value={false}>题库选题</Select.Option>
         </Select>
       </div>
-      {newContest.randomQuestions ? null : (
+      {/* <div>
+        <RangeNumber
+          onMinChange={}
+        />
+      </div> */}
+      {randomQuestions ? null : (
         <div>
           <Select
-            allowClear
             defaultValue={filters.questionType}
-            onClear={() => handleFiltersChange('questionType', undefined)}
             style={{ width: '100%' }}
             placeholder='题目类型'
             onChange={(value) => {
@@ -166,7 +162,7 @@ const SelectQuestions = ({
           </Select>
         </div>
       )}
-      {newContest.randomQuestions ? null : (
+      {randomQuestions ? null : (
         <div>
           <Spin spinning={loading}>
             <Transfer
@@ -178,21 +174,14 @@ const SelectQuestions = ({
               titles={['待选题目', '已选题目']}
               onScroll={onScroll}
               onChange={onChange}
-              targetKeys={newContest.questions}
+              targetKeys={selectedQuestions.map((q) => q.questionId)}
               render={renderItem}
             />
           </Spin>
         </div>
       )}
       <div style={{ textAlign: 'center' }}>
-        <Button
-          type='primary'
-          disabled={
-            !newContest.randomQuestions &&
-            (!newContest.questions || newContest.questions.length === 0)
-          }
-          onClick={onNextStep}
-        >
+        <Button type='primary' disabled={selectedQuestions?.length === 0} onClick={onNextStep}>
           下一步
         </Button>
       </div>

@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Button } from 'antd'
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 
-const ConfirmCreateContest = ({ questions = [], newContest = {}, onConfirm = () => {} }) => {
+const ConfirmCreateContest = ({ newContest = {}, onConfirm = () => {} }) => {
   const [loading, setLoading] = useState(false)
 
   const onOk = useCallback(() => {
@@ -12,7 +12,7 @@ const ConfirmCreateContest = ({ questions = [], newContest = {}, onConfirm = () 
 
   return (
     <React.Fragment>
-      <ContestDescription contest={newContest} questions={questions} />
+      <ContestDescription contest={newContest} />
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         <Button loading={loading} type='primary' onClick={onOk}>
           确认该创建比赛

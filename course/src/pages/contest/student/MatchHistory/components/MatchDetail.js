@@ -1,6 +1,6 @@
 import React from 'react'
 import ProCard from '@ant-design/pro-card'
-import MatchRank from '@/pages/contest/components/MatchRank'
+import MatchRank from '@/pages/contest/student/MatchHistory/components/MatchRank'
 import MatchQuestions from '@/pages/contest/components/MatchQuestions'
 import { Divider, Row, Col } from 'antd'
 

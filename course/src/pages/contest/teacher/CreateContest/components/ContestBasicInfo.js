@@ -1,11 +1,27 @@
 import React, { useMemo } from 'react'
 import { Form, Input, Button, DatePicker, InputNumber } from 'antd'
 import moment from 'moment'
+import { range } from 'lodash'
 
 const { RangePicker } = DatePicker
 
-const disableDate = (currDate) => {
-  return currDate && currDate < moment().endOf('day')
+const disabledDate = (time) => {
+  return time && time < moment().startOf('day')
+}
+
+const disabledTime = (time, type) => {
+  console.log('time', time, type)
+  if (!time) {
+    return {}
+  }
+
+  const currTime = moment()
+  const isSameDay = time.isSame(currTime, 'day')
+  const isSameHour = time.isSame(currTime, 'hour')
+  const disabledHours = isSameDay ? range(currTime.hour()) : []
+  const disabledMinutes = isSameHour ? range(currTime.minute() + 1) : []
+
+  return { disabledHours: () => disabledHours, disabledMinutes: () => disabledMinutes }
 }
 
 const ContestBasicInfo = ({ onNextStep = () => {}, contest, ...restProps }, ref) => {
@@ -81,9 +97,11 @@ const ContestBasicInfo = ({ onNextStep = () => {}, contest, ...restProps }, ref)
           <RangePicker
             style={{ width: '100%' }}
             placeholder={['开始时间', '截至时间']}
-            disabledDate={disableDate}
+            disabledDate={disabledDate}
+            disabledTime={disabledTime}
+            format='YYYY-MM-DD HH:mm'
             showTime={{
-              defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+              defaultValue: [moment().add(1, 'minutes'), moment().add(1, 'minutes')],
             }}
           />
         </Form.Item>

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { Collapse, Table, Row, Col, Space, Badge, Avatar, Spin } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
-import moment from 'moment'
+import formatTime from '@/utils/formatTime'
 import { useMount } from 'react-use'
 
 const mapStateToProps = ({ Contest = {} }) => ({
@@ -88,7 +88,7 @@ const ContestMatches = ({
         dataIndex: 'timeStamp',
         key: 'timeStamp',
         width: '20%',
-        render: (timeStr) => moment(timeStr).format('YYYY-MM-DD HH:mm'),
+        render: (timeStr) => formatTime(timeStr),
       },
       {
         title: '排名情况',
@@ -102,7 +102,7 @@ const ContestMatches = ({
                   <Badge count={participant.rank}>
                     <Avatar src={participant.avatar} />
                   </Badge>
-                  <span>{participant.personal_id}</span>
+                  <span>{participant.personalId}</span>
                   <span>{participant.realname}</span>
                   <span>得分：&nbsp;{participant.score}</span>
                 </Space>
@@ -119,7 +119,7 @@ const ContestMatches = ({
     () => (
       <Table
         bordered
-        rowKey='matchId'
+        rowKey='matchTag'
         columns={columns}
         loading={matchesLoading}
         dataSource={contestMatches}

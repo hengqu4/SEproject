@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge, Avatar, List, Row, Col } from 'antd'
-import classes from './style.less'
+import classes from '@/pages/contest/student/MatchHistory/style.less'
 
 const MatchRank = ({ user = 0, participants = [], score = 0 }) => {
   const sortedParticipants = participants.sort((pa, pb) => pa.rank - pb.rank)
