@@ -1,4 +1,4 @@
-import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } from 'antd'
+import { Form, Button, Col, Input, Popover, Progress, Row, Select, message, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi'
 import styles from './style.less'
@@ -87,7 +87,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     }).then((response) => {
       console.log(response)
       if (response.isSuccess) {
-        const account = response.data.user_id
+        const account = response.data.userId
         message.success('注册成功！')
         history.push({
           pathname: '/user/register-result',
@@ -95,6 +95,13 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             account,
           },
         })
+      }
+      else {
+        const errorText = response.error.message
+        notification.error({
+          message: `注册失败`,
+          description: errorText,
+        })        
       }
     })
   }

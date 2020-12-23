@@ -2,9 +2,7 @@ import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { Link, SelectLang, useIntl, connect } from 'umi'
 import React from 'react'
-// import logo from '../assets/logo.svg'
-// import logo from '../assets/logoDark.png'
-import logo from '../assets/logoLight.png'
+import logo from '../assets/logo.svg'
 import styles from './UserLayout.less'
 
 const UserLayout = (props) => {
@@ -50,7 +48,29 @@ const UserLayout = (props) => {
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter
+          copyright={`${new Date().getFullYear()} 同济大学软件学院`}
+          links={[
+            {
+              key: 'frontend',
+              title: '前端开发',
+              href: 'https://github.com/hengqu4/SEproject',
+              blankTarget: true,
+            },
+            {
+              key: 'backend',
+              title: '后端开发',
+              href: 'https://github.com/TJCatFood/backend',
+              blankTarget: true,
+            },
+            {
+              key: 'service',
+              title: '联系方式',
+              href: 'https://sse.tongji.edu.cn/',
+              blankTarget: true,
+            },      
+          ]}
+        />
       </div>
     </HelmetProvider>
   )

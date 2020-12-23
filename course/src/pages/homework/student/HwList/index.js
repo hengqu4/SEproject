@@ -10,39 +10,34 @@ const onSearch = value => console.log(value);
 
 const columns = [
     {
-      title: '作业名称',
-      dataIndex: 'title',
-      key: '1',
-      render: (text, index) => {
-        return <a>{text}</a>
-      },
+        title: '标题',
+        dataIndex: 'title',
+        key: 'title',
     },
     {
-      title: '作业内容',
-      dataIndex: 'content',
-      key: '2',
+        title: '内容',
+        dataIndex: 'content',
+        key: 'content',
     },
     {
-      title: '发布者',
-      dataIndex: 'owner',
-      key: '3',
+        title: '日期',
+        dataIndex: 'date',
+        key: 'date',
     },
     {
-      title: '日期',
-      dataIndex: 'date',
-      key: '4',
+        title: '发布者',
+        dataIndex: 'owner',
+        key: 'owner',
     },
     {
-      title: '操作',
-      dataIndex: 'opr',
-      key: 'opr',
-      render: () => (
-          <Space size="middle">
-            <a href='http://localhost:8000/homework/hw-list/hw-info'>查看详情</a>
-            <a href='http://localhost:8000/homework/hw-list/hw-edit'>编辑</a>
-            <a>删除</a>
-          </Space>
-      ),
+        title: '操作',
+        dataIndex: 'opr',
+        key: 'opr',
+        render: () => (
+            <Space size="middle">
+              <a href='http://localhost:8000/homework/hw-list1/hw-info'>查看详情</a>
+            </Space>
+        ),
     },
 ];
 
@@ -52,35 +47,35 @@ const data = [
       title: '第一次作业',
       content: '给妈妈洗脚并写一篇心得',
       date: '2020.11.24',
-      owner: 'Dri',
+      owner: 'Dris toolman',
     },
     {
       key: '1',
       title: '第二次作业',
       content: '给爸爸洗脚并写一篇心得',
       date: '2020.11.24',
-      owner: 'Dri',
+      owner: 'Dris toolman',
     },
     {
         key: '1',
         title: '第三次作业',
         content: '给爷爷洗脚并写一篇心得',
         date: '2020.11.24',
-        owner: 'Dri',
+        owner: 'Dris toolman',
     },
     {
         key: '1',
         title: '第四次作业',
         content: '给奶奶洗脚并写一篇心得',
         date: '2020.11.24',
-        owner: 'Dri',
+        owner: 'Dris toolman',
     },
     {
         key: '1',
         title: '第五次作业',
         content: '给自己洗脚并写一篇心得',
         date: '2020.11.24',
-        owner: 'Dri',
+        owner: 'Dris toolman',
     },
 ];
 
@@ -93,18 +88,15 @@ return (
           background: '#fff',
         }}
       >
-        <div style={{paddingTop: '20px', marginLeft: '126px', width: '30%'}}>
-            <Search placeholder="" 
-                    onSearch={onSearch} 
-                    enterButton
-                    block='false' />
-              
+        <div style={{paddingTop: '40px', paddingBottom: '20px', margin: 'auto', width: '40%'}}>
+            <Search 
+              placeholder="" 
+              onSearch={onSearch} 
+              allowClear
+              enterButton
+              block='false' 
+            />
         </div>
-        <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-          <Button type="dashed" style={{width: '80%'}} onClick = {() => window.location.href = 'http://localhost:8000/homework/hw-list/hw-edit'}>
-             + 添加
-          </Button>
-        </div> 
         <div style={{width: '100%', textAlign: 'center'}}>
           <Table dataSource={data} columns={columns}
                  style={{width: '80%', margin: 'auto'}}>

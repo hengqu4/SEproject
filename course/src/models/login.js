@@ -3,6 +3,7 @@ import { history } from 'umi'
 import { userAccountLogin, userAccountLogout } from '@/services/login'
 import { setAuthority, AUTHORITY_LIST } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'
+import { notification } from 'antd'
 
 const Model = {
   namespace: 'login',
@@ -36,6 +37,13 @@ const Model = {
         console.log(redirect || '/')
         history.replace(redirect || '/')
       }
+      else {
+        const errorText = response.error.message
+        notification.error({
+          message: `登录失败`,
+          description: errorText,
+        })        
+      }
 
       yield put({
         type: 'changeLoginStatus',
@@ -64,8 +72,10 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       console.log(payload)
-      setAuthority(AUTHORITY_LIST[Number(payload.data.character)])
-      console.log(`current authority is :${AUTHORITY_LIST[Number(payload.data.character)]}`)
+      if (payload.isSuccess) {
+        setAuthority(AUTHORITY_LIST[Number(payload.data.character)-1])
+        console.log(`current authority is :${AUTHORITY_LIST[Number(payload.data.character)-1]}`)
+      }
       return { ...state, status: payload.status, type: payload.type }
     },
   },
