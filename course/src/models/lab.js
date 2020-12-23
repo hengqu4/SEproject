@@ -5,23 +5,23 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
-// const defaultPublishLab = {
-//   case_id: -1,
-//   course_id: -1,
-//   case_start_timestamp: null,
-//   case_end_timestamp: null,
-//   course_case_id: -1,
-// }
-
 const defaultPublishLab = {
   caseId: -1,
   courseId: -1,
+  courseCaseId: -1,
   caseStartTimeStamp: null,
   caseEndTimeStamp: null,
-  courseCaseId: -1,
   experimentCaseDescription: null,
   experimentName:null,
-  experimentCaseName:null,
+  experimentCaseName: null,
+
+  submissionUploader: -1,
+  submissionFileToken: null,
+  submissionTimestamp: null,
+  submissionScore: -1,
+  submissionComments: null,
+  submissionIsPublic: false,
+  submissionCaseId: 2,
 }
 
 const defaultState = {
@@ -46,6 +46,7 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+
   publishLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.publishLabCase, payload)
   }),
@@ -73,6 +74,20 @@ const effects = {
     })
   }),
 
+  fetchMySubmission: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchMySubmission, payload)
+
+    yield put({
+      type: 'setPendingList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
+
   fetchLabCase: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.fetchLabCase, payload)
 
@@ -86,7 +101,24 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
-  
+
+  fetchSubmission: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchSubmission, payload)
+
+    yield put({
+      type: 'setLabCaseList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
+
+  markSubmission: generateEffect(function* ({ payload }, { call }) {
+    yield call(LabServices.markSubmission, payload)
+  }),
 
   remarkSubmission: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.remarkSubmission, payload)

@@ -132,6 +132,22 @@ const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
       align:'center',
     },
     {
+      title: '提交',
+      dataIndex: 'submitStatus',
+      hideInForm: true,
+      valueEnum: {
+        3: {
+          text: '已提交',
+          status: 'Success',
+        },
+        4: {
+          text: '未提交',
+          status: 'Error',
+        },
+      },
+      align:'center',
+    },
+    {
       title: '开始时间',
       dataIndex: 'startTime',
       sorter: true,

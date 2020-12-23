@@ -17,7 +17,7 @@ export const fetchLabDatabase = () => {
 
 // fetch all students' report (teacher)
 export const fetchAllStudentReport = (courseId) => {
-  return request(SafeUrlAssembler('/teacher/list/').segment(courseId).toString(), {
+  return request(SafeUrlAssembler('/assignments/teacher/list/').segment(courseId).toString(), {
     method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
   })
@@ -57,10 +57,17 @@ export const fetchAllLabCase = (courseId) => {
   })
 }
 
+// get my submit lab case (published)
+export const fetchMySubmission = () => {
+  return request('/assignments/student/list', {
+    method: 'GET',
+    prefix: API_LAB_REPORT_PREFIX,
+  })
+}
 // publish lab remark (teacher)
 export const remarkSubmission = (courseCaseId) => {
-  return request(SafeUrlAssembler('/teacher/public/').segment(courseCaseId).toString(), {
-    method: 'PUT',
+  return request(SafeUrlAssembler('/assignments/teacher/public/').segment(courseCaseId).toString(), {
+    method: 'GET',
     prefix: API_LAB_REPORT_PREFIX,
   })
 }
@@ -74,9 +81,34 @@ export const fetchLabCase = (courseCaseId) => {
 
 // submit a lab case (student)
 export const submitLabCase = (data) => {
-  return request('/student/list/', {
+  return request('/assignments/student/list/', {
     method: 'POST',
     prefix: API_LAB_REPORT_PREFIX ,
     data,
   })
+}
+
+// get submitted lab case (student)
+export const fetchSubmission = (submissionCaseId) => {
+  return request(SafeUrlAssembler('/teacher/assignment/detail/').segment(submissionCaseId).toString(), {
+    method: 'GET',
+    prefix: API_LAB_REPORT_PREFIX,
+  })
+}
+
+// mark submitted lab case (teacher)
+export const markSubmission = (data) => {
+  return request(
+    SafeUrlAssembler('/assignment/teacher/detail/:submissionCaseId')
+      .param({
+        submissionCaseId: data.submissionCaseId,
+      })
+      .toString(),
+    {
+      method: 'PUT',
+      prefix: API_LAB_REPORT_PREFIX,
+      // data:omit(data, ['submissionCaseId']),
+      data
+    },
+  )
 }

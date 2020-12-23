@@ -15,7 +15,8 @@ import {
   Tag,
   PageHeader,
   Typography,
-  notification 
+  notification,
+  message
 } from 'antd'
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined} from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
@@ -128,6 +129,7 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
         })
       },
     }).then(
+      message.success('提交成功'),
       history.push('/labs/list')
     )
   }
@@ -203,7 +205,7 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
-          <FormItem {...formItemLayout} label='下载附件' name='goal'>
+          <FormItem {...formItemLayout} label='下载附件' name='fileUpload'>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>

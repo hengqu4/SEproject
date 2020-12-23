@@ -17,7 +17,7 @@ import {
   Typography,
 } from 'antd'
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
-import { connect, history } from 'umi'
+import { connect, history, useParams } from 'umi'
 import { useMount } from 'react-use'
 import React from 'react'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
@@ -29,37 +29,34 @@ const FormItem = Form.Item
 const { TextArea } = Input
 const { Paragraph } = Typography
 
-const FormatData = (labCase) => {
+const FormatData = (params, labData, form) => {
   // const formattedLab = []
   const formattedLab = {
-    experimentName: labCase.expName,
-    experimentCaseName: labCase.caseName,
-    experimentCaseDescription: labCase.caseDesc,
-    experimentCaseFileToken:"fake file token",
-    answerFileToken:"fake file token",
-    // experimentCaseFileToken:labCase.caseFile,
-    // answerFileToken:labCase.answerFile,
+    courseCaseId: Number(params.courseCaseId),
+    submissionUploader: labData.submissionUploader,
+    submissionFileToken: labData.submissionFileToken,
+    submissionTimestamp: labData.submissionTimestamp,
+    submissionScore: form.score,
+    submissionComments: form.Comments,
+    submissionIsPublic: false,
+    submissionCaseId: Number(params.submissionCaseId)
   }
   return formattedLab
 }
 
-// const LabCase = ({ lab }) => ({
-//   isSuccess: lab.isSuccess,
-//   labsData: lab.labCaseList,
-// })
+const LabCase = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  labData: lab.labCaseList,
+})
 
-const MarkLab = (props) => {
-// export const MarkLab = ({
-//   labsData = [],
-//   dispatch = () => {}
-// }) => {
-  const { submitting } = props
+const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
+  const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 4,
+        span: 5,
       },
     },
     wrapperCol: {
@@ -110,23 +107,27 @@ const MarkLab = (props) => {
     },
   ]
 
-  const onFinish = (labCase) => {
-    console.log(labCase)
-    const data = FormatData(labCase)
+  const onFinish = (form) => {
+    console.log(form)
+    const data = FormatData(params, labData, form)
     console.log(data)
-    console.log(JSON.stringify(data))
-    const { dispatch } = props
     dispatch({
-      type: 'lab/createLabCase',
+      type: 'lab/markSubmission',
       payload: data,
       onError: (err) => {
         notification.error({
-          message: '创建实验案例失败',
+          message: '批改学生实验作业失败',
           description: err.message,
         })
       },
     }).then(
-      history.push('/labs/pending-list')
+      history.push({
+        pathname: '/labs/pending-list/'+ params.courseCaseId,
+        // query: {
+        //   a: 'b',
+        // },
+      })
+      // history.push('/labs/pending-list/'+ params.courseCaseId)
     )
   } 
   const onFinishFailed = (errorInfo) => {
@@ -139,24 +140,22 @@ const MarkLab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
 
-  // useMount(() => {
-  //   console.log(params)
-  //   dispatch({
-  //     type: 'lab/fetchLabCase',
-  //     payload: params,
-  //     onError: (err) => {
-  //       notification.error({
-  //         message: '获取实验列表失败',
-  //         description: err.message,
-  //       })
-  //     },
-  //   })
-  // })  
+  useMount(() => {
+    console.log(params)
+    dispatch({
+      type: 'lab/fetchSubmission',
+      payload: params.submissionCaseId,
+      onError: (err) => {
+        notification.error({
+          message: '获取学生实验作业失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      console.log(labData)
+    )
+  })  
 
-  const experimentName = "实验1"
-  const experimentCaseName = "案例名称案例名称"
-  const experimentCaseDescription = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
-   const submissionUploader ="student1111"
   const data = [
     {
       key: '1',
@@ -169,13 +168,14 @@ const MarkLab = (props) => {
   return (
     <PageContainer>
       <Card bordered={false}>
+        <li>{JSON.stringify(params)}</li>
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
-          <h2>{experimentName}</h2>
-          <h3>{experimentCaseName}</h3>
-          <Paragraph>{experimentCaseDescription}</Paragraph>
+          <h2>{labData.experimentName}</h2>
+          <h3>{labData.experimentCaseName}</h3>
+          <Paragraph>{labData.experimentCaseDescription}</Paragraph>
           <div>
             <Tag icon={<UserOutlined />}>
-              {submissionUploader}
+              {labData.submissionUploader}  张三
             </Tag>
             <Button key='edit' type='link' icon={<EditTwoTone />}>
               编辑
@@ -205,12 +205,18 @@ const MarkLab = (props) => {
             <PDFViewer />
           </FormItem>
           */}
-          <FormItem {...formItemLayout} label='下载附件' name='goal'>
+          <FormItem {...formItemLayout} label='下载实验报告' name='labSubmitFile'>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
-          <FormItem {...formItemLayout} label='学生成绩' name='submissionScore'>
-            <InputNumber placeholder=' ' min={0} max={100} />
-            <span className='ant-form-text'>/ 100</span>
+          <FormItem {...formItemLayout} name='score' initialValue='100'
+            label={
+              <span>
+                学生成绩
+                <em className={styles.optional}>/100</em>
+              </span>
+            }
+          >
+            <InputNumber min={0} max={100} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -220,7 +226,7 @@ const MarkLab = (props) => {
                 <em className={styles.optional}>（选填）</em>
               </span>
             }
-            name='submissionComments'
+            name='comments'
           >
             <TextArea
               style={{
@@ -239,7 +245,6 @@ const MarkLab = (props) => {
             <Button
               type='primary'
               htmlType='submit'
-              loading={submitting}
             >
               确认
             </Button>
@@ -258,7 +263,4 @@ const MarkLab = (props) => {
   )
 }
 
-// export default connect(LabCase)(MarkLab)
-export default connect(({ loading }) => ({
-  submitting: loading.effects['labsAndMarkLab/submitRegularForm'],
-}))(MarkLab)
+export default connect(LabCase)(MarkLab)

@@ -219,7 +219,7 @@ export default defineConfig({
                 },
                 {
                   name: '批改实验',
-                  path: '/labs/mark',
+                  path: '/labs/mark/:courseCaseId/:submissionCaseId',
                   // hideInMenu: true,
                   component: './labs/teacher/MarkLab',
                   authority: ['teacher'],
