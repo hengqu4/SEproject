@@ -1,20 +1,15 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, TimePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import styles from './style.less';
-import { useState } from 'react';
-import UploadAvatar from './UploadAvatar';
-const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = TimePicker;
-const { TextArea } = Input; // const { formLayout } = useState('inline')
+import React from 'react'
+import { PageContainer } from '@ant-design/pro-layout'
+import { Button, Card, DatePicker, Input, Form, message, InputNumber, Select } from 'antd'
+import { connect } from 'umi'
+import UploadAvatar from './UploadAvatar'
 
-const CourseEdit = props => {
-  const { submitting } = props;
-  const [form] = Form.useForm();
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
+const FormItem = Form.Item
+const { RangePicker } = DatePicker
+const { TextArea } = Input
+
+const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
+  const [form] = Form.useForm()
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -35,7 +30,7 @@ const CourseEdit = props => {
         span: 10,
       },
     },
-  };
+  }
   const submitFormLayout = {
     wrapperCol: {
       xs: {
@@ -47,386 +42,138 @@ const CourseEdit = props => {
         offset: 7,
       },
     },
-  };
+  }
 
-  const onFinish = values => {
-    const { dispatch } = props;
+  const onFinish = (values) => {
+    values.courseID = currentCourseId
+    console.log('准备更新数据')
+    // console.log(values)
     dispatch({
-      type: 'courseSettingAndCourseEdit/submitRegularForm',
+      type: 'Course/updateSomeCourse',
       payload: values,
-    });
-  };
+      onFinish: () => {
+        message.success('课程编辑成功')
+      },
+    })
+  }
 
-  const onFinishFailed = errorInfo => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo)
+  }
 
-  const onValuesChange = changedValues => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
-  };
+  const currentCourseId = currentCourseInfo.courseId
+
+  console.log(currentCourseId)
 
   return (
-    <PageContainer >
+    <PageContainer>
       <Card bordered={false}>
         <Form
           hideRequiredMark
-          style={{
-            marginTop: 8,
-          }}
+          style={{ marginTop: 8 }}
           form={form}
-          name="basic"
-          initialValues={{
-            public: '1',
-          }}
+          name='editCourse'
+          initialValues={{ public: '1' }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          onValuesChange={onValuesChange}
         >
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseAvatar.label" />}
-            name="courseAvatar"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseAvatar.required',
-                }),
-              },
-            ]}
-          >
+          <FormItem {...formItemLayout} label='课程ID' name='courseID'>
+            <span>{currentCourseId}</span>
+          </FormItem>
+          <FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
             <UploadAvatar />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseName.label" />}
-            name="courseName"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseName.required',
-                }),
-              },
-            ]}
-          >
-            <Input
-              placeholder={formatMessage({
-                id: 'courseedit.courseName.placeholder',
-              })}
-            />
+          <FormItem {...formItemLayout} label='课程名称' name='courseName'>
+            <Input placeholder='请输入新的课程名称' />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseCredit.label" />}
-            name="courseCredit"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseCredit.required',
-                }),
-              },
-            ]}
-          >
-            <Input
-              placeholder={formatMessage({
-                id: 'courseedit.courseCredit.placeholder',
-              })}
-            />
+          <FormItem {...formItemLayout} label='课程学分' name='courseCredit'>
+            <Input placeholder='请输入新的课程学分' />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseStudyTimeNeeded.label" />}
-            name="courseStudyTimeNeeded"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseStudyTimeNeeded.required',
-                }),
-              },
-            ]}
-          >
-            <Input
-              placeholder={formatMessage({
-                id: 'courseedit.courseStudyTimeNeeded.placeholder',
-              })}
-            />
+          <FormItem {...formItemLayout} label='课程学时' name='courseStudyTimeNeeded'>
+            <Input placeholder='请输入新的课程学时' />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseDescription.label" />}
-            name="courseDescription"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseDescription.required',
-                }),
-              },
-            ]}
-          >
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              placeholder={formatMessage({
-                id: 'courseedit.courseDescription.placeholder',
-              })}
-              rows={4}
-            />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.courseTime.label" />}
-            name="courseTime"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.courseTime.required',
-                }),
-              },
-            ]}
-          >
-            <RangePicker
-              style={{
-                width: '100%',
-              }}
-              placeholder={[
-                formatMessage({
-                  id: 'courseedit.courseTime.placeholder.start',
-                }),
-                formatMessage({
-                  id: 'courseedit.courseTime.placeholder.end',
-                }),
+          <FormItem {...formItemLayout} label='课程类型' name='courseType'>
+            <Select
+              placeholder='请选择课程类型'
+              options={[
+                { value: '必修', label: '必修' },
+                { value: '选修', label: '选修' },
               ]}
             />
-
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.teacherName.label" />}
-            name="courseName"
-            rules={[
-              {
-                required: true,
-                message: formatMessage({
-                  id: 'courseedit.teacherName.required',
-                }),
-              },
-            ]}
-          >
-            <Input
-              placeholder={formatMessage({
-                id: 'courseedit.teacherName.placeholder',
-              })}
+          <FormItem {...formItemLayout} label='课程描述' name='courseDescription'>
+            <TextArea
+              style={{ minHeight: 32 }}
+              placeholder='请输入新的课程描述(不超过50个字)'
+              rows={4}
+              maxLength={50}
             />
           </FormItem>
-
-          {/* <Row>
-           <Col span={12}> 
-           
-           </Col><Col span={12}> 
-           <FormItem
-           {...formItemLayout}
-           label={<FormattedMessage id='courseedit.lectureCount.label' />}
-           name='lectureCount'
-          >
-           <InputNumber
-             placeholder={formatMessage({
-               id: 'courseedit.lectureCount.placeholder',
-             })}
-             min={0}
-             max={60}
-           />
+          <FormItem {...formItemLayout} label='课程起止时间' name='courseTime'>
+            <RangePicker
+              style={{ width: '100%' }}
+              showTime
+              format={'YYYY/MM/DD HH:mm'}
+              placeholder={['开始时间', '结束时间']}
+            />
           </FormItem>
-           </Col>
-          </Row> */}
-
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.lectureCount.label" />}
-            name="lectureCount"
-          >
+          <FormItem {...formItemLayout} label='理论课次数' name='lectureCount'>
             <InputNumber
-              style={{
-                width: '50%',
-              }}
-              placeholder={formatMessage({
-                id: 'courseedit.lectureCount.placeholder',
-              })}
+              style={{ width: '70%' }}
+              placeholder='请输入理论课次数'
+              initialValues={0}
               min={0}
               max={60}
             />
           </FormItem>
-
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.experimentCount.label" />}
-            name="experimentCount"
-          >
+          <FormItem {...formItemLayout} label='实验课次数' name='experimentCount'>
             <InputNumber
-              style={{
-                width: '50%',
-              }}
-              placeholder={formatMessage({
-                id: 'courseedit.experimentCount.placeholder',
-              })}
+              style={{ width: '70%' }}
+              placeholder='请输入实验课次数'
+              initialValues={0}
               min={0}
               max={60}
             />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.homeworkCount.label" />}
-            name="homeworkCount"
-          >
+          <FormItem {...formItemLayout} label='作业次数' name='homeworkCount'>
             <InputNumber
-              style={{
-                width: '50%',
-              }}
-              placeholder={formatMessage({
-                id: 'courseedit.homeworkCount.placeholder',
-              })}
+              style={{ width: '70%' }}
+              placeholder='请输入作业次数'
+              initialValues={0}
               min={0}
               max={60}
             />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={<FormattedMessage id="courseedit.contestCount.label" />}
-            name="contestCount"
-          >
+          <FormItem {...formItemLayout} label='对抗练习次数' name='contestCount'>
             <InputNumber
-              style={{
-                width: '50%',
-              }}
-              placeholder={formatMessage({
-                id: 'courseedit.contestCount.placeholder',
-              })}
+              style={{ width: '70%' }}
+              placeholder='请输入对抗练习次数'
+              initialValues={0}
               min={0}
               max={60}
             />
           </FormItem>
-          {/* <FormItem
-          {...formItemLayout}
-          label={
-           <span>
-             <FormattedMessage id="coursesettingandcourseedit.client.label" />
-             <em className={styles.optional}>
-               <FormattedMessage id="coursesettingandcourseedit.form.optional" />
-               <Tooltip
-                 title={<FormattedMessage id="coursesettingandcourseedit.label.tooltip" />}
-               >
-                 <InfoCircleOutlined
-                   style={{
-                     marginRight: 4,
-                   }}
-                 />
-               </Tooltip>
-             </em>
-           </span>
-          }
-          name="client"
-          >
-          <Input
-           placeholder={formatMessage({
-             id: 'coursesettingandcourseedit.client.placeholder',
-           })}
-          />
-          </FormItem> */}
-          {/* <FormItem
-          {...formItemLayout}
-          label={
-           <span>
-             <FormattedMessage id="coursesettingandcourseedit.invites.label" />
-             <em className={styles.optional}>
-               <FormattedMessage id="coursesettingandcourseedit.form.optional" />
-             </em>
-           </span>
-          }
-          name="invites"
-          >
-          <Input
-           placeholder={formatMessage({
-             id: 'coursesettingandcourseedit.invites.placeholder',
-           })}
-          />
-          </FormItem> */}
-          {/* <FormItem
-          {...formItemLayout}
-          label={<FormattedMessage id="coursesettingandcourseedit.public.label" />}
-          help={<FormattedMessage id="coursesettingandcourseedit.label.help" />}
-          name="publicType"
-          >
-          <div>
-           <Radio.Group>
-             <Radio value="1">
-               <FormattedMessage id="coursesettingandcourseedit.radio.public" />
-             </Radio>
-             <Radio value="2">
-               <FormattedMessage id="coursesettingandcourseedit.radio.partially-public" />
-             </Radio>
-             <Radio value="3">
-               <FormattedMessage id="coursesettingandcourseedit.radio.private" />
-             </Radio>
-           </Radio.Group>
-           <FormItem
-             style={{
-               marginBottom: 0,
-             }}
-             name="publicUsers"
-           >
-             <Select
-               mode="multiple"
-               placeholder={formatMessage({
-                 id: 'coursesettingandcourseedit.publicUsers.placeholder',
-               })}
-               style={{
-                 margin: '8px 0',
-                 display: showPublicUsers ? 'block' : 'none',
-               }}
-             >
-               <Option value="1">
-                 <FormattedMessage id="coursesettingandcourseedit.option.A" />
-               </Option>
-               <Option value="2">
-                 <FormattedMessage id="coursesettingandcourseedit.option.B" />
-               </Option>
-               <Option value="3">
-                 <FormattedMessage id="coursesettingandcourseedit.option.C" />
-               </Option>
-             </Select>
-           </FormItem>
-          </div>
-             </FormItem> */}
-          <FormItem
-            {...submitFormLayout}
-            style={{
-              marginTop: 32,
-            }}
-          >
-            <Button type="primary" htmlType="submit" loading={submitting}>
-              <FormattedMessage id="coursesettingandcourseedit.form.submit" />
+          <FormItem {...formItemLayout} label='课程分数是否公开' name='courseIsScorePublic'>
+            <Select
+              placeholder='请选择课程分数是否公开'
+              options={[
+                { value: true, label: '公开' },
+                { value: false, label: '不公开' },
+              ]}
+            />
+          </FormItem>
+          <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+            <Button type='primary' htmlType='submit'>
+              提交
             </Button>
-            <Button
-              style={{
-                marginLeft: 8,
-              }}
-            >
-              <FormattedMessage id="coursesettingandcourseedit.form.save" />
-            </Button>
+            <Button style={{ marginLeft: 16 }}>保存</Button>
           </FormItem>
         </Form>
       </Card>
     </PageContainer>
-  );
-};
+  )
+}
 
-export default connect(({ loading }) => ({
-  submitting: loading.effects['courseSettingAndCourseEdit/submitRegularForm'],
-}))(CourseEdit);
+export default connect(({ Course }) => ({ currentCourseInfo: Course.currentCourseInfo }))(
+  CourseEdit,
+)
