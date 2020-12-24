@@ -1,7 +1,7 @@
 import React from 'react'
 import { List, Divider } from 'antd'
 import Question from '@/pages/contest/components/Question'
-import classes from './style.less'
+import classes from '@/pages/contest/components/style.less'
 
 const MatchQuestions = ({ questions = [], score, onUserAnsewrChange }) => {
   const footer =

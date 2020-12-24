@@ -42,7 +42,7 @@ const NormalLoginForm = (props) => {
           rules={[
             {
               required: true,
-              message: 'Please input your Username!',
+              message: '请输入用户名！',
             },
           ]}
         >
@@ -57,7 +57,7 @@ const NormalLoginForm = (props) => {
           rules={[
             {
               required: true,
-              message: 'Please input your Password!',
+              message: '请输入密码！',
             },
           ]}
         >

@@ -10,36 +10,39 @@ const onSearch = value => console.log(value);
 
 const columns = [
     {
-        title: '标题',
-        dataIndex: 'title',
-        key: 'title',
+      title: '作业名称',
+      dataIndex: 'title',
+      key: '1',
+      render: (text, index) => {
+        return <a>{text}</a>
+      },
     },
     {
-        title: '内容',
-        dataIndex: 'content',
-        key: 'content',
+      title: '作业内容',
+      dataIndex: 'content',
+      key: '2',
     },
     {
-        title: '日期',
-        dataIndex: 'date',
-        key: 'date',
+      title: '发布者',
+      dataIndex: 'owner',
+      key: '3',
     },
     {
-        title: '发布者',
-        dataIndex: 'owner',
-        key: 'owner',
+      title: '日期',
+      dataIndex: 'date',
+      key: '4',
     },
     {
-        title: '操作',
-        dataIndex: 'opr',
-        key: 'opr',
-        render: () => (
-            <Space size="middle">
-              <a>查看详情</a>
-              <a>编辑</a>
-              <a>删除</a>
-            </Space>
-        ),
+      title: '操作',
+      dataIndex: 'opr',
+      key: 'opr',
+      render: () => (
+          <Space size="middle">
+            <a href='http://localhost:8000/homework/hw-list/hw-info'>查看详情</a>
+            <a href='http://localhost:8000/homework/hw-list/hw-edit'>编辑</a>
+            <a>删除</a>
+          </Space>
+      ),
     },
 ];
 
@@ -98,7 +101,7 @@ return (
               
         </div>
         <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-          <Button type="dashed" style={{width: '80%'}}>
+          <Button type="dashed" style={{width: '80%'}} onClick = {() => window.location.href = 'http://localhost:8000/homework/hw-list/hw-edit'}>
              + 添加
           </Button>
         </div> 

@@ -6,7 +6,7 @@ import generateReducer, {
 } from '@/utils/generateReducer'
 import pick from 'lodash/pick'
 import cloneDeep from 'lodash/cloneDeep'
-import MatchingStatus from '@/pages/contest/student/Contest/MatchingStatus'
+import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import storage from 'store2'
 
 const pageOverflow = ({ total, pageNum, pageSize }) => {
@@ -30,6 +30,10 @@ const defaultPagination = {
   pageSize: 20,
 }
 
+const defaultFilter = {
+  questionType: 0,
+}
+
 const defaultState = {
   studentMatchHistory: [],
   studentMatchDetail: {},
@@ -39,8 +43,9 @@ const defaultState = {
   questions: [],
   questionDetail: {},
   questionPagination: defaultPagination,
-  filters: {},
+  filters: defaultFilter,
   newContest: defaultNewContest,
+  selectedQuestions: [],
   contests: [],
   contestMatches: [],
   contestMatchesPagination: defaultPagination,
@@ -52,7 +57,8 @@ const defaultState = {
   channelId: null,
   userIndex: 0,
   matchId: null,
-  currentMatch: {},
+  matchTimeStamp: null,
+  matchQuestions: [],
   matchQuestionAnswers: [],
 }
 
@@ -93,20 +99,13 @@ const effects = {
   }),
   createContest: generateEffect(function* (_, { call, put, select }) {
     const newContest = yield select((state) => state.Contest.newContest)
-    const questions = yield select((state) => state.Contest.questions)
+    const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
     // TODO: 添加课程Id
     const courseId = 1
 
     const newContestCopy = cloneDeep(newContest)
-    if (!newContestCopy.randomQuestions) {
-      newContestCopy.questions = newContest.questions.map((questionId) =>
-        pick(
-          questions.find((q) => q.questionId === questionId),
-          ['questionType', 'questionId'],
-        ),
-      )
-    }
+    newContestCopy.questions = selectedQuestions.map((q) => pick(q, ['questionType', 'questionId']))
 
     yield call(ContestServices.createContest, {
       contest: {
@@ -134,12 +133,14 @@ const effects = {
       payload,
     })
 
+    const filters = yield select((state) => state.Contest.filters)
+
     // TODO: 可能添加过滤器
 
     const res = yield call(ContestServices.fetchQuestionList, {
       pageNum: 1,
       pageSize: pagination.pageSize,
-      ...payload,
+      ...filters,
     })
 
     yield put({
@@ -154,6 +155,7 @@ const effects = {
   }),
   fetchQuestions: generateEffect(function* ({ payload }, { call, put, select }) {
     const filters = yield select((state) => state.Contest.filters)
+
     const res = yield call(ContestServices.fetchQuestionList, { ...payload, ...filters })
 
     yield put({
@@ -205,6 +207,7 @@ const effects = {
   }),
   createQuestion: generateEffect(function* ({ payload }, { select, call, put }) {
     const pagination = yield select((state) => state.Contest.questionPagination)
+
     const filters = yield select((state) => state.Contest.filters)
     yield call(ContestServices.createQuestion, payload)
     const res = yield call(ContestServices.fetchQuestionList, {
@@ -305,12 +308,14 @@ const effects = {
   fetchStudentMatches: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchAllStudentMatches, payload)
 
+    console.log('res: ', res)
+
     yield put({
       type: 'setStudentMatches',
       payload: res.matches,
     })
   }),
-  fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
+  startMatching: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.startMatching, payload)
 
     yield put({
@@ -334,40 +339,62 @@ const effects = {
   readyForMatch: generateEffect(function* ({ payload }, { call }) {
     yield call(ContestServices.readyMatch, payload)
   }),
-  fetchCurrentMatch: generateEffect(function* ({ payload }, { call, put }) {
-    const { match } = yield call(ContestServices.fetchCurrentMatch, payload)
+  fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
+    const { channelId } = yield call(ContestServices.fetchChannelId, payload)
 
-    const defaultAnswers = match.questions.map((q) => ({
+    yield put({
+      type: 'setChannelId',
+      payload: channelId,
+    })
+  }),
+  connectToMatch: generateEffect(function* ({ payload }, { call, put }) {
+    const [{ matchId, timeStamp }, res] = yield [
+      call(ContestServices.fetchMatchId, payload),
+      call(ContestServices.fetchMatchQuestions, payload),
+    ]
+
+    const { questions } = res
+
+    const defaultAnswers = questions.map((q) => ({
       ...pick(q, ['questionId', 'questionType']),
       answer: null,
     }))
 
-    const matchAnswersHistory = storage(`match${match.matchId}`)
+    const matchAnswersHistory = storage(`match${matchId}`)
 
     if (matchAnswersHistory) {
       matchAnswersHistory.forEach((qh) => {
         if (qh.answer) {
-          const index = match.questions.findIndex(
+          const index = questions.findIndex(
             (mq) => mq.questionId === qh.questionId && mq.questionType === qh.questionType,
           )
 
           if (index !== -1) {
-            match.questions[index].answer = qh.answer
+            questions[index].answer = qh.answer
             defaultAnswers[index].answer = qh.answer
           }
         }
       })
     }
 
-    yield put({
-      type: 'setCurrentMatch',
-      payload: match,
-    })
-
-    yield put({
-      type: 'setMatchQuestionAnswers',
-      payload: defaultAnswers,
-    })
+    yield [
+      put({
+        type: 'setMatchId',
+        payload: matchId,
+      }),
+      put({
+        type: 'setMatchQuestions',
+        payload: questions,
+      }),
+      put({
+        type: 'setMatchQuestionAnswers',
+        payload: defaultAnswers,
+      }),
+      put({
+        type: 'setMatchTimeStamp',
+        payload: timeStamp,
+      }),
+    ]
   }),
 }
 
@@ -394,7 +421,7 @@ const reducers = {
   }),
   setFilters: generateReducer({
     attributeName: 'filters',
-    transformer: defaultObjectTransformer,
+    transformer: (payload) => payload || defaultFilter,
     defaultState,
   }),
   setQuestions: generateReducer({
@@ -418,15 +445,6 @@ const reducers = {
   setNewContest: generateReducer({
     attributeName: 'newContest',
     transformer: (payload) => payload || defaultNewContest,
-    defaultState,
-  }),
-  setNewContestQuestions: generateReducer({
-    attributeName: 'newContest',
-    transformer: (payload, state) => {
-      const newContestCopy = cloneDeep(state.newContest) || defaultNewContest
-      newContestCopy.questions = payload
-      return newContestCopy
-    },
     defaultState,
   }),
   setDefaultNewContest: generateReducer({
@@ -499,14 +517,24 @@ const reducers = {
     transformer: (payload) => payload || null,
     defaultState,
   }),
-  setCurrentMatch: generateReducer({
-    attributeName: 'currentMatch',
-    transformer: defaultObjectTransformer,
+  setMatchQuestions: generateReducer({
+    attributeName: 'matchQuestions',
+    transformer: defaultArrayTransformer,
     defaultState,
   }),
   setMatchQuestionAnswers: generateReducer({
     attributeName: 'matchQuestionAnswers',
     defaultArrayTransformer,
+    defaultState,
+  }),
+  setMatchTimeStamp: generateReducer({
+    attributeName: 'matchTimeStamp',
+    transformer: (payload) => payload || Date.now(),
+    defaultState,
+  }),
+  setSelectedQuestions: generateReducer({
+    attributeName: 'selectedQuestions',
+    transformer: defaultArrayTransformer,
     defaultState,
   }),
 }

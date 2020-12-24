@@ -2,8 +2,8 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Radio } from 'antd'
-import ContestMatches from '@/pages/contest/components/ContestMatches'
-import StudentMatches from '@/pages/contest/components/StudentMatches'
+import ContestMatches from '@/pages/contest/teacher/MatchHistory/components/ContestMatches'
+import StudentMatches from '@/pages/contest/teacher/MatchHistory/components/StudentMatches'
 
 const MatchHistory = () => {
   const [viewMode, setViewMode] = useState('contest')

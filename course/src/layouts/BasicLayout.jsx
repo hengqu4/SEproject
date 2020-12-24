@@ -11,8 +11,7 @@ import { Result, Button } from 'antd'
 import Authorized from '@/utils/Authorized'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import { getAuthorityFromRouter } from '@/utils/utils'
-// import logo from '../assets/logo.svg'
-import logo from '../assets/logoDark.png'
+import logo from '../assets/logo.svg'
 
 const noMatch = (
   <Result
@@ -44,17 +43,23 @@ const defaultFooterDom = (
     copyright={`${new Date().getFullYear()} 同济大学软件学院`}
     links={[
       {
-        key: 'course',
-        title: '软件项目与过程管理',
-        // href: 'https://pro.ant.design',
+        key: 'frontend',
+        title: '前端开发',
+        href: 'https://github.com/hengqu4/SEproject',
         blankTarget: true,
       },
       {
-        key: 'platform',
-        title: '虚拟仿真实验平台',
-        // href: 'https://ant.design',
+        key: 'backend',
+        title: '后端开发',
+        href: 'https://github.com/TJCatFood/backend',
         blankTarget: true,
       },
+      {
+        key: 'service',
+        title: '联系方式',
+        href: 'https://sse.tongji.edu.cn/',
+        blankTarget: true,
+      },      
     ]}
   />
 )

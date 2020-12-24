@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useMemo, useCallback, useRef } from 'react'
 import {
   Button,
   Card,
@@ -15,22 +15,37 @@ import {
   Tag,
   PageHeader,
   Typography,
+  notification 
 } from 'antd'
-
-import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
+import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined} from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
-import { connect } from 'umi'
+import { useMount } from 'react-use'
+import { connect, useParams, useRouteMatch, useLocation, Link, history } from 'umi'
 import styles from './style.less'
 
 const FormItem = Form.Item
 const { TextArea } = Input
 const { Paragraph } = Typography
 const { Countdown } = Statistic;
-const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
 
-const Lab = (props) => {
-  const { submitting } = props
+const FormatData = (courseCaseId,userId,fileUpload) => {
+  const formattedLab = {
+    courseCaseId: courseCaseId,
+    submissionUploader: userId,
+    submissionFileToken: "student submit fake token"
+  }
+  return formattedLab
+}
+
+const LabCase = ({ lab,user }) => ({
+  isSuccess: lab.isSuccess,
+  labData: lab.labCaseList,
+  currentUser: user.currentUser,
+})
+
+const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
+  const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
   const formItemLayout = {
@@ -95,15 +110,26 @@ const Lab = (props) => {
     },
   ]
 
-  const desc = "这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述这是一段实验描述"
-  const comment = "真不戳!真不戳!真不戳!真不戳!真不戳!"
+  const onFinish = (form) => {
+    // console.log(params.courseCaseId)
+    // console.log(currentUser.id)
+    // console.log(form.fileUpload)
+    console.log(params.courseCaseId,currentUser.id,form.fileUpload)
+    const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload)
+    // const { dispatch } = props
 
-  const onFinish = (values) => {
-    const { dispatch } = props
     dispatch({
-      type: 'labsAndLab/submitRegularForm',
-      payload: values,
-    })
+      type: 'lab/submitLabCase',
+      payload: submitData,
+      onError: (err) => {
+        notification.error({
+          message: '学生提交实验案例失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      history.push('/labs/list')
+    )
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -116,21 +142,43 @@ const Lab = (props) => {
     if (publicType) setShowPublicUsers(publicType === '2')
   }
 
+  useMount(() => {
+    console.log(params)
+    console.log(params.courseCaseId)
+
+    dispatch({
+      type: 'lab/fetchLabCase',
+      payload: params.courseCaseId,
+      onError: (err) => {
+        notification.error({
+          message: '获取实验详情失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      console.log(`labData`),
+      console.log(labData)
+    )
+  })
+  
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
+        <li>{JSON.stringify(currentUser)}</li>
         <Countdown 
           title="倒计时" 
           style={{position:'flxed',float:'right'}}
-          value={deadline} 
+          value={Date.parse(labData.caseEndTimestamp)}
           onFinish={onFinish} 
         />
         <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
-          <h2>实验1</h2>
-          <Paragraph>{desc}</Paragraph>
+          <h2>{labData.experimentName}</h2>
+          <h3>{labData.experimentCaseName}</h3>
+          <Paragraph>{labData.experimentCaseDescription}</Paragraph>
           <div>
-            <Tag icon={<ClockCircleOutlined />}>2019-4-5</Tag>
-            <Tag icon={<UserOutlined />}>海纳</Tag>
+            <Tag icon={<ClockCircleOutlined />}>
+              截止时间：{labData.endTime}
+            </Tag>
           
             <Button key='edit' type='link' icon={<EditTwoTone />}>
               编辑
@@ -159,45 +207,51 @@ const Lab = (props) => {
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='upload' />
+            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='fileUpload' disabled={Date.now()>Date.parse(labData.caseEndTimestamp) || labData.isSubmit}/>
           </FormItem>
+
+          {labData.isPublicScore?(
           <FormItem {...formItemLayout} label='实验得分' name='labScore'>
             <Statistic value={5} suffix='/ 100' />
           </FormItem>
-          <FormItem {...formItemLayout} label='教师评语' name='labReview'>
+          ):null}
+          
+          {labData.isPublicScore?(
+          <FormItem {...formItemLayout} label='教师评语' name='submissionComments'>
             <TextArea
               style={{
                 minHeight: 32,
               }}
               rows={4}
               readOnly="readOnly"
-              defaultValue={comment}
+              defaultValue={"comment"}
             />
           </FormItem>
+          ):null}
+  
+          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >
-            <Button>保存草稿</Button>
+          >*/}
             <Button
               style={{
                 marginLeft: 16,
               }}
               type='primary'
               htmlType='submit'
-              loading={submitting}
+              // loading={submitting}
             >
               提交作业
             </Button>
-          </FormItem>
+            {/*
+          </FormItem>*/}
         </Form>
       </Card>
     </PageContainer>
   )
 }
 
-export default connect(({ loading }) => ({
-  submitting: loading.effects['labsAndLab/submitRegularForm'],
-}))(Lab)
+export default connect(LabCase)(Lab)

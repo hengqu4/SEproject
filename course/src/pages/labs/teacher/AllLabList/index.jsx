@@ -8,39 +8,17 @@ import ProDescriptions from '@ant-design/pro-descriptions'
 import { Link } from 'react-router-dom'
 import { connect } from 'umi'
 import Modal from 'antd/lib/modal/Modal'
-import { removeRule } from './service'
 import PublishMoal from './components/Publish'
-/**
- *  删除节点
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    })
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  } catch (error) {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  }
-}
 
 const FormatData = (allLabList) => {
   const formattedLabList = []
   for (let i = 0; i < allLabList.length; i++) {
     formattedLabList.push({
-      key: allLabList[i].experiment_case_id,
-      name: allLabList[i].experiment_case_name,
-      desc: allLabList[i].experiment_case_description,
-      updatedAt: allLabList[i].case_created_timestamp,
+      key: allLabList[i].experimentCaseId,
+      name: allLabList[i].experimentName,
+      caseName: allLabList[i].experimentCaseName,
+      desc: allLabList[i].experimentCaseDescription,
+      updatedAt: allLabList[i].caseCreatedTimestamp,
       status: 0,
     })
   }
@@ -138,10 +116,12 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
       align: 'center',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
+      title: '案例名称',
+      dataIndex: 'caseName',
       valueType: 'textarea',
-      align: 'center',
+      ellipsis: true,
+      search: false,
+      align:'center',
     },
     {
       title: '创建时间',
@@ -217,10 +197,10 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
 
   const handlePublish = (value) => {
     const payload = {
-      case_id: publishCaseId,
-      case_start_timestamp: value[0].format(),
-      case_end_timestamp: value[1].format(),
-      course_id: 1,
+      caseId: publishCaseId,
+      caseStartTimestamp: value[0].format(),
+      caseEndTimestamp: value[1].format(),
+      courseId: 1,
     }
 
     publishLabCase(payload)
@@ -239,7 +219,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
         rowKey='key'
         search={false}
         toolBarRender={() => [
-          <Button type='primary' onClick={() => handleModalVisible(true)}>
+          <Button key='create' type='primary' onClick={() => handleModalVisible(true)}>
             <Link to='/labs/create' target='_blank'>
               <PlusOutlined /> 新建
             </Link>
@@ -267,15 +247,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
             </div>
           }
         >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState)
-              setSelectedRows([])
-              actionRef.current?.reloadAndRest?.()
-            }}
-          >
-            批量删除
-          </Button>
+          <Button>批量删除</Button>
         </FooterToolbar>
       )}
       <Drawer

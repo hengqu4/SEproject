@@ -1,7 +1,7 @@
 import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX, API_MATCH_PREFIX } from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
-import omit from 'lodash/omit'
+import { pick, omit } from 'lodash'
 
 export const fetchStudentMatchHistory = (query) => {
   return request('/matches', {
@@ -12,7 +12,7 @@ export const fetchStudentMatchHistory = (query) => {
 }
 
 export const fetchStudentMatchDetail = (params) => {
-  return request(SafeUrlAssembler('/matches/:matchId').param(params).toString(), {
+  return request(SafeUrlAssembler('/match/:matchId').param(params).toString(), {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
   })
@@ -27,7 +27,7 @@ export const fetchCurrentContest = (query) => {
 }
 
 export const fetchQuestionList = (query) => {
-  return request('/questions', {
+  return request('/question', {
     method: 'GET',
     prefix: API_CONTEST_QUESTIONS_PREFIX,
     params: query,
@@ -61,7 +61,9 @@ export const updateQuestion = (data) => {
       .toString(),
     {
       method: 'PUT',
-      data: omit(data, ['questionId', 'oldType']),
+      data: {
+        question: omit(data, ['questionId', 'oldType']),
+      },
       prefix: API_CONTEST_QUESTIONS_PREFIX,
     },
   )
@@ -83,8 +85,7 @@ export const createContest = (data) => {
 }
 
 export const fetchAllContests = (query) => {
-  // TODO: 修改url
-  return request('/contest/all', {
+  return request('/contest/end', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
@@ -102,16 +103,21 @@ export const fetchAllStudents = (query) => {
 
 export const fetchAllContestMatches = (query) => {
   // TODO: 修改url
-  return request('/matchesByContest', {
-    method: 'GET',
-    prefix: API_CONTEST_PREFIX,
-    params: query,
-  })
+  return request(
+    SafeUrlAssembler('/matches/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      prefix: API_CONTEST_PREFIX,
+      params: query,
+    },
+  )
 }
 
 export const fetchAllStudentMatches = (query) => {
   // TODO: 修改url
-  return request('/matchesByStudent', {
+  return request('/matches/student', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
@@ -150,10 +156,44 @@ export const readyMatch = (data) => {
   })
 }
 
-export const fetchCurrentMatch = (data) => {
-  return request('/questions', {
-    method: 'POST',
-    data,
+export const fetchMatchQuestions = (query) => {
+  return request(
+    SafeUrlAssembler('/contest/questions/student/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      params: query,
+      prefix: API_CONTEST_PREFIX,
+    },
+  )
+}
+
+export const fetchChannelId = (query) => {
+  return request('/channel', {
+    method: 'GET',
+    params: query,
     prefix: API_MATCH_PREFIX,
   })
+}
+
+export const fetchMatchId = (query) => {
+  return request('/matchId', {
+    method: 'GET',
+    params: query,
+    prefix: API_CONTEST_PREFIX,
+  })
+}
+
+export const fetchContestQuestions = (query) => {
+  return request(
+    SafeUrlAssembler('/contest/questions/student/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      params: query,
+      prefix: API_CONTEST_PREFIX,
+    },
+  )
 }
