@@ -5,14 +5,15 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
-const defaultLecList = {
+const defaultLecInfo = {
   courseChapterId: 0,
   courseChapterTitle: null,
   courseChapterMoocLink: null,
 }
 
 const defaultState = {
-  lecList: defaultLecList,
+  lecInfo: defaultLecInfo,
+  lecList: [],
 }
 
 const effects = {
@@ -24,14 +25,15 @@ const effects = {
       payload: res,
     })
   }),
+  deleteLecInfo: generateEffect(function* ({ payload }, { select, call, put }) {
+    // const res
+  })
 }
 
 const reducers = {
   setLecList: generateReducer({
     attributeName: 'lecList',
-    transformer: (payload) => {
-      return payload || defaultLecList
-    },
+    transformer: defaultArrayTransformer,
     defaultState,
   })
 }

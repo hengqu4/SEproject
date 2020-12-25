@@ -380,8 +380,15 @@ export default defineConfig({
   // @ts-ignore
   title: false,
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  //proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
+  },
+  // Proxy for integrated test
+  proxy: {
+    '/api/v1': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    },
   },
 })
