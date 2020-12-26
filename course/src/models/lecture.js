@@ -25,8 +25,14 @@ const effects = {
       payload: res,
     })
   }),
-  deleteLecInfo: generateEffect(function* ({ payload }, { select, call, put }) {
-    // const res
+  deleteLecInfo: generateEffect(function* ({ payload }, { call, put }) {
+    yield call(LecServices.deleteLecInfo, payload)
+    const res = yield call(LecServices.fetchLecList, payload)
+
+    yield put({
+      type: 'setLecList',
+      payload: res,
+    })
   })
 }
 

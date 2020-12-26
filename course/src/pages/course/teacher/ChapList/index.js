@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import {connect} from 'umi'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Space} from 'antd'
+import {Input, Button, Modal, Space} from 'antd'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
@@ -27,6 +27,8 @@ const LecList = ({
   dispatch = () => {}
 }) => {
   const [loading, setLoading] = useState(true)
+  const [id, setId ] = useState()
+  const [ modalVisible, setModalVisible ] = useState(false)
   const ref = useRef()
 
   //获得当前小节信息列表
@@ -35,6 +37,18 @@ const LecList = ({
       type: 'lecture/fetchLecList',
       payload: {
         courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  //删除某小节信息
+  const deleteLecInfo = (courseId) => {
+    dispatch({
+      type: 'lecture/deleteLecInfo',
+      payload: {
+        courseId, id,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -57,18 +71,24 @@ const LecList = ({
       title: '小节链接',
       dataIndex: 'link',
       render: (text, index) => {
-        return <a>{text}</a>
+        return <a href={text}>{text}</a>
       },
     },
     {
       title: '操作',
       dataIndex: 'opr',
       valueType: 'option',
-      render: () => (
-        <Space size="middle">
-          <a>编辑</a>
-          <a>删除</a>
-        </Space>
+      render: (_, record) => (
+        <>
+          <Button type='link'>编辑</Button>
+          <Button 
+            type='link' 
+            onClick={() => {
+              setModalVisible(true)
+              setId(record.key)
+            }}
+          >删除</Button>
+        </>
       )
     }
   ]
@@ -82,45 +102,20 @@ const LecList = ({
         dataSource={FormatData(lecList)}
         columns={columns}
       />
-
+      <Modal 
+        visible={modalVisible}
+        title='确认删除'
+        onOk={() => {
+          setModalVisible(false)
+          deleteLecInfo(1)
+          
+        }}
+        onCancel={() => {
+          setModalVisible(false)
+        }}
+      />
     </PageContainer>
   )
 }
 
 export default connect(mapStateToProps)(LecList)
-
-// const Bread = () => {
-// return (
-//     <PageContainer>
-//       <div
-//         style={{
-//           height: '100vh',
-//           background: '#fff',
-//         }}
-//       >
-//         <div style={{ width: '100%', textAlign: 'center', paddingTop: '40px' }}>
-//           <Table dataSource={data} style={{ width: '80%', margin: 'auto'}}>
-//             <Column title='小节名称' dataIndex='title' key='title' />
-//             <Column
-//             title= '小节链接'
-//             key='content'
-//             render={dataSource => (
-//               <Space size="middle">
-//                 <a href={dataSource.content}>{dataSource.content}</a>
-//               </Space>
-//             )} />
-//             <Column
-//               title='操作'
-//               key='opr'
-//               render={() => (
-//                 <a href='http://localhost:8000/course/ed-chap'>
-//                   编辑
-//                 </a>
-//               )}
-//             />
-//           </Table>
-//         </div>
-//       </div>
-//     </PageContainer>
-//   )
-// }
