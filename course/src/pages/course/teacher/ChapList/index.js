@@ -1,11 +1,12 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {connect} from 'umi'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Button, Modal, Space} from 'antd'
+import {Button, Modal} from 'antd'
 import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons'
 
 const mapStateToProps = ({ lecture }) => ({
   lecList: lecture.lecList,
@@ -101,6 +102,13 @@ const LecList = ({
     <PageContainer>
       <ProTable
         headerTitle='小节信息'
+        toolBarRender={() => [
+          <Button type='primary'>
+            <Link to='/course/chap-edit'>
+              <PlusOutlined />添加
+            </Link>
+          </Button>,
+        ]}
         // actionRef={ref}
         // search={false}
         dataSource={FormatData(lecList)}

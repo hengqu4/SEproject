@@ -25,6 +25,9 @@ const effects = {
       payload: res,
     })
   }),
+  addLecInfo: generateEffect(function* ({ payload }, { call, put }) {
+    yield call(LecServices.addLecInfo, payload)
+  }),
   deleteLecInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(LecServices.deleteLecInfo, payload)
     const res = yield call(LecServices.fetchLecList, payload)
@@ -33,7 +36,7 @@ const effects = {
       type: 'setLecList',
       payload: res,
     })
-  })
+  }),
 }
 
 const reducers = {
