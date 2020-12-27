@@ -93,7 +93,7 @@ export default defineConfig({
                 },
                 {
                   name: '编辑小节信息',
-                  path: '/course/ed-chap',
+                  path: '/course/chap-edit',
                   component: './course/teacher/EditChap',
                   authority: ['teacher'],
                 }

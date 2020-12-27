@@ -1,7 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react'
 import {connect} from 'umi'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Modal, Space} from 'antd'
+import {Button, Modal, Space} from 'antd'
+import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
@@ -63,6 +64,7 @@ const LecList = ({
     {
       title: '小节名称',
       dataIndex: 'title',
+      width: '20%',
       render: (text, index) => {
         return <a>{text}</a>
       },
@@ -70,6 +72,7 @@ const LecList = ({
     {
       title: '小节链接',
       dataIndex: 'link',
+      width: '60%',
       render: (text, index) => {
         return <a href={text}>{text}</a>
       },
@@ -77,10 +80,11 @@ const LecList = ({
     {
       title: '操作',
       dataIndex: 'opr',
-      valueType: 'option',
+      width: '20%',
+      // valueType: 'option',
       render: (_, record) => (
         <>
-          <Button type='link'>编辑</Button>
+          <Link to="/course/chap-edit">编辑</Link>
           <Button 
             type='link' 
             onClick={() => {
@@ -104,16 +108,17 @@ const LecList = ({
       />
       <Modal 
         visible={modalVisible}
-        title='确认删除'
+        title='提示'
         onOk={() => {
           setModalVisible(false)
           deleteLecInfo(1)
-          
         }}
         onCancel={() => {
           setModalVisible(false)
         }}
-      />
+      >
+        <p>确认删除吗？</p>
+      </Modal>
     </PageContainer>
   )
 }
