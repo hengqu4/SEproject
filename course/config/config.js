@@ -94,6 +94,7 @@ export default defineConfig({
                 {
                   name: '编辑小节信息',
                   path: '/course/chap-edit',
+                  hideInMenu: true,
                   component: './course/teacher/EditChap',
                   authority: ['teacher'],
                 }
