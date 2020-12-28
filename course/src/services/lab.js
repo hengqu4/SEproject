@@ -2,7 +2,8 @@ import {
   API_LAB_REPORT_PREFIX,
   API_LAB_DATABASE_PREFIX,
   API_LAB_COURSE_CASE,
-  API_LAB_COURSE_CASE_STUDENT
+  API_LAB_COURSE_CASE_STUDENT,
+  API_LAB_STATISTICS,
 } from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
@@ -78,5 +79,13 @@ export const submitLabCase = (data) => {
     method: 'POST',
     prefix: API_LAB_REPORT_PREFIX,
     data,
+  })
+}
+
+// get lab statistics
+export const fetchLabStatistics = (courseCaseId) => {
+  return request(SafeUrlAssembler('/').segment(courseCaseId).toString(), {
+    method: 'GET',
+    prefix: API_LAB_STATISTICS,
   })
 }

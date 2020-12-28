@@ -30,6 +30,7 @@ const defaultState = {
   newPublishLab: defaultPublishLab,
   allLabCaseList: [],
   labCaseList: [],
+  labStatistics: {},
 }
 
 const effects = {
@@ -51,7 +52,6 @@ const effects = {
   }),
   deleteLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.deleteLabCase, payload)
-
   }),
   createLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.createLabCase, payload)
@@ -71,6 +71,10 @@ const effects = {
       type: 'setIsSuccess',
       payload: res.isSuccess,
     })
+    yield put({
+      type: 'fetchLabStatistics',
+      payload: res.data[0].courseCaseId,
+    })
   }),
 
   fetchLabCase: generateEffect(function* ({ payload }, { call, put }) {
@@ -87,13 +91,23 @@ const effects = {
     })
   }),
 
-
   remarkSubmission: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.remarkSubmission, payload)
 
     yield put({
       type: 'setIsSuccess',
       payload: res.isSuccess,
+    })
+  }),
+  fetchLabStatistics: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchLabStatistics, payload)
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+    yield put({
+      type: 'setLabStatistics',
+      payload: res.data,
     })
   }),
 }
@@ -119,6 +133,12 @@ const reducers = {
   setAllLabCaseList: generateReducer({
     attributeName: 'allLabCaseList',
     transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setLabStatistics: generateReducer({
+    attributeName: 'labStatistics',
+    transformer: defaultObjectTransformer,
+    defaultState,
   }),
   setLabCaseList: generateReducer({
     attributeName: 'labCaseList',

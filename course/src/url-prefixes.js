@@ -17,3 +17,5 @@ export const API_LAB_REPORT_PREFIX = '/api/v1/experiment/assignments'
 export const API_LAB_COURSE_CASE = '/api/v1/experiment/course-cases'
 
 export const API_LAB_COURSE_CASE_STUDENT = '/api/v1/experiment/student/case'
+
+export const API_LAB_STATISTICS = '/api/v1/experiment/statistics/course-case/'

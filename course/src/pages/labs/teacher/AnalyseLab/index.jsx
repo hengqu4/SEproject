@@ -8,53 +8,138 @@ import { useMount } from 'react-use'
 import Pie from './components/Charts/Pie'
 import Submit from './components/Submit'
 
-const salesTypeData = [
-  {
-    x: '90+',
-    y: 30,
-  },
-  {
-    x: '80~90',
-    y: 20,
-  },
-  {
-    x: '70~80',
-    y: 30,
-  },
-  {
-    x: '60~70',
-    y: 15,
-  },
-  {
-    x: '60-',
-    y: 5,
-  },
-  {
-    x: '未批改',
-    y: 10,
-  },
-]
-
 const { TabPane } = Tabs
 
 const AllLabCase = ({ lab }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
+  labStatistics: lab.labStatistics,
 })
 
-const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
+const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
+  const [labAnalyseDataSum, setLabAnalyseDataSum] = useState(0)
+  const [labAnalyseDataArray, setAnalyseDataArray] = useState([])
   const [submitVisible, setSubmitVisible] = useState(false)
+  const [labAnaylyseDataTitle, setLabAnaylyseDataTitle] = useState('提交总数')
+
+  const modifyStatistics = (prop, type) => {
+    if (type === 0) {
+      if (prop.scoreDistributed == null) {
+        setAnalyseDataArray([
+          {
+            x: '90+',
+            y: 0,
+          },
+          {
+            x: '80~90',
+            y: 0,
+          },
+          {
+            x: '70~80',
+            y: 0,
+          },
+          {
+            x: '60~70',
+            y: 0,
+          },
+          {
+            x: '60-',
+            y: 0,
+          },
+          {
+            x: '未批改',
+            y: 0,
+          },
+        ])
+        setLabAnalyseDataSum(0)
+        return
+      }
+      const statisticsData = [
+        {
+          x: '90+',
+          y: prop.scoreDistributed[4],
+        },
+        {
+          x: '80~90',
+          y: prop.scoreDistributed[3],
+        },
+        {
+          x: '70~80',
+          y: prop.scoreDistributed[2],
+        },
+        {
+          x: '60~70',
+          y: prop.scoreDistributed[1],
+        },
+        {
+          x: '60-',
+          y: prop.scoreDistributed[0],
+        },
+        {
+          x: '未批改',
+          y: prop.unremarkedNum,
+        },
+      ]
+      setAnalyseDataArray(statisticsData)
+      setLabAnaylyseDataTitle('提交总数')
+      setLabAnalyseDataSum(prop.remarkedNum + prop.unremarkedNum)
+    } else {
+      if (prop.submittedNum == null) {
+        setAnalyseDataArray([
+          {
+            x: '已提交',
+            y: 0,
+          },
+          {
+            x: '未提交',
+            y: 0,
+          },
+        ])
+        setLabAnalyseDataSum(0)
+        return
+      }
+      const statisticsData = [
+        {
+          x: '已提交',
+          y: prop.submittedNum,
+        },
+        {
+          x: '未提交',
+          y: prop.unsubmittedNum,
+        },
+      ]
+      setAnalyseDataArray(statisticsData)
+      setLabAnaylyseDataTitle('总学生数')
+      setLabAnalyseDataSum(prop.submittedNum + prop.unsubmittedNum)
+    }
+  }
+
+  const fetchLabStatistics = () => {
+    dispatch({
+      type: 'lab/fetchLabStatistics',
+      payload: currentLab == null ? allLabsData[0].courseCaseId : currentLab,
+      onError: (err) => {
+        notification.error({
+          message: '获取统计信息失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        modifyStatistics(labStatistics, analyseType)
+      },
+    })
+  }
 
   const handleAnalyseChange = (e) => {
+    modifyStatistics(labStatistics, e.target.value)
     setAnalyseType(e.target.value)
-    // TODO: update analyseData
   }
 
   const onLabTabChange = (key) => {
-    // TODO: change labs' data
     setCurrentLab(key)
+    fetchLabStatistics()
   }
 
   const onLinkClicked = () => {
@@ -97,6 +182,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
           description: err.message,
         })
       },
+      onSuccess: () => {
+        modifyStatistics(labStatistics, analyseType)
+      },
     })
   })
 
@@ -110,9 +198,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
           }}
           extra={
             <div>
-              <Radio.Group value={analyseType} onChange={handleAnalyseChange}>
+              <Radio.Group defaultValue={analyseType} onChange={handleAnalyseChange}>
                 <Radio.Button value={0}> 得分分布 </Radio.Button>
-                <Radio.Button value={1}>提交情况</Radio.Button>
+                <Radio.Button value={1}> 提交情况 </Radio.Button>
               </Radio.Group>
             </div>
           }
@@ -138,10 +226,9 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
                     >
                       统计数据
                     </span>
-
                     <Button
                       type='primary'
-                      style={{ marginLeft: "60%" }}
+                      style={{ marginLeft: '60%' }}
                       onClick={() => {
                         setSubmitVisible(true)
                       }}
@@ -149,19 +236,24 @@ const AnalyseLabCase = ({ allLabsData = [], dispatch = () => { } }) => {
                       发布成绩
                     </Button>
                     <Link
-                      to={{ pathname: `/labs/pending-list/${currentLab == null ? allLabsData[0].courseCaseId : currentLab}` }}
+                      to={{
+                        pathname: `/labs/pending-list/${
+                          currentLab == null ? allLabsData[0].courseCaseId : currentLab
+                        }`,
+                      }}
                       onClick={onLinkClicked}
                       style={{ marginLeft: 16 }}
                     >
-                      查看学生提交记录<ArrowRightOutlined />
+                      查看学生提交记录
+                      <ArrowRightOutlined />
                     </Link>
                   </div>
                   <div style={{ marginTop: 40 }}>
                     <Pie
                       hasLegend
-                      subTitle='总提交数'
-                      total={() => <p>{salesTypeData.reduce((pre, now) => now.y + pre, 0)}</p>}
-                      data={salesTypeData}
+                      subTitle={labAnaylyseDataTitle}
+                      total={() => <p>{labAnalyseDataSum}</p>}
+                      data={labAnalyseDataArray}
                       valueFormat={(value) => <p>{value}</p>}
                       height={248}
                       lineWidth={4}
