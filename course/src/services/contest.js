@@ -8,6 +8,9 @@ export const fetchStudentMatchHistory = (query) => {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
+  }).then((res) => {
+    console.log('fetchStudentMatchHistory: ', res)
+    return res
   })
 }
 
@@ -19,7 +22,7 @@ export const fetchStudentMatchDetail = (params) => {
 }
 
 export const fetchCurrentContest = (query) => {
-  return request(SafeUrlAssembler('/contest').toString(), {
+  return request('/contest', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
@@ -89,6 +92,9 @@ export const fetchAllContests = (query) => {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
+  }).then((res) => {
+    console.log('fetchAllContests: ', res)
+    return res
   })
 }
 
@@ -112,7 +118,10 @@ export const fetchAllContestMatches = (query) => {
       prefix: API_CONTEST_PREFIX,
       params: query,
     },
-  )
+  ).then((res) => {
+    console.log('fetchAllContestMatches: ', res)
+    return res
+  })
 }
 
 export const fetchAllStudentMatches = (query) => {
@@ -169,6 +178,19 @@ export const fetchMatchQuestions = (query) => {
   )
 }
 
+export const fetchContestQuestions = (query) => {
+  return request(
+    SafeUrlAssembler('/contest/questions/teacher/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      params: query,
+      prefix: API_CONTEST_PREFIX,
+    },
+  )
+}
+
 export const fetchChannelId = (query) => {
   return request('/channel', {
     method: 'GET',
@@ -185,15 +207,18 @@ export const fetchMatchId = (query) => {
   })
 }
 
-export const fetchContestQuestions = (query) => {
-  return request(
-    SafeUrlAssembler('/contest/questions/student/:contestId')
-      .param(pick(query, ['contestId']))
-      .toString(),
-    {
-      method: 'GET',
-      params: query,
-      prefix: API_CONTEST_PREFIX,
-    },
-  )
+export const fetchRandomQuestions = (query) => {
+  return request('/question/random', {
+    method: 'GET',
+    params: query,
+    prefix: API_CONTEST_QUESTIONS_PREFIX,
+  })
+}
+
+export const submitAnswers = (data) => {
+  return request('/submission', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
 }

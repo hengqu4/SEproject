@@ -20,14 +20,13 @@ const defaultNewContest = {
   endTime: null,
   description: null,
   chapter: null,
-  randomQuestions: false,
   questions: [],
 }
 
 const defaultPagination = {
   total: 0,
   pageNum: 1,
-  pageSize: 20,
+  pageSize: 10,
 }
 
 const defaultFilter = {
@@ -35,6 +34,10 @@ const defaultFilter = {
 }
 
 const defaultState = {
+  studentId: 3,
+  courseId: 1,
+  teacherId: 2,
+  avatar: 'www.baidu.com',
   studentMatchHistory: [],
   studentMatchDetail: {},
   currentContest: {},
@@ -56,7 +59,6 @@ const defaultState = {
   readyArr: [],
   channelId: null,
   userIndex: 0,
-  matchId: null,
   matchTimeStamp: null,
   matchQuestions: [],
   matchQuestionAnswers: [],
@@ -79,45 +81,76 @@ const effects = {
       payload: res,
     })
   }),
-  fetchCurrentContest: generateEffect(function* ({ payload }, { call, put }) {
+  fetchCurrentContest: generateEffect(function* ({ isTeacher, payload }, { call, put }) {
     const res = yield call(ContestServices.fetchCurrentContest, payload)
 
-    yield put({
-      type: 'setCurrentContest',
-      payload: res.contest,
-    })
+    const { contest, bIsParticipated, bIsParticipating } = res
 
-    yield put({
-      type: 'setParticipated',
-      payload: res.bIsParticipated,
-    })
+    console.log('fetchCurrentContest: ', res)
 
-    yield put({
-      type: 'setParticipating',
-      payload: res.bIsParticipating,
-    })
+    if (isTeacher && contest?.contestId) {
+      const { questions } = yield call(ContestServices.fetchContestQuestions, {
+        contestId: contest.contestId,
+        userId: payload.userId,
+      })
+
+      yield put({
+        type: 'setCurrentContest',
+        payload: {
+          ...contest,
+          questions,
+        },
+      })
+    } else {
+      yield put({
+        type: 'setCurrentContest',
+        payload: contest,
+      })
+    }
+
+    if (bIsParticipated !== undefined) {
+      yield put({
+        type: 'setParticipated',
+        payload: bIsParticipated,
+      })
+    }
+
+    if (bIsParticipating !== undefined) {
+      yield put({
+        type: 'setParticipating',
+        payload: bIsParticipating,
+      })
+    }
   }),
   createContest: generateEffect(function* (_, { call, put, select }) {
     const newContest = yield select((state) => state.Contest.newContest)
     const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
     // TODO: 添加课程Id
-    const courseId = 1
+    const courseId = yield select((state) => state.Contest.courseId)
+    const publisherId = yield select((state) => state.user.currentUser.id)
 
     const newContestCopy = cloneDeep(newContest)
     newContestCopy.questions = selectedQuestions.map((q) => pick(q, ['questionType', 'questionId']))
 
-    yield call(ContestServices.createContest, {
+    const payload = {
       contest: {
         ...newContestCopy,
         courseId,
+        publisherId,
       },
-    })
+    }
+
+    console.log('payload: ', payload)
+
+    yield call(ContestServices.createContest, payload)
 
     yield put({
       type: 'fetchCurrentContest',
+      isTeacher: true,
       payload: {
         courseId,
+        userId: publisherId,
       },
     })
 
@@ -134,8 +167,6 @@ const effects = {
     })
 
     const filters = yield select((state) => state.Contest.filters)
-
-    // TODO: 可能添加过滤器
 
     const res = yield call(ContestServices.fetchQuestionList, {
       pageNum: 1,
@@ -167,31 +198,6 @@ const effects = {
       type: 'setQuestionPagination',
       payload: res.pagination,
     })
-  }),
-  fetchQuestionsAndAppend: generateEffect(function* ({ payload }, { call, put, select }) {
-    const questionPagination = yield select((state) => state.Contest.questionPagination)
-    const filters = yield select((state) => state.Contest.filters)
-
-    if (questionPagination.total <= (payload.pageNum - 1) * payload.pageSize) return
-
-    const res = yield call(ContestServices.fetchQuestionList, { ...payload, ...filters })
-
-    const { questions, pagination } = res
-
-    if (
-      pagination.pageSize === questionPagination.pageSize &&
-      pagination.pageNum === questionPagination.pageNum + 1
-    ) {
-      yield put({
-        type: 'appendQuestions',
-        payload: questions,
-      })
-
-      yield put({
-        type: 'setQuestionPagination',
-        payload: pagination,
-      })
-    }
   }),
   fetchQuestionDetail: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchQuestionDetail, payload)
@@ -308,8 +314,6 @@ const effects = {
   fetchStudentMatches: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchAllStudentMatches, payload)
 
-    console.log('res: ', res)
-
     yield put({
       type: 'setStudentMatches',
       payload: res.matches,
@@ -318,10 +322,15 @@ const effects = {
   startMatching: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.startMatching, payload)
 
+    console.log('startMatching: ', res)
+
     yield put({
       type: 'setChannelId',
       payload: res.channelId,
     })
+  }),
+  cancelMatching: generateEffect(function* ({ payload }, { call }) {
+    yield call(ContestServices.cancelMatching, payload)
   }),
   matchingComplete: generateEffect(function* ({ payload }, { select, call, put }) {
     yield put({
@@ -330,6 +339,8 @@ const effects = {
     })
 
     const res = yield call(ContestServices.fetchMatchingIndex, payload)
+
+    console.log('matchingComplete: ', res)
 
     yield put({
       type: 'setUserIndex',
@@ -340,15 +351,21 @@ const effects = {
     yield call(ContestServices.readyMatch, payload)
   }),
   fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
-    const { channelId } = yield call(ContestServices.fetchChannelId, payload)
+    const res = yield call(ContestServices.fetchChannelId, payload)
+
+    console.log('fetchChannelId: ', res)
+
+    const { channelId } = res
 
     yield put({
       type: 'setChannelId',
       payload: channelId,
     })
   }),
-  connectToMatch: generateEffect(function* ({ payload }, { call, put }) {
-    const [{ matchId, timeStamp }, res] = yield [
+  connectToMatch: generateEffect(function* ({ payload }, { call, put, select }) {
+    const contestId = yield select((s) => s.Contest.currentContest.contestId)
+
+    const [{ timeStamp }, res] = yield [
       call(ContestServices.fetchMatchId, payload),
       call(ContestServices.fetchMatchQuestions, payload),
     ]
@@ -360,7 +377,7 @@ const effects = {
       answer: null,
     }))
 
-    const matchAnswersHistory = storage(`match${matchId}`)
+    const matchAnswersHistory = storage(`contest${contestId}`)
 
     if (matchAnswersHistory) {
       matchAnswersHistory.forEach((qh) => {
@@ -379,10 +396,6 @@ const effects = {
 
     yield [
       put({
-        type: 'setMatchId',
-        payload: matchId,
-      }),
-      put({
         type: 'setMatchQuestions',
         payload: questions,
       }),
@@ -395,6 +408,56 @@ const effects = {
         payload: timeStamp,
       }),
     ]
+  }),
+  fetchRandomQuestions: generateEffect(function* ({ payload }, { call, put }) {
+    const { questions } = yield call(ContestServices.fetchRandomQuestions, payload)
+
+    yield put({
+      type: 'setSelectedQuestions',
+      payload: questions,
+    })
+  }),
+  submitMatchAnswers: generateEffect(function* ({ payload }, { call, put, select }) {
+    yield call(ContestServices.submitAnswers, payload)
+
+    const contestId = yield select((s) => s.Contest.currentContest.contestId)
+
+    storage.remove(`contest${contestId}`)
+  }),
+  clearMatchStatus: generateEffect(function* (_, { call, put, select }) {
+    const [userId, courseId] = yield [
+      select((s) => s.user.currentUser.id),
+      select((s) => s.Contest.courseId),
+    ]
+
+    const {
+      contest,
+      bIsParticipated,
+      bIsParticipating,
+    } = yield call(ContestServices.fetchCurrentContest, { userId, courseId })
+
+    yield [
+      put({
+        type: 'setCurrentContest',
+        payload: contest,
+      }),
+      put({
+        type: 'setParticipated',
+        payload: bIsParticipated,
+      }),
+      put({
+        type: 'setParticipating',
+        payload: bIsParticipating,
+      }),
+    ]
+
+    yield put({
+      type: 'setMatchingStatus',
+    })
+
+    yield put({
+      type: 'setChannelId',
+    })
   }),
 }
 
@@ -428,14 +491,6 @@ const reducers = {
     attributeName: 'questions',
     transformer: defaultArrayTransformer,
     defaultState,
-  }),
-  appendQuestions: generateReducer({
-    attributeName: 'questions',
-    transformer: (payload, state) => {
-      const questionsCopy = cloneDeep(state.questions) || []
-      questionsCopy.push(...payload)
-      return questionsCopy
-    },
   }),
   setQuestionDetail: generateReducer({
     attributeName: 'questionDetail',
@@ -510,11 +565,6 @@ const reducers = {
   setUserIndex: generateReducer({
     attributeName: 'userIndex',
     transformer: (payload) => payload || 0,
-    defaultState,
-  }),
-  setMatchId: generateReducer({
-    attributeName: 'matchId',
-    transformer: (payload) => payload || null,
     defaultState,
   }),
   setMatchQuestions: generateReducer({

@@ -1,37 +1,22 @@
 import React from 'react'
-import { Badge, Avatar, List, Row, Col } from 'antd'
-import classes from '@/pages/contest/student/MatchHistory/style.less'
+import { Space, Avatar, Row, Col } from 'antd'
 
-const MatchRank = ({ user = 0, participants = [], score = 0 }) => {
-  const sortedParticipants = participants.sort((pa, pb) => pa.rank - pb.rank)
-
+const MatchRank = ({ user = {}, rank = -1, score = 0 }) => {
   return (
-    <List
-      dataSource={sortedParticipants}
-      header={<div style={{ fontSize: '16px' }}>排名</div>}
-      size='large'
-      renderItem={(item) => (
-        <List.Item key={item.userId}>
-          <Row gutter={16} style={{ width: '100%' }}>
-            <Col xs={6} md={4} lg={2}>
-              <div>
-                <Badge count={item.rank}>
-                  <Avatar size='large' src={item.avatar} />
-                </Badge>
-              </div>
-            </Col>
-            <Col xs={6} md={4} lg={2}>
-              <div className={classes.MatchRankTextBlock}>{item.nickname}</div>
-            </Col>
-            {item.userId === user ? (
-              <Col xs={6} md={4} lg={2}>
-                <div className={classes.MatchRankTextBlock}>得分：{score}</div>
-              </Col>
-            ) : null}
-          </Row>
-        </List.Item>
-      )}
-    />
+    <Row gutter={8}>
+      <Col span={6}>
+        <Space>
+          <Avatar size='large' src={user.avatar} />
+          <h3>{user.name}</h3>
+        </Space>
+      </Col>
+      <Col span={4}>
+        <h3>{`得分： ${score}`}</h3>
+      </Col>
+      <Col span={4}>
+        <h3>{`排名： ${rank}`}</h3>
+      </Col>
+    </Row>
   )
 }
 

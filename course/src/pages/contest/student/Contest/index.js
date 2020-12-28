@@ -11,7 +11,8 @@ import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWeb
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
 import MatchingStatus from './matchingStatus'
 
-const mapStateToProps = ({ Contest }) => ({
+const mapStateToProps = ({ Contest, user }) => ({
+  currentUser: user.currentUser,
   currentContest: Contest.currentContest,
   participated: Contest.participated,
   participating: Contest.participating,
@@ -20,6 +21,7 @@ const mapStateToProps = ({ Contest }) => ({
 })
 
 const Contest = ({
+  currentUser = {},
   currentContest = {},
   participating = false,
   participated = false,
@@ -34,8 +36,10 @@ const Contest = ({
     setLoading(true)
     dispatch({
       type: 'Contest/fetchCurrentContest',
+      isTeacher: false,
       payload: {
         courseId: 1,
+        userId: currentUser.id,
       },
       onError: (err) => {
         notification.error({
@@ -47,7 +51,7 @@ const Contest = ({
     })
   })
 
-  const handleCancelMatching = useCallback(() => {
+  const clearStatus = useCallback(() => {
     dispatch({
       type: 'Contest/setMatchingStatus',
       payload: MatchingStatus.IDLE,
@@ -57,11 +61,24 @@ const Contest = ({
     })
   }, [dispatch])
 
+  const handleCancelMatching = useCallback(() => {
+    dispatch({
+      type: 'Contest/cancelMatching',
+      payload: {
+        channelId,
+        studentId: currentUser.id,
+      },
+      onError,
+      onSuccess: clearStatus,
+    })
+  }, [clearStatus, dispatch, channelId, currentUser])
+
   useUnmount(() => {
     handleCancelMatching()
   })
 
   useMatchWebSocket({
+    studentId: currentUser.id,
     channelId,
     dispatch,
     clearStatus: handleCancelMatching,
@@ -73,8 +90,7 @@ const Contest = ({
       type: 'Contest/setMatchingStatus',
       payload: MatchingStatus.SEARCHING_ROOM,
     })
-    // TODO: 获取userId
-    const studentId = 1
+    const studentId = currentUser.id
     const { contestId } = currentContest
 
     dispatch({
@@ -91,13 +107,12 @@ const Contest = ({
         })
       },
     })
-  }, [dispatch, currentContest])
+  }, [dispatch, currentContest, currentUser])
 
   const handleReconnect = useCallback(() => {
     reconnectRef.current = true
 
-    // TODO: 获取studentId
-    const studentId = 1
+    const studentId = currentUser.id
 
     dispatch({
       type: 'Contest/fetchChannelId',
@@ -113,7 +128,7 @@ const Contest = ({
         })
       },
     })
-  })
+  }, [dispatch, currentUser])
 
   const currentContestValid = useMemo(() => Object.keys(currentContest).length !== 0, [
     currentContest,

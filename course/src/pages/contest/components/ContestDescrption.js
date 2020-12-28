@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
-import { Descriptions, List } from 'antd'
+import { Descriptions, List, Button } from 'antd'
 import formatTime from '@/utils/formatTime'
 import classes from '@/pages/contest/components/style.less'
 
-const ContestDescription = ({ contest = {} }) => {
+const ContestDescription = ({ contest = {}, onShowQuestionDetail = () => {} }) => {
   const questionsDom = useMemo(() => {
     if (contest.questions) {
       return (
@@ -12,11 +12,14 @@ const ContestDescription = ({ contest = {} }) => {
             <List
               dataSource={contest.questions}
               renderItem={(question) => (
-                <List.Item>
-                  <div className={classes.QuestionListItem}>
-                    <span className={classes.QuestionContent}>{question.questionContent}</span>
-                    <span>{question.questionType ? '多选' : '单选'}</span>
-                  </div>
+                <List.Item
+                  actions={[
+                    <Button type='link' onClick={onShowQuestionDetail.bind(this, question)}>
+                      详情
+                    </Button>,
+                  ]}
+                >
+                  <span>{question.questionContent}</span>
                 </List.Item>
               )}
             />

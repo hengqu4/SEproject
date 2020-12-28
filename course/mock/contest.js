@@ -291,7 +291,7 @@ export default {
     })
   },
   [`GET ${API_CONTEST_QUESTIONS_PREFIX}/question`]: (req, res) => {
-    let { pageSize, pageNum, questionType } = req.query
+    let { pageSize, pageNum, questionType, chapterStart, chapterEnd } = req.query
 
     pageSize = +pageSize
     pageNum = +pageNum
@@ -305,6 +305,18 @@ export default {
       questionType = +questionType
 
       resQuestions = resQuestions.filter((q) => q.questionType === questionType)
+      total = resQuestions.length
+    }
+
+    if (chapterStart) {
+      chapterStart = +chapterStart
+      resQuestions = resQuestions.filter((q) => q.questionChapter >= chapterStart)
+      total = resQuestions.length
+    }
+
+    if (chapterEnd) {
+      chapterEnd = +chapterEnd
+      resQuestions = resQuestions.filter((q) => q.questionChapter <= chapterEnd)
       total = resQuestions.length
     }
 
@@ -367,21 +379,50 @@ export default {
     questions.push(newQuestion)
     res.json(newQuestion)
   },
+  [`GET ${API_CONTEST_QUESTIONS_PREFIX}/question/random`]: (req, res) => {
+    let { singleChoiceQuestionNum, multipleChoiceQuestionNum, chapterStart, chapterEnd } = req.query
+
+    console.log('singleChoiceQuestionNum: ', singleChoiceQuestionNum)
+    console.log('multipleChoiceQuestionNum: ', multipleChoiceQuestionNum)
+    singleChoiceQuestionNum = +singleChoiceQuestionNum
+    multipleChoiceQuestionNum = +multipleChoiceQuestionNum
+
+    let resQuestions = questions
+
+    if (chapterStart) {
+      console.log('chapterStart: ', chapterStart)
+      chapterStart = +chapterStart
+      resQuestions = resQuestions.filter((q) => q.questionChapter >= chapterStart)
+    }
+
+    if (chapterEnd) {
+      console.log('chapterEnd: ', chapterEnd)
+      chapterEnd = +chapterEnd
+      resQuestions = resQuestions.filter((q) => q.questionChapter <= chapterEnd)
+    }
+
+    const singleChoiceQuestions = shuffle(resQuestions.filter((q) => q.questionType === 0)).slice(
+      0,
+      singleChoiceQuestionNum,
+    )
+    const multipleChoiceQuestions = shuffle(resQuestions.filter((q) => q.questionType === 1)).slice(
+      0,
+      multipleChoiceQuestionNum,
+    )
+
+    res.json({
+      questions: [...singleChoiceQuestions, ...multipleChoiceQuestions],
+    })
+  },
   [`POST ${API_CONTEST_PREFIX}/contest`]: (req, res) => {
     const { contest } = req.body
 
-    let contestQuestions = null
-
-    if (contest.randomQuestions) {
-      contestQuestions = shuffle(questions).slice(0, 5)
-    } else {
-      contestQuestions = contest.questions.map(({ questionId }) =>
-        questions.find((q) => q.questionId === questionId),
-      )
-    }
+    const contestQuestions = contest.questions.map(({ questionId }) =>
+      questions.find((q) => q.questionId === questionId),
+    )
 
     currentContest = {
-      ...omit(contest, ['randomQuestions', 'questions']),
+      ...omit(contest, ['questions']),
       questions: contestQuestions,
       publisherId: 1,
       contestId: 1,
@@ -458,6 +499,13 @@ export default {
     channelId: 1,
   },
   [`GET ${API_CONTEST_PREFIX}/contest/questions/student/:contestId`]: (req, res) => {
+    const matchQuestions = currentContest.questions.map((q) => omit(q, ['questionAnswer']))
+
+    res.json({
+      questions: matchQuestions,
+    })
+  },
+  [`GET ${API_CONTEST_PREFIX}/contest/questions/teacher/:contestId`]: (req, res) => {
     const matchQuestions = currentContest.questions.map((q) => omit(q, ['questionAnswer']))
 
     res.json({
