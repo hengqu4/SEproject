@@ -4,10 +4,10 @@ import { Modal, Spin, Tag, List, Button, Avatar } from 'antd'
 import Mock from 'mockjs'
 import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import { connect } from 'umi'
+import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
 
-const nicknames = 'ABCDEFGHIJKLMNOPQ'.split('')
-
-const mapStateToProps = ({ Contest }) => ({
+const mapStateToProps = ({ Contest, user }) => ({
+  currentUser: user.currentUser,
   participantNumber: Contest.currentContest.participantNumber,
   readyArr: Contest.readyArr,
   userIndex: Contest.userIndex,
@@ -16,6 +16,7 @@ const mapStateToProps = ({ Contest }) => ({
 })
 
 const ModalMatching = ({
+  currentUser,
   participantNumber = 0,
   readyArr = [],
   userIndex = 0,
@@ -24,11 +25,9 @@ const ModalMatching = ({
   dispatch = () => {},
   onCancel = () => {},
 }) => {
-  const userInfoArr = new Array(participantNumber).fill(null).map((_, index) => ({
-    nickname: nicknames[index],
-    avatar: Mock.mock('@image'),
-    ready: readyArr[index],
-  }))
+  const userInfoArr = fakeUserInfoArr
+    .slice(0, participantNumber)
+    .map((fakeUserInfo, index) => ({ ...fakeUserInfo, ready: readyArr[index] }))
 
   const title = useMemo(() => {
     switch (status) {
@@ -44,17 +43,16 @@ const ModalMatching = ({
   }, [status])
 
   const handleReadyForMatch = useCallback(() => {
-    // TODO: 获取userId
-    const stduentId = 1
+    const studentId = currentUser.id
     dispatch({
       type: 'Contest/readyForMatch',
       payload: {
-        stduentId,
+        studentId,
         channelId,
         status: true,
       },
     })
-  }, [dispatch, channelId])
+  }, [dispatch, channelId, currentUser])
 
   return (
     <Modal
@@ -92,9 +90,9 @@ const ModalMatching = ({
               }
             >
               <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
+                avatar={<Avatar src={index === userIndex ? currentUser.avatar : item.avatar} />}
                 title={item.ready ? <Tag color='blue'>已准备</Tag> : null}
-                description={item.nickname}
+                description={index === userIndex ? currentUser.name : item.nickname}
               />
             </List.Item>
           )}

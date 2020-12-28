@@ -54,7 +54,7 @@ const Question = ({
   } else if (isSingleChoice) {
     optionsContainerDom = (
       <Radio.Group
-        onChange={(event) => onChange(questionId, event.target.value)}
+        onChange={(event) => onChange(questionId, type, event.target.value)}
         defaultValue={userAnswer}
         {...restProps}
       >
@@ -64,7 +64,7 @@ const Question = ({
   } else {
     optionsContainerDom = (
       <Checkbox.Group
-        onChange={onChange.bind(this, questionId)}
+        onChange={(values) => onChange(questionId, type, values.join(''))}
         defaultValue={userAnswerArr}
         {...restProps}
       >

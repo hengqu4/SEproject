@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useMount } from 'react-use'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
@@ -8,18 +8,31 @@ import formatTime from '@/utils/formatTime'
 import { connect } from 'umi'
 import MatchDetail from '@/pages/contest/student/MatchHistory/components/MatchDetail'
 
-const mapStateToProps = ({ Contest }) => ({
+const mapStateToProps = ({ Contest, user }) => ({
+  currentUser: user.currentUser,
+  // TODO: 修改courseId来源
+  courseId: Contest.courseId,
   dataSource: Contest.studentMatchHistory,
   matchDetail: Contest.studentMatchDetail,
 })
 
-const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }) => {
+const MatchHistory = ({
+  currentUser: { id: studentId = -1 } = {},
+  matchDetail = {},
+  dataSource = [],
+  courseId,
+  dispatch = () => {},
+}) => {
   const [tableLoading, setTableLoading] = useState(true)
   const [viewMode, setViewMode] = useState('table')
 
   useMount(() => {
     dispatch({
       type: 'Contest/fetchStudentMatchHistory',
+      payload: {
+        studentId,
+        courseId,
+      },
       onError: (err) => {
         notification.error({
           message: '获取比赛列表失败',
@@ -124,8 +137,8 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
     content = (
       <MatchDetail
         title={matchDetail.title}
-        user={matchDetail.userId}
-        participants={matchDetail.participants}
+        user={currentUser}
+        rank={matchDetail.rank}
         questions={questions}
         score={matchDetail.score}
         extra={
