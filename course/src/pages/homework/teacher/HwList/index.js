@@ -1,118 +1,148 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Tag, Space} from 'antd'
-import { SearchOutlined } from '@ant-design/icons';
+import {Input, Button, Table, Modal, Space} from 'antd'
+import {connect} from 'umi'
+import {Link} from 'react-router-dom'
+import { useMount } from 'react-use';
+import onError from '@/utils/onError';
+import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons'
 
-const { Search } = Input;
-const { Column } = Table;
+const mapStateToProps = ({ homework }) => ({
+  hwList: homework.hwList,
+})
 
-const onSearch = value => console.log(value);
+const FormatData = (hwList) => {
+  const formattedHwList = []
+  for (let i = 0; i < hwList.length; i++) {
+    formattedHwList.push({
+      key: hwList[i].homeworkUuid,
+      title: hwList[i].homeworkTitle,
+      des: hwList[i].homeworkDescription,
+      createTime: hwList[i].homeworkCreateTime,
+      updateTime: hwList[i].homeworkUpdateTime,
+      startTime: hwList[i].homeworkStartTime,
+      endTime: hwList[i].homeworkEndTime,
+      creator: hwList[i].homeworkCreatorId,
+    })
+  }
+  return formattedHwList
+}
 
-const columns = [
+const HwList = ({
+  hwList = [],
+  dispatch = () => {}
+}) => {
+  const [loading, setLoading] = useState(true)
+  const [id, setId ] = useState()
+  const [ modalVisible, setModalVisible ] = useState(false)
+  const ref = useRef()
+
+  //获得当前作业列表
+  const getHwList = (courseId) => {
+    dispatch({
+      type: 'homework/fetchHwList',
+      payload: {
+        courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  //删除某作业
+  const deleteHwInfo = (courseId) => {
+    dispatch({
+      type: 'homework/deleteHwInfo',
+      payload: {
+        courseId, id,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  useMount(() => {
+    getHwList(1)
+  })
+  
+  const columns = [
     {
       title: '作业名称',
       dataIndex: 'title',
-      key: '1',
+      // width: '20%',
       render: (text, index) => {
         return <a>{text}</a>
       },
     },
     {
       title: '作业内容',
-      dataIndex: 'content',
-      key: '2',
+      dataIndex: 'des',
+      // width: '60%',
     },
     {
       title: '发布者',
-      dataIndex: 'owner',
-      key: '3',
+      dataIndex: 'creator',
     },
     {
-      title: '日期',
-      dataIndex: 'date',
-      key: '4',
+      title: '创建日期',
+      dataIndex: 'createTime',
+    },
+    {
+      title: '截止日期',
+      dataIndex: 'endTime'
     },
     {
       title: '操作',
       dataIndex: 'opr',
-      key: 'opr',
-      render: () => (
-          <Space size="middle">
-            <a href='http://localhost:8000/homework/hw-list/hw-info'>查看详情</a>
-            <a href='http://localhost:8000/homework/hw-list/hw-edit'>编辑</a>
-            <a>删除</a>
-          </Space>
-      ),
-    },
-];
+      // width: '20%',
+      render: (_, record) => (
+        <>
+          <Link to="/homework/hw-list/hw-info">详情</Link>
+          <Link to="/homework/hw-list/hw-edit">编辑</Link>
+          <Button 
+            type='link' 
+            onClick={() => {
+              setModalVisible(true)
+              setId(record.key)
+            }}
+          >删除</Button>
+        </>
+      )
+    }
+  ]
 
-const data = [
-    {
-      key: '1',
-      title: '第一次作业',
-      content: '给妈妈洗脚并写一篇心得',
-      date: '2020.11.24',
-      owner: 'Dri',
-    },
-    {
-      key: '1',
-      title: '第二次作业',
-      content: '给爸爸洗脚并写一篇心得',
-      date: '2020.11.24',
-      owner: 'Dri',
-    },
-    {
-        key: '1',
-        title: '第三次作业',
-        content: '给爷爷洗脚并写一篇心得',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-    {
-        key: '1',
-        title: '第四次作业',
-        content: '给奶奶洗脚并写一篇心得',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-    {
-        key: '1',
-        title: '第五次作业',
-        content: '给自己洗脚并写一篇心得',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-];
-
-const Bread = () => {
-return (
+  return (
     <PageContainer>
-      <div
-        style={{
-          height: '100vh',
-          background: '#fff',
+      <ProTable
+        headerTitle='作业列表'
+        toolBarRender={() => [
+          <Button type='primary'>
+            <Link to='/homework/hw-list/hw-edit'>
+              <PlusOutlined />添加
+            </Link>
+          </Button>,
+        ]}
+        // actionRef={ref}
+        // search={false}
+        dataSource={FormatData(hwList)}
+        columns={columns}
+      />
+      <Modal 
+        visible={modalVisible}
+        title='提示'
+        onOk={() => {
+          setModalVisible(false)
+          deleteHwInfo(1)
+        }}
+        onCancel={() => {
+          setModalVisible(false)
         }}
       >
-        <div style={{paddingTop: '20px', marginLeft: '126px', width: '30%'}}>
-            <Search placeholder="" 
-                    onSearch={onSearch} 
-                    enterButton
-                    block='false' />
-              
-        </div>
-        <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-          <Button type="dashed" style={{width: '80%'}} onClick = {() => window.location.href = 'http://localhost:8000/homework/hw-list/hw-edit'}>
-             + 添加
-          </Button>
-        </div> 
-        <div style={{width: '100%', textAlign: 'center'}}>
-          <Table dataSource={data} columns={columns}
-                 style={{width: '80%', margin: 'auto'}}>
-          </Table>
-        </div>
-      </div>
+        <p>确认删除吗？</p>
+      </Modal>
     </PageContainer>
   )
 }
 
-export default Bread
+export default connect(mapStateToProps)(HwList)

@@ -63,7 +63,7 @@ const LecList = ({
   
   const columns = [
     {
-      title: '小节名称',
+      title: '章节名称',
       dataIndex: 'title',
       width: '20%',
       render: (text, index) => {
@@ -71,7 +71,7 @@ const LecList = ({
       },
     },
     {
-      title: '小节链接',
+      title: '章节链接',
       dataIndex: 'link',
       width: '60%',
       render: (text, index) => {
@@ -101,7 +101,7 @@ const LecList = ({
   return (
     <PageContainer>
       <ProTable
-        headerTitle='小节信息'
+        headerTitle='章节信息'
         toolBarRender={() => [
           <Button type='primary'>
             <Link to='/course/chap-edit'>
