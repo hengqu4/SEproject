@@ -7,33 +7,6 @@ import { useMount } from 'react-use'
 import Pie from './components/Charts/Pie'
 import Submit from './components/Submit'
 
-const salesTypeData = [
-  {
-    x: '90+',
-    y: 30,
-  },
-  {
-    x: '80~90',
-    y: 20,
-  },
-  {
-    x: '70~80',
-    y: 30,
-  },
-  {
-    x: '60~70',
-    y: 15,
-  },
-  {
-    x: '60-',
-    y: 5,
-  },
-  {
-    x: '未批改',
-    y: 10,
-  },
-]
-
 const { TabPane } = Tabs
 
 const AllLabCase = ({ lab }) => ({
@@ -50,6 +23,98 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () =>
   const [submitVisible, setSubmitVisible] = useState(false)
   const [labAnaylyseDataTitle, setLabAnaylyseDataTitle] = useState('提交总数')
 
+  const modifyStatistics = (prop, type) => {
+    if (type === 0) {
+      if (prop.scoreDistributed == null) {
+        setAnalyseDataArray([
+          {
+            x: '90+',
+            y: 0,
+          },
+          {
+            x: '80~90',
+            y: 0,
+          },
+          {
+            x: '70~80',
+            y: 0,
+          },
+          {
+            x: '60~70',
+            y: 0,
+          },
+          {
+            x: '60-',
+            y: 0,
+          },
+          {
+            x: '未批改',
+            y: 0,
+          },
+        ])
+        setLabAnalyseDataSum(0)
+        return
+      }
+      const statisticsData = [
+        {
+          x: '90+',
+          y: prop.scoreDistributed[4],
+        },
+        {
+          x: '80~90',
+          y: prop.scoreDistributed[3],
+        },
+        {
+          x: '70~80',
+          y: prop.scoreDistributed[2],
+        },
+        {
+          x: '60~70',
+          y: prop.scoreDistributed[1],
+        },
+        {
+          x: '60-',
+          y: prop.scoreDistributed[0],
+        },
+        {
+          x: '未批改',
+          y: prop.unremarkedNum,
+        },
+      ]
+      setAnalyseDataArray(statisticsData)
+      setLabAnaylyseDataTitle('提交总数')
+      setLabAnalyseDataSum(prop.remarkedNum + prop.unremarkedNum)
+    } else {
+      if (prop.submittedNum == null) {
+        setAnalyseDataArray([
+          {
+            x: '已提交',
+            y: 0,
+          },
+          {
+            x: '未提交',
+            y: 0,
+          },
+        ])
+        setLabAnalyseDataSum(0)
+        return
+      }
+      const statisticsData = [
+        {
+          x: '已提交',
+          y: prop.submittedNum,
+        },
+        {
+          x: '未提交',
+          y: prop.unsubmittedNum,
+        },
+      ]
+      setAnalyseDataArray(statisticsData)
+      setLabAnaylyseDataTitle('总学生数')
+      setLabAnalyseDataSum(prop.submittedNum + prop.unsubmittedNum)
+    }
+  }
+
   const fetchLabStatistics = () => {
     dispatch({
       type: 'lab/fetchLabStatistics',
@@ -61,55 +126,19 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () =>
         })
       },
       onSuccess: () => {
-        console.log(labStatistics)
+        modifyStatistics(labStatistics, analyseType)
       },
     })
   }
 
-  const modifyStatistics = (prop) => {
-    if (prop.scoreDistributed == null) {
-      setAnalyseDataArray([])
-      setLabAnalyseDataSum(0)
-      return
-    }
-    const statisticsData = [
-      {
-        x: '90+',
-        y: prop.scoreDistributed[4],
-      },
-      {
-        x: '80~90',
-        y: prop.scoreDistributed[3],
-      },
-      {
-        x: '70~80',
-        y: prop.scoreDistributed[2],
-      },
-      {
-        x: '60~70',
-        y: prop.scoreDistributed[1],
-      },
-      {
-        x: '60-',
-        y: prop.scoreDistributed[0],
-      },
-      {
-        x: '未批改',
-        y: prop.unremarkedNum,
-      },
-    ]
-    setAnalyseDataArray(statisticsData)
-    setLabAnalyseDataSum(labStatistics.remarkedNum + labStatistics.unremarkedNum)
-  }
-
   const handleAnalyseChange = (e) => {
+    modifyStatistics(labStatistics, e.target.value)
     setAnalyseType(e.target.value)
-    // TODO: update analyseData
   }
 
   const onLabTabChange = (key) => {
-    // TODO: change labs' data
     setCurrentLab(key)
+    fetchLabStatistics()
   }
 
   const onLinkClicked = () => {
@@ -153,7 +182,7 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () =>
         })
       },
       onSuccess: () => {
-        modifyStatistics(labStatistics)
+        modifyStatistics(labStatistics, analyseType)
       },
     })
   })
@@ -168,9 +197,9 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () =>
           }}
           extra={
             <div>
-              <Radio.Group value={analyseType} onChange={handleAnalyseChange}>
+              <Radio.Group defaultValue={analyseType} onChange={handleAnalyseChange}>
                 <Radio.Button value={0}> 得分分布 </Radio.Button>
-                <Radio.Button value={1}>提交情况</Radio.Button>
+                <Radio.Button value={1}> 提交情况 </Radio.Button>
               </Radio.Group>
             </div>
           }
