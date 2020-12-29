@@ -187,6 +187,20 @@ export default defineConfig({
                   authority: ['principle', 'teacher', 'teachingAssistant'],
                 },
                 {
+                  name: '作业批改',
+                  path: '/homework/hw-check',
+                  // hideInMenu: true,
+                  component: './homework/teacher/HwCheckList',
+                  authority: ['principle', 'teacher', 'teachingAssistant'],
+                },
+                {
+                  name: '作业批改详情',
+                  path: '/homework/hw-check/:homeworkId',
+                  hideInMenu: true,
+                  component: './homework/teacher/HwCheck',
+                  authority: ['principle', 'teacher', 'teachingAssistant'],
+                },
+                {
                   name: '新建作业详情',
                   path: '/homework/hw-list/hw-add',
                   hideInMenu: true,
