@@ -18,6 +18,7 @@ const mapStateToProps = ({ Contest, user }) => ({
   participating: Contest.participating,
   channelId: Contest.channelId,
   status: Contest.matchingStatus,
+  userIndex: Contest.userIndex,
 })
 
 const Contest = ({
@@ -27,6 +28,7 @@ const Contest = ({
   participated = false,
   channelId = null,
   status,
+  userIndex,
   dispatch = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
@@ -59,6 +61,12 @@ const Contest = ({
     dispatch({
       type: 'Contest/setChannelId',
     })
+    dispatch({
+      type: 'Contest/setReadyArr',
+    })
+    dispatch({
+      type: 'Contest/setUserIndex',
+    })
   }, [dispatch])
 
   const handleCancelMatching = useCallback(() => {
@@ -69,12 +77,12 @@ const Contest = ({
         studentId: currentUser.id,
       },
       onError,
-      onSuccess: clearStatus,
+      onFinish: clearStatus,
     })
   }, [clearStatus, dispatch, channelId, currentUser])
 
   useUnmount(() => {
-    handleCancelMatching()
+    clearStatus()
   })
 
   useMatchWebSocket({
@@ -83,6 +91,9 @@ const Contest = ({
     dispatch,
     clearStatus: handleCancelMatching,
     reconnect: reconnectRef,
+    status,
+    contestId: currentContest.contestId,
+    userIndex,
   })
 
   const handleModalOpen = useCallback(() => {

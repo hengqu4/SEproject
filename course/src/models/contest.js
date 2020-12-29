@@ -86,8 +86,6 @@ const effects = {
 
     const { contest, bIsParticipated, bIsParticipating } = res
 
-    console.log('fetchCurrentContest: ', res)
-
     if (isTeacher && contest?.contestId) {
       const { questions } = yield call(ContestServices.fetchContestQuestions, {
         contestId: contest.contestId,
@@ -140,8 +138,6 @@ const effects = {
         publisherId,
       },
     }
-
-    console.log('payload: ', payload)
 
     yield call(ContestServices.createContest, payload)
 
@@ -322,8 +318,6 @@ const effects = {
   startMatching: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.startMatching, payload)
 
-    console.log('startMatching: ', res)
-
     yield put({
       type: 'setChannelId',
       payload: res.channelId,
@@ -353,8 +347,6 @@ const effects = {
   fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchChannelId, payload)
 
-    console.log('fetchChannelId: ', res)
-
     const { channelId } = res
 
     yield put({
@@ -374,7 +366,7 @@ const effects = {
 
     const defaultAnswers = questions.map((q) => ({
       ...pick(q, ['questionId', 'questionType']),
-      answer: null,
+      answer: '',
     }))
 
     const matchAnswersHistory = storage(`contest${contestId}`)
@@ -406,6 +398,10 @@ const effects = {
       put({
         type: 'setMatchTimeStamp',
         payload: timeStamp,
+      }),
+      put({
+        type: 'setMatchingStatus',
+        payload: MatchingStatus.ANSWERING,
       }),
     ]
   }),
@@ -564,7 +560,7 @@ const reducers = {
   }),
   setUserIndex: generateReducer({
     attributeName: 'userIndex',
-    transformer: (payload) => payload || 0,
+    transformer: (payload) => payload ?? -1,
     defaultState,
   }),
   setMatchQuestions: generateReducer({
