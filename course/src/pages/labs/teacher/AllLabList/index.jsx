@@ -19,7 +19,7 @@ const FormatData = (allLabList) => {
       caseName: allLabList[i].experimentCaseName,
       desc: allLabList[i].experimentCaseDescription,
       updatedAt: allLabList[i].caseCreatedTimestamp,
-      status: 0,
+      // status: 0,
     })
   }
   return formattedLabList
@@ -142,22 +142,22 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
         return defaultRender(item)
       },
     },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: '未发布',
-          status: 'Default',
-        },
-        1: {
-          text: '已发布',
-          status: 'Warning',
-        },
-      },
-      align: 'center',
-    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'status',
+    //   hideInForm: true,
+    //   valueEnum: {
+    //     0: {
+    //       text: '未发布',
+    //       status: 'Default',
+    //     },
+    //     1: {
+    //       text: '已发布',
+    //       status: 'Warning',
+    //     },
+    //   },
+    //   align: 'center',
+    // },
     {
       title: '操作',
       dataIndex: 'option',
@@ -212,7 +212,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
   })
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable
         headerTitle='所有实验'
         actionRef={actionRef}

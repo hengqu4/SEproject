@@ -15,7 +15,8 @@ import {
   Tag,
   PageHeader,
   Typography,
-  notification 
+  notification,
+  message
 } from 'antd'
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined} from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
@@ -111,12 +112,8 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
   ]
 
   const onFinish = (form) => {
-    // console.log(params.courseCaseId)
-    // console.log(currentUser.id)
-    // console.log(form.fileUpload)
     console.log(params.courseCaseId,currentUser.id,form.fileUpload)
     const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload)
-    // const { dispatch } = props
 
     dispatch({
       type: 'lab/submitLabCase',
@@ -128,6 +125,7 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
         })
       },
     }).then(
+      message.success('提交成功'),
       history.push('/labs/list')
     )
   }
@@ -164,7 +162,6 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
-        <li>{JSON.stringify(currentUser)}</li>
         <Countdown 
           title="倒计时" 
           style={{position:'flxed',float:'right'}}
@@ -203,11 +200,11 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
-          <FormItem {...formItemLayout} label='下载附件' name='goal'>
+          <FormItem {...formItemLayout} label='下载附件' name='fileUpload'>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='fileUpload' disabled={Date.now()>Date.parse(labData.caseEndTimestamp) || labData.isSubmit}/>
+            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='fileUpload' disabled={Date.now()<Date.parse(labData.caseStartTimestamp)||Date.now()>Date.parse(labData.caseEndTimestamp) || labData.isSubmit}/>
           </FormItem>
 
           {labData.isPublicScore?(
@@ -228,7 +225,7 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
             />
           </FormItem>
           ):null}
-  
+
           {/*
           <FormItem
             {...submitFormLayout}
@@ -236,6 +233,7 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
               marginTop: 48,
             }}
           >*/}
+          {Date.now()>Date.parse(labData.caseStartTimestamp)&&Date.now()<Date.parse(labData.caseEndTimestamp) && !labData.isSubmit?(
             <Button
               style={{
                 marginLeft: 16,
@@ -246,8 +244,10 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
             >
               提交作业
             </Button>
-            {/*
-          </FormItem>*/}
+          ):<p>本实验尚未开始进行或您已提交过实验报告</p>
+          }
+          
+          {/*</FormIm>*/}
         </Form>
       </Card>
     </PageContainer>

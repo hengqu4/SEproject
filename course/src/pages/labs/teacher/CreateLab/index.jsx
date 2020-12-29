@@ -164,7 +164,8 @@ function showPromiseConfirm() {
             <ProFormUploadDragger {...formItemLayout} max={4} label='参考答案' name='answerFile' />
           </FormItem>
 
-          {/*<FormItem
+          {/*
+          <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
@@ -177,8 +178,6 @@ function showPromiseConfirm() {
               }}
               type='primary'
               htmlType='submit'
-              // onClick={showPromiseConfirm}
-              // loading={submitting}
             >
               创建实验
             </Button>

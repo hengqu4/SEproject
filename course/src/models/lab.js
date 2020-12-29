@@ -5,32 +5,45 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
-// const defaultPublishLab = {
-//   case_id: -1,
-//   course_id: -1,
-//   case_start_timestamp: null,
-//   case_end_timestamp: null,
-//   course_case_id: -1,
-// }
-
 const defaultPublishLab = {
   caseId: -1,
   courseId: -1,
+  courseCaseId: -1,
   caseStartTimeStamp: null,
   caseEndTimeStamp: null,
-  courseCaseId: -1,
   experimentCaseDescription: null,
-  experimentName: null,
+  experimentName:null,
   experimentCaseName: null,
+
+  submissionUploader: -1,
+  submissionFileToken: null,
+  submissionTimestamp: null,
+  submissionScore: -1,
+  submissionComments: null,
+  submissionIsPublic: false,
+  submissionCaseId: 2,
+}
+
+const defaultLabMark = {
+  courseCaseId: -1,
+  submissionCaseId: -1,
+  submissionComments: null,
+  submissionFileToken: null,
+  submissionIsPublic: false,
+  submissionScore: -1,
+  submissionTimestamp: null,
+  submissionUploader: -1
 }
 
 const defaultState = {
   isSuccess: false,
   allPendingList: [],
   newPublishLab: defaultPublishLab,
+  newLabMark: defaultLabMark,
   allLabCaseList: [],
   labCaseList: [],
   labStatistics: {},
+  mySubmissionList:[],
 }
 
 const effects = {
@@ -47,6 +60,7 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+
   publishLabCase: generateEffect(function* ({ payload }, { call }) {
     yield call(LabServices.publishLabCase, payload)
   }),
@@ -74,6 +88,33 @@ const effects = {
     yield put({
       type: 'fetchLabStatistics',
       payload: res.data[0].courseCaseId,
+    })
+  }),
+  
+  fetchMySubmissionList: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchMySubmissionList, payload)
+
+    yield put({
+      type: 'setMySubmissionList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
+  fetchMySubmission: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.fetchMySubmission, payload)
+
+    yield put({
+      type: 'setPendingList',
+      payload: res.data,
+    })
+
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
     })
   }),
 
@@ -142,6 +183,10 @@ const reducers = {
   }),
   setLabCaseList: generateReducer({
     attributeName: 'labCaseList',
+    transformer: defaultArrayTransformer,
+  }),
+  setMySubmissionList: generateReducer({
+    attributeName: 'mySubmissionList',
     transformer: defaultArrayTransformer,
   }),
 }

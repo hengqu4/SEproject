@@ -34,6 +34,7 @@ const UserModel = {
           name: action.payload.data.realname,
           id: action.payload.data.userId,
           avatar: {},
+          character: action.payload.data.character,
         }
       }
       return { ...state, currentUser: currentUser || {} }

@@ -17,8 +17,14 @@ const FormatData = (allPendingList) => {
     const score = allPendingList[i].submissionScore
     formattedLabList.push({
       key: allPendingList[i].submissionCaseId,
-      name: allPendingList[i].submissionUploader,
-      startTime: allPendingList[i].submissionTimestamp,
+      studentId: [{ 
+        submissionCaseId: allPendingList[i].submissionCaseId,
+        courseCaseId: allPendingList[i].courseCaseId,
+        name: allPendingList[i].realName,
+        submissionStudentId: "1110001",
+      }],
+      studentName: "张三",
+      submitTime: allPendingList[i].submissionTimestamp,
       status: score === -1 ? 1 : 0,
       score: score === -1 ? null : score,
     })
@@ -31,8 +37,8 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
   const actionRef = useRef()
   const columns = [
     {
-      title: '学生名称',
-      dataIndex: 'name',
+      title: '学生学号',
+      dataIndex: 'studentId',
       search: false,
       fieldProps: {
         rules: [
@@ -42,11 +48,31 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
           },
         ],
       },
+      render: (_, row) => row?.studentId?.map((item) => 
+        <Link key="nameJumpLab" to={`/labs/mark/${item.courseCaseId}/${item.submissionCaseId}`}> 
+          {item.submissionCaseId}
+        </Link>
+      ),
+      align:'center',
+    },
+    {
+      title: '学生姓名',
+      dataIndex: 'studentName',
+      search: false,
+      fieldProps: {
+        rules: [
+          {
+            required: true,
+            message: '规则名称为必填项',
+          },
+        ],
+      },
+      align:'center',
     },
     {
       title: '提交时间',
       // dataIndex: 'updatedAt',
-      dataIndex: 'startTime',
+      dataIndex: 'submitTime',
       sorter: false,
       valueType: 'dateTime',
       hideInForm: true,
@@ -64,7 +90,9 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
 
         return defaultRender(item)
       },
+      align:'center',
     },
+    
     {
       title: '状态',
       dataIndex: 'status',
@@ -73,11 +101,11 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
       valueEnum: {
         0: {
           text: '已批改',
-          status: 'Finished',
+          status: 'Success',
         },
         1: {
           text: '未批改',
-          status: 'Pending',
+          status: 'Warning',
         },
       },
     },
@@ -86,33 +114,27 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
       dataIndex: 'score',
       sorter: true,
       hideInForm: true,
+      align:'center',
     },
     {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'studentId',
       valueType: 'option',
       width: 250,
       search: false,
-      render: (_, record) => (
-        <>
-          <Link
-            to={{
-              // /:courseCaseId/:submissionCaseId
-              pathname: '/labs/mark',
-            }}
-            target='_blank'
-          >
-            进入批改
-          </Link>
-        </>
+      render: (_, row) => row?.studentId?.map((item) => 
+        <Link key="nameJumpLab" to={`/labs/mark/${item.courseCaseId}/${item.submissionCaseId}`}> 
+          进入批改
+        </Link>
       ),
+      align:'center',
     },
   ]
   const [loading, setLoading] = useState(true)
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllStudentReport',
-      payload: params.currentLab,
+      payload: params.courseCaseId,
       onError: (err) => {
         notification.error({
           message: '获取提交情况失败',
@@ -123,7 +145,7 @@ const TableList = ({ allPendingList = [], dispatch = () => { } }) => {
     })
   })
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable
         headerTitle='提交列表'
         actionRef={actionRef}
