@@ -20,6 +20,12 @@ const effects = {
   }),
   addHwInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(HwServices.addHwInfo, payload)
+    const res = yield call(HwServices.fetchHwList, payload)
+
+    yield put({
+      type: 'setHwList',
+      payload: res,
+    })
   }),
   deleteHwInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(HwServices.deleteHwInfo, payload)

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Form, Input, Button, } from 'antd';
-import { connect, useParams } from 'umi'
+import { connect } from 'umi'
 import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
@@ -10,7 +10,6 @@ import { values } from 'lodash';
 const mapStateToProps = ({ lecture, Course }) => ({
   lecList: lecture.lecList,
   courseId: Course.currentCourseInfo.courseId,
-  info: lecture.lecInfo,
 })
 
 const FormatData = (lecList) => {
@@ -25,11 +24,9 @@ const FormatData = (lecList) => {
   return formattedLecList
 }
 
-const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = courseId }) => {
-  const params = useParams()
-  const [lecInfo, setLecInfo] = useState({ courseChapterId: 0, courseChapterTitle: "string", courseChapterMoocLink: "string" })
+const LecInfo = ({ lecList = [], dispatch = () => {}, courseId = courseId }) => {
+  const [lecInfo, setLecInfo] = useState({courseChapterId: 0, courseChapterTitle: "string", courseChapterMoocLink: "string"})
   const [loading, setLoading] = useState(true)
-  const [id, setId] = useState(params.courseChapterId)
 
   //获得当前章节信息列表
   const getLecList = () => {
@@ -43,41 +40,41 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
     })
   }
 
-  //修改某章节信息
-  const modifyLecInfo = () => {
+  //新建某章节信息
+  const addLecInfo = () => {
+    console.log(lecInfo)
+    console.log(courseId)
     dispatch({
-      type: 'lecture/modifyLecInfo',
+      type: 'lecture/addLecInfo',
       payload: {
-        courseId, id, lecInfo,
-      }
-    })
-  }
-
-  //获得某章节信息
-  const getLecInfo = () => {
-    dispatch({
-      type: 'lecture/fetchLecInfo',
-      payload: {
-        courseId, id,
-      }
+        courseId, lecInfo,
+      },
+      onFinish: setLoading.bind(this, false),
     })
   }
 
   useMount(() => {
     getLecList()
-    getLecInfo()
-    // console.log(params.courseChapterId)
-    // console.log(courseId)
-    console.log(info)
   })
 
+  const onChange = (value) => {
+    console.log(value)
+    lecInfo.courseChapterTitle = value
+  }
+
   const handleLecInfo = (values) => {
+    var id = 1;
+    const list = FormatData(lecList);
+    for (let i = 0; i < list.length; i++) {
+      if(id <= list[i].key)
+        id = list[i].key + 1
+    }
     lecInfo.courseChapterId = id
-    lecInfo.courseChapterTitle = "bhjhi"
-    lecInfo.courseChapterMoocLink = "http://test"
+    lecInfo.courseChapterTitle = "search"
+    lecInfo.courseChapterMoocLink = "https://www.google.com"
     console.log(lecInfo.courseChapterTitle)
-    // console.log(list)
-    modifyLecInfo();
+    // console.log(lecList)
+    addLecInfo();
   }
 
   return (
@@ -90,8 +87,8 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
-          name="basic"
-          initialValues={{ remember: true, title: info.courseChapterTitle, link: info.courseChapterMoocLink }}
+        name="basic"
+        initialValues={{ remember: true }}
         >
           <Form.Item
             label="章节名称"
@@ -105,7 +102,7 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
           <Form.Item
             label="章节链接"
             name="link"
-            style={{ width: '80%' }}
+            style={{width: '80%'}}
             rules={[{ required: true, message: '请输入链接！' }]}
           >
             <Input />
@@ -138,9 +135,3 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
 }
 
 export default connect(mapStateToProps)(LecInfo)
-
-
-
-const onFinishFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
-};

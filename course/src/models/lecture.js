@@ -7,8 +7,8 @@ import generateReducer, {
 
 const defaultLecInfo = {
   courseChapterId: 0,
-  courseChapterTitle: null,
-  courseChapterMoocLink: null,
+  courseChapterTitle: "",
+  courseChapterMoocLink: "",
 }
 
 const defaultState = {
@@ -27,6 +27,12 @@ const effects = {
   }),
   addLecInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(LecServices.addLecInfo, payload)
+    const res = yield call(LecServices.fetchLecList, payload)
+
+    yield put({
+      type: 'setLecList',
+      payload: res,
+    })
   }),
   deleteLecInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(LecServices.deleteLecInfo, payload)
@@ -37,12 +43,34 @@ const effects = {
       payload: res,
     })
   }),
+  modifyLecInfo: generateEffect(function* ({ payload }, { call }) {
+    yield call(LecServices.modifyLecInfo, payload)
+    const res = yield call(LecServices.fetchLecList, payload)
+
+    yield put({
+      type: 'setLecList',
+      payload: res,
+    })
+  }),
+  fetchLecInfo: generateEffect(function* ({ payload }, { call }) {
+    const res = yield call(LecServices.fetchLecInfo, payload)
+
+    yield put({
+      type: 'setLecInfo',
+      payload: res,
+    })
+  })
 }
 
 const reducers = {
   setLecList: generateReducer({
     attributeName: 'lecList',
     transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setLecInfo: generateReducer({
+    attributeName: 'lecInfo',
+    transformer: (payload) => payload || defaultLecInfo,
     defaultState,
   })
 }
