@@ -71,12 +71,13 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
     console.log(info)
   })
 
-  const handleLecInfo = (values) => {
+  const handleLecInfo = (value) => {
     lecInfo.courseChapterId = id
     lecInfo.courseChapterTitle = "bhjhi"
+    // lecInfo.courseChapterTitle = value.target.value
     lecInfo.courseChapterMoocLink = "http://test"
     console.log(lecInfo.courseChapterTitle)
-    // console.log(list)
+    console.log(list)
     modifyLecInfo();
   }
 
@@ -99,7 +100,7 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入名称！' }]}
           >
-              <Input />
+              <Input name="title" onChange={(value) => console.log(value)}/>
                 {/* <Input placeholder={data.title}/> */}
           </Form.Item>
           <Form.Item

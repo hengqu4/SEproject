@@ -7,6 +7,8 @@ import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
 import { values } from 'lodash';
 
+const { TextArea } = Input
+
 const mapStateToProps = ({ homework, Course, user }) => ({
   hwList: homework.hwList,
   courseId: Course.currentCourseInfo.courseId,
@@ -54,7 +56,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
   //新建某作业信息
   const addHwInfo = () => {
     console.log(hwInfo)
-    console.log(currentUser)
+    // console.log(currentUser)
     dispatch({
       type: 'homework/addHwInfo',
       payload: {
@@ -116,7 +118,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入内容！' }]}
           >
-              <Input style={{height: '150px'}}/>
+              <TextArea />
           </Form.Item>
           <Form.Item
             label="开始日期"

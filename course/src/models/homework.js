@@ -7,6 +7,7 @@ import generateReducer, {
 
 const defaultState = {
   hwList: [],
+  hwInfo: {},
 }
 
 const effects = {
@@ -36,6 +37,23 @@ const effects = {
       payload: res,
     })
   }),
+  modifyHwInfo: generateEffect(function* ({ payload }, { call }) {
+    yield call(HwServices.modifyHwInfo, payload)
+    const res = yield call(HwServices.fetchHwList, payload)
+
+    yield put({
+      type: 'setHwList',
+      payload: res,
+    })
+  }),
+  fetchHwInfo: generateEffect(function* ({ payload }, { call }) {
+    const res = yield call(HwServices.fetchHwInfo, payload)
+
+    yield put({
+      type: 'setHwInfo',
+      payload: res,
+    })
+  })
 }
 
 const reducers = {
@@ -43,7 +61,22 @@ const reducers = {
     attributeName: 'hwList',
     transformer: defaultArrayTransformer,
     defaultState,
-  })
+  }),
+  setHwInfo: generateReducer({
+    attributeName: 'hwInfo',
+    transformer: (payload) => payload || defaultLecInfo,
+    defaultState,
+  }),
+  // setHwInfo(state, action) {
+  //   let hwInfo = {}
+  //   if (action.payload) {
+  //     hwInfo = {
+  //       title: action.payload.data.realname,
+  //       des: action.payload.data.userId,
+  //       startTime: {},
+  //     }
+  //   }
+  //   return { ...state, currentUser: currentUser || {} }
 }
 
 export default {

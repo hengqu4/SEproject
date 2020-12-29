@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Modal, Space} from 'antd'
+import { Input, Button, Table, Modal, Space } from 'antd'
+import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
@@ -20,11 +21,11 @@ const FormatData = (hwList) => {
       key: hwList[i].homeworkId,
       title: hwList[i].homeworkTitle,
       des: hwList[i].homeworkDescription,
-      createTime: hwList[i].homeworkCreateTimestamp,
+      createTime: formatTime(hwList[i].homeworkCreateTimestamp),
       // createTime: parseInt(Date(hwList[i].homeworkCreateTime) * 1000).toLocaleString().getTime(),
-      updateTime: hwList[i].homeworkUpdateTimestamp,
-      startTime: hwList[i].homeworkStartTimestamp,
-      endTime: hwList[i].homeworkEndTimestamp,
+      updateTime: formatTime(hwList[i].homeworkUpdateTimestamp),
+      startTime: formatTime(hwList[i].homeworkStartTimestamp),
+      endTime: formatTime(hwList[i].homeworkEndTimestamp),
       creator: hwList[i].homeworkCreator,
     })
   }

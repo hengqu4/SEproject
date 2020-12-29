@@ -15,21 +15,39 @@ export const addHwInfo = (params) => {
         prefix: API_HOMEWORK_PREFIX,
         //把数组转化为json字符串
         body: JSON.stringify({
-          homeworkUuid: params.hwInfo.homeworkUuid,
           homeworkTitle: params.hwInfo.homeworkTitle,
           homeworkDescription: params.hwInfo.homeworkDescription,
-          homeworkCreateTime: params.hwInfo.homeworkCreateTime,
-          homeworkUpdateTime: params.hwInfo.homeworkUpdateTime,
           homeworkStartTime: params.hwInfo.homeworkStartTime,
           homeworkEndTime: params.hwInfo.homeworkEndTime,
-          homeworkCreatorId: params.hwInfo.homeworkCreatorId,
         })
     })
   }
   
-  export const deleteHwInfo = (params) => {
+export const deleteHwInfo = (params) => {
     return request(safeUrlAssembler('/:courseId/homework/:homeworkId').param(params).toString(), {
         method: 'DELETE',
         prefix: API_HOMEWORK_PREFIX,
     })
-  }
+}
+  
+export const modifyHwInfo = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId').param({courseId: params.courseId, homeworkId: params.homeworkId}).toString(), {
+    method: 'PUT',
+    prefix: API_HOMEWORK_PREFIX,
+    //把数组转化为json字符串
+    body: JSON.stringify({
+      homeworkTitle: params.hwInfo.homeworkTitle,
+      homeworkDescription: params.hwInfo.homeworkDescription,
+      homeworkStartTime: params.hwInfo.homeworkStartTime,
+      homeworkEndTime: params.hwInfo.homeworkEndTime,
+    })
+  })
+}
+
+//获取某作业信息
+export const fetchHwInfo = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId').param(params).toString(), {
+    method: 'GET',
+    prefix: API_HOMEWORK_PREFIX,
+  })
+}
