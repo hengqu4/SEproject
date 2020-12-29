@@ -5,6 +5,13 @@ import generateReducer, {
     defaultObjectTransformer,
 } from '@/utils/generateReducer'
 
+const defaultHwInfo = {
+  homeworkTitle: "",
+  homeworkDescription: "",
+  startTime: "",
+  endTime: "",
+}
+
 const defaultState = {
   hwList: [],
   hwInfo: {},
@@ -46,7 +53,7 @@ const effects = {
       payload: res,
     })
   }),
-  fetchHwInfo: generateEffect(function* ({ payload }, { call }) {
+  fetchHwInfo: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(HwServices.fetchHwInfo, payload)
 
     yield put({
@@ -64,19 +71,9 @@ const reducers = {
   }),
   setHwInfo: generateReducer({
     attributeName: 'hwInfo',
-    transformer: (payload) => payload || defaultLecInfo,
+    transformer: (payload) => payload || defaultHwInfo,
     defaultState,
   }),
-  // setHwInfo(state, action) {
-  //   let hwInfo = {}
-  //   if (action.payload) {
-  //     hwInfo = {
-  //       title: action.payload.data.realname,
-  //       des: action.payload.data.userId,
-  //       startTime: {},
-  //     }
-  //   }
-  //   return { ...state, currentUser: currentUser || {} }
 }
 
 export default {

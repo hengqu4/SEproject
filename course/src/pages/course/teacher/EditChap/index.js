@@ -30,6 +30,7 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
   const [lecInfo, setLecInfo] = useState({ courseChapterId: 0, courseChapterTitle: "string", courseChapterMoocLink: "string" })
   const [loading, setLoading] = useState(true)
   const [id, setId] = useState(params.courseChapterId)
+  const [form] = Form.useForm()
 
   //获得当前章节信息列表
   const getLecList = () => {
@@ -73,11 +74,8 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
 
   const handleLecInfo = (value) => {
     lecInfo.courseChapterId = id
-    lecInfo.courseChapterTitle = "bhjhi"
-    // lecInfo.courseChapterTitle = value.target.value
-    lecInfo.courseChapterMoocLink = "http://test"
-    console.log(lecInfo.courseChapterTitle)
-    console.log(list)
+    lecInfo.courseChapterTitle = form.getFieldValue('title')
+    lecInfo.courseChapterMoocLink = form.getFieldValue('link')
     modifyLecInfo();
   }
 
@@ -91,6 +89,7 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
+          form={form}
           name="basic"
           initialValues={{ remember: true, title: info.courseChapterTitle, link: info.courseChapterMoocLink }}
         >

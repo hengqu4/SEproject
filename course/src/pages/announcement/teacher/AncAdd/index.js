@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Form, Modal, Space } from 'antd'
 import formatTime from '@/utils/formatTime'
-import {connect, useParams} from 'umi'
+import {connect} from 'umi'
 import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
@@ -32,19 +32,17 @@ const FormatData = (ancList) => {
   return formattedAncList
 }
 
-const AncInfo = ({
+const AncList = ({
   ancList = [],
   dispatch = () => { },
   courseId = courseId
 }) => {
-  const params = useParams()
   const [ancInfo, setAncInfo] = useState({
     announcementTitle: "",
     announcementContents: "",
     announcementIsPinned: true,
   })
   const [loading, setLoading] = useState(true)
-  const [announcementId, setAnnouncementId ] = useState(params.announcementId)
   const [form] = Form.useForm()
 
   //获得当前公告列表
@@ -59,40 +57,29 @@ const AncInfo = ({
     })
   }
 
-  //修改某公告
-  const modifyAncInfo = () => {
+  //新建某公告
+  const addAncInfo = () => {
     dispatch({
-      type: 'announcement/modifyAncInfo',
+      type: 'announcement/addAncInfo',
       payload: {
-        courseId, announcementId, ancInfo,
+        courseId, ancInfo,
       },
       onError,
       onFinish: setLoading.bind(this, false),
     })
   }
 
-  //获得某公告信息
-  const getAncInfo = () => {
-    dispatch({
-      type: 'homework/fetchAncInfo',
-      payload: {
-        courseId, announcementId,
-      }
-    })
-  }
-
   useMount(() => {
     getAncList()
-    getAncInfo()
     //console.log(hwList)
   })
 
-  const handleAncInfo = (values) => {
+  const handleAncInfo = () => {
     ancInfo.announcementTitle = form.getFieldValue('title')
     ancInfo.announcementContents = form.getFieldValue('des')
     // console.log(hwInfo.homeworkCreateTime)
     // console.log(hwList)
-    modifyAncInfo();
+    addAncInfo();
   }
  
   return (
@@ -105,8 +92,8 @@ const AncInfo = ({
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
-          form={form}
           name="basic"
+          form={form}
           initialValues={{ remember: true }}
         >
           <Form.Item
@@ -150,4 +137,4 @@ const AncInfo = ({
   )
 }
 
-export default connect(mapStateToProps)(AncInfo)
+export default connect(mapStateToProps)(AncList)

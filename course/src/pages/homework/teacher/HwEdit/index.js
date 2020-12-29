@@ -17,9 +17,9 @@ const mapStateToProps = ({ homework, Course, user }) => ({
 })
 
 const FormatData = (hwList) => {
-  const formattedLecList = []
+  const formattedHwList = []
   for (let i = 0; i < hwList.length; i++) {
-    formattedLecList.push({
+    formattedHwList.push({
       key: hwList[i].homeworkId,
       title: hwList[i].homeworkTitle,
       des: hwList[i].homeworkDescription,
@@ -30,7 +30,7 @@ const FormatData = (hwList) => {
       creator: hwList[i].homeworkCreator,
     })
   }
-  return formattedLecList
+  return formattedHwList
 }
 
 const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
@@ -43,6 +43,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
   })
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
+  const [form] = Form.useForm()
 
   // const FormatData = (hwList) => {
   //   const formattedLecInfo = {}
@@ -99,12 +100,12 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     console.log(info)
   })
 
-  const handleHwInfo = (values) => {
-    hwInfo.homeworkTitle = "为股东会"
-    hwInfo.homeworkDescription = "吃鱼一并私人行程弄猫"
-    hwInfo.homeworkStartTime = "2020-1-1T00:59:05.092+08:00"
-    hwInfo.homeworkEndTime = "2020-1-3T00:59:05.092+08:00"
-    // console.log(list)
+  const handleHwInfo = () => {
+    hwInfo.homeworkTitle = form.getFieldValue('title')
+    hwInfo.homeworkDescription = form.getFieldValue('des')
+    hwInfo.homeworkStartTime = new Date(form.getFieldValue('startTime')).toISOString()
+    hwInfo.homeworkEndTime = new Date(form.getFieldValue('endTime')).toISOString()
+    // console.log(hwInfo.homeworkTitle)
     modifyHwInfo();
   }
 
@@ -118,6 +119,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
+          form={form}
           name="basic"
           initialValues={{ remember: true, title: info.homeworkTitle }}
         >
@@ -143,7 +145,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入日期！' }]}
           >
-            <Input />
+            <Input placeholder="注意格式为xxxx-xx-xx"/>
           </Form.Item>
           <Form.Item
             label="截止日期"
@@ -151,7 +153,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入日期！' }]}
           >
-            <Input />
+            <Input placeholder="注意格式为xxxx-xx-xx"/>
           </Form.Item>
           <Form.Item>
             <Button>

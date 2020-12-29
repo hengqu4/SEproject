@@ -22,7 +22,6 @@ const FormatData = (hwList) => {
       title: hwList[i].homeworkTitle,
       des: hwList[i].homeworkDescription,
       createTime: formatTime(hwList[i].homeworkCreateTimestamp),
-      // createTime: parseInt(Date(hwList[i].homeworkCreateTime) * 1000).toLocaleString().getTime(),
       updateTime: formatTime(hwList[i].homeworkUpdateTimestamp),
       startTime: formatTime(hwList[i].homeworkStartTimestamp),
       endTime: formatTime(hwList[i].homeworkEndTimestamp),

@@ -27,6 +27,7 @@ const FormatData = (lecList) => {
 const LecInfo = ({ lecList = [], dispatch = () => {}, courseId = courseId }) => {
   const [lecInfo, setLecInfo] = useState({courseChapterId: 0, courseChapterTitle: "string", courseChapterMoocLink: "string"})
   const [loading, setLoading] = useState(true)
+  const [form] = Form.useForm()
 
   //获得当前章节信息列表
   const getLecList = () => {
@@ -70,8 +71,8 @@ const LecInfo = ({ lecList = [], dispatch = () => {}, courseId = courseId }) => 
         id = list[i].key + 1
     }
     lecInfo.courseChapterId = id
-    lecInfo.courseChapterTitle = "search"
-    lecInfo.courseChapterMoocLink = "https://www.google.com"
+    lecInfo.courseChapterTitle = form.getFieldValue('title')
+    lecInfo.courseChapterMoocLink = form.getFieldValue('link')
     console.log(lecInfo.courseChapterTitle)
     // console.log(lecList)
     addLecInfo();
@@ -87,8 +88,9 @@ const LecInfo = ({ lecList = [], dispatch = () => {}, courseId = courseId }) => 
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
-        name="basic"
-        initialValues={{ remember: true }}
+          form={form}
+          name="basic"
+          initialValues={{ remember: true }}
         >
           <Form.Item
             label="章节名称"

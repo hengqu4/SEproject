@@ -16,9 +16,9 @@ const mapStateToProps = ({ homework, Course, user }) => ({
 })
 
 const FormatData = (hwList) => {
-  const formattedLecList = []
+  const formattedHwList = []
   for (let i = 0; i < hwList.length; i++) {
-    formattedLecList.push({
+    formattedHwList.push({
       key: hwList[i].homeworkId,
       title: hwList[i].homeworkTitle,
       des: hwList[i].homeworkDescription,
@@ -29,7 +29,7 @@ const FormatData = (hwList) => {
       creator: hwList[i].homeworkCreator,
     })
   }
-  return formattedLecList
+  return formattedHwList
 }
 
 const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
@@ -40,6 +40,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
     homeworkEndTime: "",
   })
   const [loading, setLoading] = useState(true)
+  const [form] = Form.useForm()
 
   //获得当前作业列表
   const getHwList = () => {
@@ -75,17 +76,11 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
     lecInfo.courseChapterTitle = value
   }
 
-  const handleHwInfo = (values) => {
-    var id = 1;
-    const list = FormatData(hwList);
-    for (let i = 0; i < list.length; i++) {
-      if(id <= list[i].key)
-        id = list[i].key + 1
-    }
-    hwInfo.homeworkTitle = "早点回家"
-    hwInfo.homeworkDescription = "安慰水电费感觉开了花"
-    hwInfo.homeworkStartTime = "2020-12-30T00:59:05.092+08:00"
-    hwInfo.homeworkEndTime = "2020-12-31T00:59:05.092+08:00"
+  const handleHwInfo = () => {
+    hwInfo.homeworkTitle = form.getFieldValue('title')
+    hwInfo.homeworkDescription = form.getFieldValue('des')
+    hwInfo.homeworkStartTime = new Date(form.getFieldValue('startTime')).toISOString()
+    hwInfo.homeworkEndTime = new Date(form.getFieldValue('endTime')).toISOString()
     // console.log(hwInfo.homeworkCreateTime)
     // console.log(hwList)
     addHwInfo();
@@ -101,8 +96,9 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
       >
       <div style={{ paddingTop: '40px', margin:'40px'}}>
         <Form
-        name="basic"
-        initialValues={{ remember: true }}
+          form={form}
+          name="basic"
+          initialValues={{ remember: true }}
         >
           <Form.Item
             label="作业名称"
@@ -126,7 +122,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入日期！' }]}
           >
-            <Input />
+            <Input placeholder="注意格式为xxxx-xx-xx"/>
           </Form.Item>
           <Form.Item
             label="截止日期"
@@ -134,7 +130,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入日期！' }]}
           >
-            <Input />
+            <Input placeholder="注意格式为xxxx-xx-xx"/>
           </Form.Item>
           {/* </Form><Form.Item {...tailLayout}> */}
           <Form.Item>

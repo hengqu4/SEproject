@@ -52,7 +52,7 @@ const effects = {
       payload: res,
     })
   }),
-  fetchLecInfo: generateEffect(function* ({ payload }, { call }) {
+  fetchLecInfo: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LecServices.fetchLecInfo, payload)
 
     yield put({
