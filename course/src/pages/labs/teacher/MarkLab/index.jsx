@@ -227,12 +227,13 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
               rows={4}
             />
           </FormItem>
+          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >
+          >*/}
             <Button
               type='primary'
               htmlType='submit'
@@ -246,9 +247,9 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
               }}
             >
               下一份
-            </Button>*/}
+            </Button>
           
-          </FormItem>
+          </FormItem>*/}
         </Form>
       </Card>
     </PageContainer>

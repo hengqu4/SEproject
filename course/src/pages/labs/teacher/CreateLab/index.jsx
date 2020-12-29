@@ -164,12 +164,13 @@ function showPromiseConfirm() {
             <ProFormUploadDragger {...formItemLayout} max={4} label='参考答案' name='answerFile' />
           </FormItem>
 
+          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >
+          >*/}
           
             <Button
               style={{
@@ -181,7 +182,7 @@ function showPromiseConfirm() {
               创建实验
             </Button>
             
-          </FormItem>
+          {/*</FormItem>*/}
         </Form>
       </Card>
     </PageContainer>
