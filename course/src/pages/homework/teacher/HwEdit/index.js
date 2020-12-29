@@ -6,6 +6,7 @@ import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
 import { values } from 'lodash';
+import formatTime from '@/utils/formatTime'
 
 const { TextArea } = Input
 
@@ -16,21 +17,18 @@ const mapStateToProps = ({ homework, Course, user }) => ({
   currentUser: user.currentUser,
 })
 
-const FormatData = (hwList) => {
-  const formattedHwList = []
-  for (let i = 0; i < hwList.length; i++) {
-    formattedHwList.push({
-      key: hwList[i].homeworkId,
-      title: hwList[i].homeworkTitle,
-      des: hwList[i].homeworkDescription,
-      createTime: hwList[i].homeworkCreateTimestamp,
-      updateTime: hwList[i].homeworkUpdateTimestamp,
-      startTime: hwList[i].homeworkStartTimestamp,
-      endTime: hwList[i].homeworkEndTimestamp,
-      creator: hwList[i].homeworkCreator,
-    })
+const FormatDataInfo = (info) => {
+  const formattedHwInfo = {
+    homeworkTitle: "",
+    homeworkDescription: "",
+    startTime: "",
+    endTime: "",
   }
-  return formattedHwList
+  formattedHwInfo.homeworkTitle = info.homeworkTitle
+  formattedHwInfo.homeworkDescription = info.homeworkDescription
+  formattedHwInfo.startTime = info.homeworkStartTimestamp
+  formattedHwInfo.endTime = info.homeworkEndTimestamp
+  return formattedHwInfo
 }
 
 const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
@@ -44,20 +42,6 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
   const [form] = Form.useForm()
-
-  // const FormatData = (hwList) => {
-  //   const formattedLecInfo = {}
-  //   for (let i = 0; i < hwList.length; i++) {
-  //     if (hwList[i].homeworkId === homeworkId) {
-  //       formattedLecInfo.homeworkTitle = hwList[i].homeworkTitle
-  //       formattedLecInfo.homeworkDescription = hwList[i].homeworkDescription
-  //       formattedLecInfo.startTime = hwList[i].startTime
-  //       formattedLecInfo.endTime = hwList[i].endTime
-  //       break
-  //     }
-  //   }
-  //   return formattedLecInfo
-  // }
 
   //获得当前作业列表
   const getHwList = () => {
@@ -92,12 +76,8 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
   }
 
   useMount(() => {
-    getHwList()
+    // getHwList()
     getHwInfo()
-    // info = FormatData(hwList)
-    // console.log(params.courseChapterId)
-    // console.log(courseId)
-    console.log(info)
   })
 
   const handleHwInfo = () => {
@@ -107,6 +87,13 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     hwInfo.homeworkEndTime = new Date(form.getFieldValue('endTime')).toISOString()
     // console.log(hwInfo.homeworkTitle)
     modifyHwInfo();
+  }
+
+  const data = {
+    title: FormatDataInfo(info).homeworkTitle,
+    des: FormatDataInfo(info).homeworkDescription,
+    startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
+    endTime: formatTime(FormatDataInfo(info).homeworkEndTime),
   }
 
   return (
@@ -121,7 +108,11 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
         <Form
           form={form}
           name="basic"
-          initialValues={{ remember: true, title: info.homeworkTitle }}
+            initialValues={{
+              remember: true,
+              title: data.title,
+              des: data.des,
+            }}
         >
           <Form.Item
             label="作业名称"

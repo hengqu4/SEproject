@@ -13,19 +13,19 @@ const mapStateToProps = ({ lecture, Course }) => ({
   info: lecture.lecInfo,
 })
 
-const FormatData = (lecList) => {
-  const formattedLecList = []
-  for (let i = 0; i < lecList.length; i++) {
-    formattedLecList.push({
-      key: lecList[i].courseChapterId,
-      title: lecList[i].courseChapterTitle,
-      link: lecList[i].courseChapterMoocLink,
-    })
+const FormatDataInfo = (info) => {
+  const formattedLecInfo = {
+    courseChapterId: 0,
+    courseChapterTitle: "",
+    courseChapterMoocLink: "",
   }
-  return formattedLecList
+  formattedLecInfo.courseChapterId = info.courseChapterId
+  formattedLecInfo.courseChapterTitle = info.courseChapterTitle
+  formattedLecInfo.courseChapterMoocLink = info.courseChapterMoocLink
+  return formattedLecInfo
 }
 
-const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = courseId }) => {
+const LecInfo = ({ info = {}, lecList = [], dispatch = () => { }, courseId = courseId }) => {
   const params = useParams()
   const [lecInfo, setLecInfo] = useState({ courseChapterId: 0, courseChapterTitle: "string", courseChapterMoocLink: "string" })
   const [loading, setLoading] = useState(true)
@@ -65,18 +65,20 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
   }
 
   useMount(() => {
-    getLecList()
+    // getLecList()
     getLecInfo()
-    // console.log(params.courseChapterId)
-    // console.log(courseId)
-    console.log(info)
   })
 
-  const handleLecInfo = (value) => {
+  const handleLecInfo = () => {
     lecInfo.courseChapterId = id
     lecInfo.courseChapterTitle = form.getFieldValue('title')
     lecInfo.courseChapterMoocLink = form.getFieldValue('link')
     modifyLecInfo();
+  }
+
+  const data = {
+    title: FormatDataInfo(info).courseChapterTitle,
+    link: FormatDataInfo(info).courseChapterMoocLink,
   }
 
   return (
@@ -91,7 +93,11 @@ const LecInfo = ({ lecList = [], dispatch = () => { }, info = {}, courseId = cou
         <Form
           form={form}
           name="basic"
-          initialValues={{ remember: true, title: info.courseChapterTitle, link: info.courseChapterMoocLink }}
+            initialValues={{
+              remember: true,
+              title: data.title,
+              link: data.link,
+            }}
         >
           <Form.Item
             label="章节名称"
