@@ -13,26 +13,24 @@ const { TextArea } = Input
 
 const mapStateToProps = ({ announcement, Course }) => ({
   ancList: announcement.ancList,
+  info: announcement.ancInfo,
   courseId: Course.currentCourseInfo.courseId,
 })
 
-const FormatData = (ancList) => {
-  const formattedAncList = []
-  for (let i = 0; i < ancList.length; i++) {
-    formattedAncList.push({
-      key: ancList[i].announcementId,
-      title: ancList[i].announcementTitle,
-      des: ancList[i].announcementContents,
-      isPinned: ancList[i].announcementIsPinned,
-      createTime: formatTime(ancList[i].announcementPublishTime),
-      updateTime: formatTime(ancList[i].announcementLastUpdateTime),
-      creator: ancList[i].announcementSenderId,
-    })
+const FormatDataInfo = (info) => {
+  const formattedAncList = {
+    announcementTitle: "",
+    announcementContents: "",
+    announcementIsPinned: null,
   }
+  formattedAncList.announcementTitle = info.announcementTitle
+  formattedAncList.announcementContents = info.announcementContents
+  formattedAncList.announcementIsPinned = info.announcementIsPinned
   return formattedAncList
 }
 
 const AncInfo = ({
+  info = {},
   ancList = [],
   dispatch = () => { },
   courseId = courseId
@@ -82,7 +80,7 @@ const AncInfo = ({
   }
 
   useMount(() => {
-    getAncList()
+    // getAncList()
     getAncInfo()
     //console.log(hwList)
   })
@@ -95,6 +93,11 @@ const AncInfo = ({
     modifyAncInfo();
   }
  
+  const data = {
+    title: FormatDataInfo(info).announcementTitle,
+    des: FormatDataInfo(info).announcementContents,
+  }
+
   return (
     <PageContainer>
       <div
@@ -107,7 +110,11 @@ const AncInfo = ({
         <Form
           form={form}
           name="basic"
-          initialValues={{ remember: true }}
+            initialValues={{
+              remember: true,
+              title: data.title,
+              des: data.des,
+            }}
         >
           <Form.Item
             label="公告名称"

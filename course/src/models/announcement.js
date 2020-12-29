@@ -6,9 +6,9 @@ import generateReducer, {
 } from '@/utils/generateReducer'
 
 const defaultAncInfo = {
-  announcementTitle: "是",
-  announcementContents: "是",
-  announcementIsPinned: true,
+  announcementTitle: "",
+  announcementContents: "",
+  announcementIsPinned: null,
 }
 
 const defaultState = {
@@ -73,16 +73,6 @@ const reducers = {
     transformer: (payload) => payload || defaultAncInfo,
     defaultState,
   }),
-  // setHwInfo(state, action) {
-  //   let hwInfo = {}
-  //   if (action.payload) {
-  //     hwInfo = {
-  //       title: action.payload.data.realname,
-  //       des: action.payload.data.userId,
-  //       startTime: {},
-  //     }
-  //   }
-  //   return { ...state, currentUser: currentUser || {} }
 }
 
 export default {
