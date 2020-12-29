@@ -132,6 +132,12 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                     {
+                      name: '章节列表',
+                      path: '/course/chap-ls',
+                      component: './course/student/ChapList',
+                      authority: ['student'],
+                    },
+                    {
                       name: '添加章节信息',
                       path: '/course/chap-add',
                       hideInMenu: true,
@@ -184,11 +190,18 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                     {
+                      name: '作业列表',
+                      icon: 'smile',
+                      path: '/homework/hw-ls',
+                      component: './homework/student/HwList',
+                      authority: ['student'],
+                    },
+                    {
                       name: '作业详情',
                       path: '/homework/hw-list/hw-info/:homeworkId',
                       hideInMenu: true,
                       component: './homework/teacher/HwInfo',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
                     },
                     {
                       name: '新建作业详情',
@@ -203,20 +216,6 @@ export default defineConfig({
                       hideInMenu: true,
                       component: './homework/teacher/HwEdit',
                       authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '作业列表',
-                      icon: 'smile',
-                      path: '/homework/hw-list1',
-                      component: './homework/student/HwList',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '作业详情',
-                      path: '/homework/hw-list1/hw-info',
-                      hideInMenu: true,
-                      component: './homework/student/HwInfo',
-                      authority: ['student'],
                     },
                   ],
 
@@ -340,11 +339,17 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                     {
+                      name: '公告列表',
+                      path: '/announcement/anc-ls',
+                      component: './announcement/student/AncList',
+                      authority: ['student'],
+                    },
+                    {
                       name: '公告详情',
                       path: '/announcement/anc-list/anc-info/:announcementId',
                       hideInMenu: true,
                       component: './announcement/teacher/AncInfo',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
                     },
                     {
                       name: '编辑公告详情',

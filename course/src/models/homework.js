@@ -44,7 +44,7 @@ const effects = {
       payload: res,
     })
   }),
-  modifyHwInfo: generateEffect(function* ({ payload }, { call }) {
+  modifyHwInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(HwServices.modifyHwInfo, payload)
     const res = yield call(HwServices.fetchHwList, payload)
 

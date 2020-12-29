@@ -43,7 +43,7 @@ const effects = {
       payload: res,
     })
   }),
-  modifyAncInfo: generateEffect(function* ({ payload }, { call }) {
+  modifyAncInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(AncServices.modifyAncInfo, payload)
     const res = yield call(AncServices.fetchAncList, payload)
 

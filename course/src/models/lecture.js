@@ -43,7 +43,7 @@ const effects = {
       payload: res,
     })
   }),
-  modifyLecInfo: generateEffect(function* ({ payload }, { call }) {
+  modifyLecInfo: generateEffect(function* ({ payload }, { call, put }) {
     yield call(LecServices.modifyLecInfo, payload)
     const res = yield call(LecServices.fetchLecList, payload)
 
