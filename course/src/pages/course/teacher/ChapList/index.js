@@ -75,7 +75,7 @@ const LecList = ({
       dataIndex: 'link',
       width: '60%',
       render: (text, index) => {
-        return <a href={text}>{text}</a>
+        return <a href={text} target="_blank">{text}</a>
       },
     },
     {
@@ -102,6 +102,7 @@ const LecList = ({
     <PageContainer>
       <ProTable
         headerTitle='小节信息'
+        search={false}
         toolBarRender={() => [
           <Button type='primary'>
             <Link to='/course/chap-edit'>
@@ -109,8 +110,6 @@ const LecList = ({
             </Link>
           </Button>,
         ]}
-        // actionRef={ref}
-        // search={false}
         dataSource={FormatData(lecList)}
         columns={columns}
       />
