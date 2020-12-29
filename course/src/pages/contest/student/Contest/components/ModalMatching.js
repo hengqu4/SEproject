@@ -54,6 +54,8 @@ const ModalMatching = ({
     })
   }, [dispatch, channelId, currentUser])
 
+  console.log('readyArr: ', readyArr, userIndex)
+
   return (
     <Modal
       destroyOnClose

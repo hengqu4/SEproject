@@ -18,7 +18,7 @@ const MatchQuestions = ({ questions = [], score, onUserAnsewrChange }) => {
         dataSource={questions}
         size='large'
         renderItem={(question) => (
-          <List.Item key={question.questionId}>
+          <List.Item key={`${question.questionId}+${question.questionType}`}>
             <Question question={question} onChange={onUserAnsewrChange} />
           </List.Item>
         )}

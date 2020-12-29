@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { connect } from 'umi'
 import MatchQuestions from '@/pages/contest/components/MatchQuestions'
-import { useMount } from 'react-use'
 import { Spin, Statistic, Button, Popconfirm, Divider, message, Modal } from 'antd'
 import onError from '@/utils/onError'
 import cloneDeep from 'lodash/cloneDeep'
@@ -29,27 +28,9 @@ const MatchQuestionsWrapper = ({
   dispatch = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
-  const [submitBtnActive, setSubmitBtnActive] = useState(false)
   const [visible, setVisible] = useState(false)
   const [submited, setSubmited] = useState(false)
   const [submitError, setSubmtError] = useState(null)
-
-  const getQuestions = useCallback(() => {
-    setLoading(true)
-
-    const { contestId } = currentContest
-
-    dispatch({
-      type: 'Contest/connectToMatch',
-      payload: {
-        studentId,
-        contestId,
-      },
-      onSuccess: setSubmitBtnActive.bind(this, true),
-      onError,
-      onFinish: setLoading.bind(this, false),
-    })
-  }, [currentContest, dispatch, studentId])
 
   const onUserAnswerChange = (questionId, questionType, newAnswer) => {
     const answersCopy = cloneDeep(matchQuestionAnswers)
@@ -68,10 +49,6 @@ const MatchQuestionsWrapper = ({
 
     storage(`contest${currentContest.contestId}`, answersCopy)
   }
-
-  useMount(() => {
-    getQuestions()
-  })
 
   const clearMatchStatus = useCallback(() => {
     setLoading(false)
@@ -149,9 +126,7 @@ const MatchQuestionsWrapper = ({
           <Divider />
           <footer style={{ textAlign: 'center' }}>
             <Popconfirm title='确认提交？' onConfirm={handleSubmit}>
-              <Button type='primary' disabled={!submitBtnActive}>
-                提交答案
-              </Button>
+              <Button type='primary'>提交答案</Button>
             </Popconfirm>
           </footer>
           <Modal
