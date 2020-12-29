@@ -28,5 +28,6 @@ module.exports = {
     'default-case': 0,
     'react-hooks/exhaustive-deps': 1,
     'prefer-promise-reject-errors': 1,
+    'consistent-return': 1,
   },
 }

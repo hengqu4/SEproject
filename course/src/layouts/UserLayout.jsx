@@ -41,14 +41,36 @@ const UserLayout = (props) => {
             <div className={styles.header}>
               <Link to='/'>
                 <img alt='logo' className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                <span className={styles.title}>虚拟仿真实验平台</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>软件项目与过程管理</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter
+          copyright={`${new Date().getFullYear()} 同济大学软件学院`}
+          links={[
+            {
+              key: 'frontend',
+              title: '前端开发',
+              href: 'https://github.com/hengqu4/SEproject',
+              blankTarget: true,
+            },
+            {
+              key: 'backend',
+              title: '后端开发',
+              href: 'https://github.com/TJCatFood/backend',
+              blankTarget: true,
+            },
+            {
+              key: 'service',
+              title: '联系方式',
+              href: 'https://sse.tongji.edu.cn/',
+              blankTarget: true,
+            },      
+          ]}
+        />
       </div>
     </HelmetProvider>
   )

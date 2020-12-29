@@ -8,8 +8,9 @@ import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
 
-const mapStateToProps = ({ lecture }) => ({
+const mapStateToProps = ({ lecture, Course }) => ({
   lecList: lecture.lecList,
+  courseId: Course.currentCourseInfo.courseId,
 })
 
 const FormatData = (lecList) => {
@@ -26,15 +27,16 @@ const FormatData = (lecList) => {
 
 const LecList = ({
   lecList = [],
-  dispatch = () => {}
+  dispatch = () => { },
+  courseId = courseId
 }) => {
   const [loading, setLoading] = useState(true)
   const [id, setId ] = useState()
   const [ modalVisible, setModalVisible ] = useState(false)
   const ref = useRef()
 
-  //获得当前小节信息列表
-  const getLecList = (courseId) => {
+  //获得当前章节信息列表
+  const getLecList = () => {
     dispatch({
       type: 'lecture/fetchLecList',
       payload: {
@@ -45,8 +47,8 @@ const LecList = ({
     })
   }
 
-  //删除某小节信息
-  const deleteLecInfo = (courseId) => {
+  //删除某章节信息
+  const deleteLecInfo = () => {
     dispatch({
       type: 'lecture/deleteLecInfo',
       payload: {
@@ -58,12 +60,12 @@ const LecList = ({
   }
 
   useMount(() => {
-    getLecList(1)
+    getLecList()
   })
   
   const columns = [
     {
-      title: '小节名称',
+      title: '章节名称',
       dataIndex: 'title',
       width: '20%',
       render: (text, index) => {
@@ -71,7 +73,7 @@ const LecList = ({
       },
     },
     {
-      title: '小节链接',
+      title: '章节链接',
       dataIndex: 'link',
       width: '60%',
       render: (text, index) => {
@@ -85,7 +87,7 @@ const LecList = ({
       // valueType: 'option',
       render: (_, record) => (
         <>
-          <Link to="/course/chap-edit">编辑</Link>
+          <Link to={`/course/chap-edit/${record.key}`}>编辑</Link>
           <Button 
             type='link' 
             onClick={() => {
@@ -101,11 +103,11 @@ const LecList = ({
   return (
     <PageContainer>
       <ProTable
-        headerTitle='小节信息'
+        headerTitle='章节信息'
         search={false}
         toolBarRender={() => [
           <Button type='primary'>
-            <Link to='/course/chap-edit'>
+            <Link to='/course/chap-add'>
               <PlusOutlined />添加
             </Link>
           </Button>,
@@ -118,7 +120,7 @@ const LecList = ({
         title='提示'
         onOk={() => {
           setModalVisible(false)
-          deleteLecInfo(1)
+          deleteLecInfo()
         }}
         onCancel={() => {
           setModalVisible(false)

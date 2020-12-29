@@ -1,25 +1,38 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useMount } from 'react-use'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Table, Space, message, notification, Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import moment from 'moment'
+import formatTime from '@/utils/formatTime'
 import { connect } from 'umi'
-import MatchDetail from '@/pages/contest/components/MatchDetail'
+import MatchDetail from '@/pages/contest/student/MatchHistory/components/MatchDetail'
 
-const mapStateToProps = ({ Contest }) => ({
+const mapStateToProps = ({ Contest, user }) => ({
+  currentUser: user.currentUser,
+  // TODO: 修改courseId来源
+  courseId: Contest.courseId,
   dataSource: Contest.studentMatchHistory,
   matchDetail: Contest.studentMatchDetail,
 })
 
-const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }) => {
+const MatchHistory = ({
+  currentUser: { id: studentId = -1 } = {},
+  matchDetail = {},
+  dataSource = [],
+  courseId,
+  dispatch = () => {},
+}) => {
   const [tableLoading, setTableLoading] = useState(true)
   const [viewMode, setViewMode] = useState('table')
 
   useMount(() => {
     dispatch({
       type: 'Contest/fetchStudentMatchHistory',
+      payload: {
+        studentId,
+        courseId,
+      },
       onError: (err) => {
         notification.error({
           message: '获取比赛列表失败',
@@ -69,7 +82,7 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
         title: '测试时间',
         dataIndex: 'timeStamp',
         key: 'timeStamp',
-        render: (text) => <span>{moment(text).format('YYYY-MM-DD HH:mm')}</span>,
+        render: (text) => <span>{formatTime(text)}</span>,
       },
       {
         title: '排名',
@@ -124,8 +137,8 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
     content = (
       <MatchDetail
         title={matchDetail.title}
-        user={matchDetail.userId}
-        participants={matchDetail.participants}
+        user={currentUser}
+        rank={matchDetail.rank}
         questions={questions}
         score={matchDetail.score}
         extra={
@@ -139,7 +152,7 @@ const MatchHistory = ({ matchDetail = {}, dataSource = [], dispatch = () => {} }
     )
   }
 
-  return <PageContainer>{content}</PageContainer>
+  return <PageContainer title={false}>{content}</PageContainer>
 }
 
 export default connect(mapStateToProps)(MatchHistory)

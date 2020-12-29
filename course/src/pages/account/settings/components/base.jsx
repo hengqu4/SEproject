@@ -6,6 +6,14 @@ import GeographicView from './GeographicView'
 import PhoneView from './PhoneView'
 import styles from './BaseView.less'
 
+const checkPassword = (_, value, callback) => {
+  if (value.length < 6) {
+    callback('请输入密码！')
+  }
+
+  callback()
+}
+
 const { Option } = Select // 头像组件 方便以后独立，增加裁剪之类的功能
 
 const AvatarView = ({ avatar }) => (
@@ -24,34 +32,6 @@ const AvatarView = ({ avatar }) => (
     </Upload>
   </>
 )
-
-const validatorGeographic = (_, value, callback) => {
-  const { province, city } = value
-
-  if (!province.key) {
-    callback('Please input your province!')
-  }
-
-  if (!city.key) {
-    callback('Please input your city!')
-  }
-
-  callback()
-}
-
-const validatorPhone = (rule, value, callback) => {
-  const values = value.split('-')
-
-  if (!values[0]) {
-    callback('Please input your area code!')
-  }
-
-  if (!values[1]) {
-    callback('Please input your phone number!')
-  }
-
-  callback()
-}
 
 class BaseView extends Component {
   view = undefined
@@ -84,7 +64,12 @@ class BaseView extends Component {
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form layout='vertical' onFinish={this.handleFinish} initialValues={currentUser} hideRequiredMark>
+          <Form
+            layout='vertical'
+            onFinish={this.handleFinish}
+            initialValues={currentUser}
+            hideRequiredMark
+          >
             <Form.Item
               name='email'
               label='邮箱'
@@ -99,7 +84,7 @@ class BaseView extends Component {
             </Form.Item>
             <Form.Item
               name='name'
-              label='昵称'
+              label='真实姓名'
               rules={[
                 {
                   required: true,
@@ -110,76 +95,15 @@ class BaseView extends Component {
               <Input />
             </Form.Item>
             <Form.Item
-              name='profile'
-              label='个人简介'
+              name='password'
+              label='新密码'
               rules={[
                 {
-                  required: true,
-                  message: '请输入个人简介!',
+                  validator: checkPassword,
                 },
               ]}
             >
-              <Input.TextArea placeholder='个人简介' rows={4} />
-            </Form.Item>
-            <Form.Item
-              name='country'
-              label='国家/地区'
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的国家或地区!',
-                },
-              ]}
-            >
-              <Select
-                style={{
-                  maxWidth: 220,
-                }}
-              >
-                <Option value='China'>中国</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name='geographic'
-              label='所在省市'
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的所在省市!',
-                },
-                {
-                  validator: validatorGeographic,
-                },
-              ]}
-            >
-              <GeographicView />
-            </Form.Item>
-            <Form.Item
-              name='address'
-              label='街道地址'
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的街道地址!',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name='phone'
-              label='联系电话'
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的联系电话!',
-                },
-                {
-                  validator: validatorPhone,
-                },
-              ]}
-            >
-              <PhoneView />
+              <Input size='large' type='password' placeholder='至少6位密码，区分大小写' />
             </Form.Item>
             <Form.Item>
               <Button htmlType='submit' type='primary'>
@@ -196,6 +120,6 @@ class BaseView extends Component {
   }
 }
 
-export default connect(({ accountAndsettings }) => ({
-  currentUser: accountAndsettings.currentUser,
+export default connect(({ user }) => ({
+  currentUser: user.currentUser,
 }))(BaseView)

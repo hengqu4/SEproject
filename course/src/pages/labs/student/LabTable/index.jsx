@@ -1,10 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Input } from 'antd'
-import React, { useState, useRef } from 'react'
+import { Button, Divider, message, Input, notification } from 'antd'
+import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import { queryRule, updateRule, addRule, removeRule } from './service'
-import {Link} from 'react-router-dom'
+import { useMount } from 'react-use'
+import { connect,Link,history } from 'umi'
 import CreateForm from './components/CreateForm'
 import Authorized from '@/components/Authorized/Authorized';
 
@@ -30,16 +30,55 @@ const handleRemove = async (selectedRows) => {
     return false
   }
 }
+
 const noMatch = <div />;
 
-const TableList = () => {
+const handleStatus = (startTime,endTime)=> {
+  const nowTime = Date.now()
+  if(nowTime>startTime && nowTime<endTime){
+    return 1
+  }
+  else if(nowTime>=endTime){
+    return 2
+  }
+  return 0
+}
+
+const FormatData = (allLabsData) => {
+  const formattedLabList = []
+  for (let i = 0; i < allLabsData.length; i++) {
+    formattedLabList.push({
+      key: allLabsData[i].courseCaseId,
+      labTitle: [{ 
+        name: allLabsData[i].experimentName,
+        courseId: allLabsData[i].courseId,
+        courseCaseId: allLabsData[i].courseCaseId,
+      }],
+      // labTitle: allLabsData[i].experimentName,
+      caseName: allLabsData[i].experimentCaseName,
+      desc: allLabsData[i].experimentCaseDescription,
+      startTime: allLabsData[i].caseStartTimestamp,
+      endTime: allLabsData[i].caseEndTimestamp,
+      status: handleStatus(Date.parse(allLabsData[i].caseStartTimestamp),Date.parse(allLabsData[i].caseEndTimestamp)),
+    })
+  }
+  return formattedLabList
+}
+
+const AllLabCase = ({ lab }) => ({
+  isSuccess: lab.isSuccess,
+  allLabsData: lab.allLabCaseList,
+})
+
+const TableList = ({ allLabsData = [], dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
-  const columns = [
+
+  const columns  = [
     {
       title: '实验名称',
-      dataIndex: 'name',
+      dataIndex: 'labTitle',
       fieldProps: {
         rules: [
           {
@@ -48,18 +87,19 @@ const TableList = () => {
           },
         ],
       },
-      render: (dom) => {
-        return <Link to="/labs/lab">{dom}</Link>;
-      },
+      // <Link to={`/labs/lab?course=${item.courseId}&case=${item.courseCaseId}`}> {item.name}</Link>
+      render: (_, row) => row?.labTitle?.map(
+        (item) => <Link key="nameJumpLab" to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> {item.name}</Link>
+      ),
+
       align:'center',
     },
     {
-      title: '实验描述',
-      dataIndex: 'desc',
+      title: '案例名称',
+      dataIndex: 'caseName',
       valueType: 'textarea',
       ellipsis: true,
       search: false,
-      // copyable: true,
       align:'center',
     },
     {
@@ -68,20 +108,21 @@ const TableList = () => {
       hideInForm: true,
       valueEnum: {
         0: {
-          text: '关闭',
+          text: '未开始',
           status: 'Default',
         },
         1: {
           text: '进行中',
-          status: 'Warning',
+          status: 'Processing',
         },
         2: {
-          text: '已完成',
-          status: 'Success',
+          text: '已截止',
+          // status: 'Success',
+          status: 'Warning',
         },
         3: {
           text: '已批改',
-          status: 'Processing',
+          status: 'Warning',
         },
         4: {
           text: '未提交',
@@ -120,32 +161,39 @@ const TableList = () => {
     },
     {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'labTitle',
       valueType: 'option',
       search: false,
-      render: (_, record) => (
-        <>
-          <a 
-            href=''
-            // onClick={() => {
-            //   setStepFormValues(record)
-            // }}
-          >
-            <Link to="/labs/lab">
-              进入实验
-            </Link>
-          </a>
-        </>
+      render: (_, row) => row?.labTitle?.map(
+        (item) => <Link key="optionJumpLab" to={`/labs/lab/${item.courseId}/${item.courseCaseId}`}> 进入实验</Link>
       ),
     },
   ]
+
+  useMount(() => {
+    dispatch({
+      type: 'lab/fetchAllLabCase',
+      //  api/v1/experiment/course-cases/list/1
+      payload: 1,
+      onError: (err) => {
+        notification.error({
+          message: '获取实验列表失败',
+          description: err.message,
+        })
+      },
+    }).then(
+      console.log("allLabsData"),
+      console.log(allLabsData)
+    )
+  })
+
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <Authorized authority={['student']} noMatch={noMatch}>
       <ProTable
         actionRef={actionRef}
         rowKey='key'
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allLabsData)}
         columns={columns}
       />
       </Authorized>
@@ -156,13 +204,13 @@ const TableList = () => {
         rowKey='key'
         // pagination={false}
         toolBarRender={() => [
-          <Button
+          <Button key="publish"
             // onClick={() => handleJumpLab(true)}
           >
             <Link to="/labs/all">发布实验</Link>
           </Button>
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        dataSource={FormatData(allLabsData)}
         columns={columns}
         // 删除选中实验
         rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
@@ -201,4 +249,4 @@ const TableList = () => {
   )
 }
 
-export default TableList
+export default connect(AllLabCase)(TableList)

@@ -1,25 +1,28 @@
-import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX } from '@/url-prefixes'
+import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX, API_MATCH_PREFIX } from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
-import omit from 'lodash/omit'
+import { pick, omit } from 'lodash'
 
 export const fetchStudentMatchHistory = (query) => {
   return request('/matches', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
+  }).then((res) => {
+    console.log('fetchStudentMatchHistory: ', res)
+    return res
   })
 }
 
 export const fetchStudentMatchDetail = (params) => {
-  return request(SafeUrlAssembler('/matches/:matchId').param(params).toString(), {
+  return request(SafeUrlAssembler('/match/:matchId').param(params).toString(), {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
   })
 }
 
 export const fetchCurrentContest = (query) => {
-  return request(SafeUrlAssembler('/contest').toString(), {
+  return request('/contest', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
@@ -27,7 +30,7 @@ export const fetchCurrentContest = (query) => {
 }
 
 export const fetchQuestionList = (query) => {
-  return request('/questions', {
+  return request('/question', {
     method: 'GET',
     prefix: API_CONTEST_QUESTIONS_PREFIX,
     params: query,
@@ -61,7 +64,9 @@ export const updateQuestion = (data) => {
       .toString(),
     {
       method: 'PUT',
-      data: omit(data, ['questionId', 'oldType']),
+      data: {
+        question: omit(data, ['questionId', 'oldType']),
+      },
       prefix: API_CONTEST_QUESTIONS_PREFIX,
     },
   )
@@ -83,11 +88,13 @@ export const createContest = (data) => {
 }
 
 export const fetchAllContests = (query) => {
-  // TODO: 修改url
-  return request('/contest/all', {
+  return request('/contest/end', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
+  }).then((res) => {
+    console.log('fetchAllContests: ', res)
+    return res
   })
 }
 
@@ -102,18 +109,116 @@ export const fetchAllStudents = (query) => {
 
 export const fetchAllContestMatches = (query) => {
   // TODO: 修改url
-  return request('/matchesByContest', {
+  return request(
+    SafeUrlAssembler('/matches/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      prefix: API_CONTEST_PREFIX,
+      params: query,
+    },
+  ).then((res) => {
+    console.log('fetchAllContestMatches: ', res)
+    return res
+  })
+}
+
+export const fetchAllStudentMatches = (query) => {
+  // TODO: 修改url
+  return request('/matches/student', {
     method: 'GET',
     prefix: API_CONTEST_PREFIX,
     params: query,
   })
 }
 
-export const fetchAllStudentMatches = (query) => {
-  // TODO: 修改url
-  return request('/matchesByStudent', {
+export const startMatching = (data) => {
+  return request('/start', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const cancelMatching = (data) => {
+  return request('/cancel', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const fetchMatchingIndex = (query) => {
+  return request('/userindex', {
     method: 'GET',
-    prefix: API_CONTEST_PREFIX,
     params: query,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const readyMatch = (data) => {
+  return request('/ready', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const fetchMatchQuestions = (query) => {
+  return request(
+    SafeUrlAssembler('/contest/questions/student/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      params: query,
+      prefix: API_CONTEST_PREFIX,
+    },
+  )
+}
+
+export const fetchContestQuestions = (query) => {
+  return request(
+    SafeUrlAssembler('/contest/questions/teacher/:contestId')
+      .param(pick(query, ['contestId']))
+      .toString(),
+    {
+      method: 'GET',
+      params: query,
+      prefix: API_CONTEST_PREFIX,
+    },
+  )
+}
+
+export const fetchChannelId = (query) => {
+  return request('/channel', {
+    method: 'GET',
+    params: query,
+    prefix: API_MATCH_PREFIX,
+  })
+}
+
+export const fetchMatchId = (query) => {
+  return request('/matchId', {
+    method: 'GET',
+    params: query,
+    prefix: API_CONTEST_PREFIX,
+  })
+}
+
+export const fetchRandomQuestions = (query) => {
+  return request('/question/random', {
+    method: 'GET',
+    params: query,
+    prefix: API_CONTEST_QUESTIONS_PREFIX,
+  })
+}
+
+export const submitAnswers = (data) => {
+  return request('/submission', {
+    method: 'POST',
+    data,
+    prefix: API_MATCH_PREFIX,
   })
 }

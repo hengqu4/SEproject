@@ -2,12 +2,22 @@ import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
-import { useMount, useUnmount, use } from 'react-use'
-import { Table, Space, Popconfirm, Button, message, Select, Row, Col } from 'antd'
+import { useMount, useUnmount } from 'react-use'
+import { Table, Space, Popconfirm, Button, message, Select, Row, Col, Form, Input } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pick from 'lodash/pick'
 import onError from '@/utils/onError'
+import isInt from 'validator/es/lib/isInt'
+
+const isPosIntValidator = (value) => {
+  return isInt(`${value}`, { min: 0 }) ? Promise.resolve() : Promise.reject('需为大于等于0的整数')
+}
+
+const isPosIntOrEmptyValidator = (value) => {
+  if (value === undefined || `${value}`.length === 0) return Promise.resolve()
+  return isPosIntValidator(value)
+}
 
 const mapStateToProps = ({ Contest }) => ({
   dataSource: Contest.questions,
@@ -29,9 +39,10 @@ const QuestionBank = ({
   const [modalMode, setModalMode] = useState('readonly')
 
   const modalRef = useRef(null)
+  const [form] = Form.useForm(null)
 
   const getQuestions = useCallback(
-    (newPageNum, newPageSize, questionType) => {
+    (newPageNum, newPageSize) => {
       const pageNum = newPageNum || pagination.pageNum
       const pageSize = newPageSize || pagination.pageSize
 
@@ -41,7 +52,6 @@ const QuestionBank = ({
         payload: {
           pageNum,
           pageSize,
-          questionType,
         },
         onError,
         onFinish: () => {
@@ -154,8 +164,8 @@ const QuestionBank = ({
   )
 
   const handleFiltersChange = useCallback(
-    (filterName, value) => {
-      const newFilters = { ...filters, [filterName]: value }
+    (changedFilters) => {
+      const newFilters = { ...filters, ...changedFilters }
       setLoading(true)
       dispatch({
         type: 'Contest/setFiltersAndFetchQuestions',
@@ -166,6 +176,23 @@ const QuestionBank = ({
     },
     [dispatch, filters],
   )
+
+  const handleFormSubmit = useCallback(async () => {
+    try {
+      const values = await form.validateFields()
+
+      const chapterStart = values.from?.length ? +values.from : undefined
+      const chapterEnd = values.to?.length ? +values.to : undefined
+
+      if (chapterStart !== undefined && chapterEnd !== undefined && chapterEnd < chapterStart) {
+        return message.error('起始章节不能大于终止章节')
+      }
+
+      handleFiltersChange({ chapterStart, chapterEnd })
+    } catch (_) {
+      message.error('请正确填写表单项')
+    }
+  }, [handleFiltersChange, form])
 
   const columns = useMemo(
     () => [
@@ -211,29 +238,64 @@ const QuestionBank = ({
     () => ({
       ...pagination,
       onChange: getQuestions,
+      onShowSizeChange: getQuestions,
+      showSizeChanger: true,
       current: pagination.pageNum,
     }),
     [pagination, getQuestions],
   )
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProCard>
         <Row gutter={16}>
           <Col span={4}>
             <Select
-              allowClear
               defaultValue={filters.questionType}
               style={{ width: '100%' }}
-              onClear={() => handleFiltersChange('questionType', undefined)}
               placeholder='题目类型'
               onChange={(value) => {
-                handleFiltersChange('questionType', value)
+                handleFiltersChange({ questionType: value })
               }}
             >
               <Select.Option value={0}>单选</Select.Option>
               <Select.Option value={1}>多选</Select.Option>
             </Select>
+          </Col>
+          <Col span={16}>
+            <Form form={form} layout='inline'>
+              <Form.Item
+                label='起始章节'
+                name='from'
+                rules={[
+                  {
+                    validator(_, value) {
+                      return isPosIntOrEmptyValidator(value)
+                    },
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label='终止章节'
+                name='to'
+                rules={[
+                  {
+                    validator(_, value) {
+                      return isPosIntOrEmptyValidator(value)
+                    },
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item>
+                <Button type='primary' onClick={handleFormSubmit}>
+                  确认
+                </Button>
+              </Form.Item>
+            </Form>
           </Col>
           <Col span={4}>
             <Button type='primary' icon={<PlusOutlined />} onClick={handleCreateQuestionBtnClick}>
