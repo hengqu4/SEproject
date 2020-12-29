@@ -1,16 +1,74 @@
-import React from 'react'
-import { PageContainer } from '@ant-design/pro-layout'
-import { Button, Tag } from 'antd'
+import React, {useState} from 'react'
+import { PageContainer } from '@ant-design/pro-layout';
+import { Form, Tag, Button, } from 'antd';
+import { connect, useParams } from 'umi'
+import { useMount } from 'react-use';
+import {Link} from 'react-router-dom'
+import onError from '@/utils/onError';
+import { values } from 'lodash';
+import formatTime from '@/utils/formatTime'
 
-const data = {
-    key: '1',
-    title: '第一次作业',
-    content: '给妈妈洗脚并写一篇心得',
-    date: '2020.11.24',
-    owner: 'Dri',
+const mapStateToProps = ({ homework, Course, user }) => ({
+  hwList: homework.hwList,
+  info: homework.hwInfo,
+  courseId: Course.currentCourseInfo.courseId,
+  currentUser: user.currentUser,
+})
+
+const FormatDataInfo = (info) => {
+  const formattedHwInfo = {
+    homeworkTitle: "",
+    homeworkDescription: "",
+    startTime: "",
+    endTime: "",
+  }
+  formattedHwInfo.homeworkTitle = info.homeworkTitle
+  formattedHwInfo.homeworkDescription = info.homeworkDescription
+  formattedHwInfo.startTime = info.homeworkStartTimestamp
+  formattedHwInfo.endTime = info.homeworkEndTimestamp
+  return formattedHwInfo
+}
+
+const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
+  const params = useParams()
+  const [loading, setLoading] = useState(true)
+  const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
+
+
+  //获得当前作业列表
+  const getHwList = () => {
+    dispatch({
+      type: 'homework/fetchHwList',
+      payload: {
+        courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
   }
 
-const MatchHistory = (props) => {
+  //获得某作业信息
+  const getHwInfo = () => {
+    dispatch({
+      type: 'homework/fetchHwInfo',
+      payload: {
+        courseId, homeworkId,
+      }
+    })
+  }
+  
+  useMount(() => {
+    // getHwList()
+    getHwInfo()
+  })
+  
+  const data = {
+    title: FormatDataInfo(info).homeworkTitle,
+    des: FormatDataInfo(info).homeworkDescription,
+    endTime: formatTime(FormatDataInfo(info).homeworkEndTime),
+    owner: FormatDataInfo(info).homeworkDescription,
+  }
+
   return (
     <PageContainer>
       <div
@@ -23,12 +81,9 @@ const MatchHistory = (props) => {
           <h1 style={{paddingTop: '20px', fontSize: '20px', fontWeight: 'bold'}}>
             {data.title}
           </h1>
-          <Tag color="blue">{data.date}</Tag>
-          <Tag color="blue">{data.owner}</Tag>
-          <Button size='small' style={{fontSize: '10px', color: '#019cea'}}>编辑</Button>
-          {/* <a style={{fontSize: '10px'}}>编辑</a> */}
+          <Tag color="blue">截止日期 {data.endTime}</Tag>
           <p style={{marginTop: '30px'}}>
-            {data.content}
+            {data.des}
           </p>
         </div>
         
@@ -37,4 +92,4 @@ const MatchHistory = (props) => {
   )
 }
 
-export default MatchHistory
+export default connect(mapStateToProps)(HwInfo)

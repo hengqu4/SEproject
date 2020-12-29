@@ -1,8 +1,75 @@
-import React from 'react'
-import { PageContainer } from '@ant-design/pro-layout'
-import { Button, Tag } from 'antd'
+import React, { useRef, useState } from 'react'
+import { PageContainer } from '@ant-design/pro-layout';
+import { Input, Button, Table, Modal, Space } from 'antd'
+import formatTime from '@/utils/formatTime'
+import {connect, useParams} from 'umi'
+import {Link} from 'react-router-dom'
+import { useMount } from 'react-use';
+import onError from '@/utils/onError';
+import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons'
 
-const MatchHistory = (props) => {
+const mapStateToProps = ({ announcement, Course }) => ({
+  ancList: announcement.ancList,
+  info: announcement.ancInfo,
+  courseId: Course.currentCourseInfo.courseId,
+})
+
+const FormatDataInfo = (info) => {
+  const formattedHwInfo = {
+    announcementTitle: "",
+    announcementContents: "",
+    announcementIsPinned: true,
+  }
+  formattedHwInfo.announcementTitle = info.announcementTitle
+  formattedHwInfo.announcementContents = info.announcementContents
+  formattedHwInfo.isPinned = info.isPinned
+  console.log(formattedHwInfo)
+  return formattedHwInfo
+}
+
+const AncInfo = ({
+  info = {},
+  ancList = [],
+  dispatch = () => { },
+  courseId = courseId
+}) => {
+  const params = useParams()
+  const [loading, setLoading] = useState(true)
+  const [announcementId, setAnnouncementId ] = useState(params.announcementId)
+
+  //获得当前公告列表
+  const getAncList = () => {
+    dispatch({
+      type: 'announcement/fetchAncList',
+      payload: {
+        courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+   //获得某公告信息
+   const getAncInfo = () => {
+    dispatch({
+      type: 'announcement/fetchAncInfo',
+      payload: {
+        courseId, announcementId,
+      }
+    })
+  }
+
+  useMount(() => {
+    // getAncList()
+    getAncInfo()
+  })
+
+  const data = {
+    title: FormatDataInfo(info).announcementTitle,
+    des: FormatDataInfo(info).announcementContents,
+  }
+  
   return (
     <PageContainer>
       <div
@@ -13,14 +80,10 @@ const MatchHistory = (props) => {
       >
         <div style={{width: '90%', margin: 'auto'}}>
           <h1 style={{paddingTop: '20px', fontSize: '20px', fontWeight: 'bold'}}>
-            作业
+            {data.title}
           </h1>
-          <Tag color="blue">2020.11.24</Tag>
-          <Tag color="blue">Dri</Tag>
-          <Button size='small' style={{fontSize: '10px', color: '#019cea'}}>编辑</Button>
-          {/* <a style={{fontSize: '10px'}}>编辑</a> */}
           <p style={{marginTop: '30px'}}>
-          第一次作业发啦
+            {data.des}
           </p>
         </div>
         
@@ -29,4 +92,4 @@ const MatchHistory = (props) => {
   )
 }
 
-export default MatchHistory
+export default connect(mapStateToProps)(AncInfo)

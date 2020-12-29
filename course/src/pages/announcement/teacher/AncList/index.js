@@ -1,118 +1,149 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Tag, Space} from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Input, Button, Table, Modal, Space } from 'antd'
+import formatTime from '@/utils/formatTime'
+import {connect} from 'umi'
+import {Link} from 'react-router-dom'
+import { useMount } from 'react-use';
+import onError from '@/utils/onError';
+import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons'
 
-const { Search } = Input;
-const { Column } = Table;
+const mapStateToProps = ({ announcement, Course }) => ({
+  ancList: announcement.ancList,
+  courseId: Course.currentCourseInfo.courseId,
+})
 
-const onSearch = value => console.log(value);
+const FormatData = (ancList) => {
+  const formattedAncList = []
+  for (let i = 0; i < ancList.length; i++) {
+    formattedAncList.push({
+      key: ancList[i].announcementId,
+      title: ancList[i].announcementTitle,
+      des: ancList[i].announcementContents,
+      isPinned: ancList[i].announcementIsPinned,
+      createTime: formatTime(ancList[i].announcementPublishTime),
+      updateTime: formatTime(ancList[i].announcementLastUpdateTime),
+      creator: ancList[i].announcementSenderId,
+    })
+  }
+  return formattedAncList
+}
 
-const columns = [
+const AncList = ({
+  ancList = [],
+  dispatch = () => { },
+  courseId = courseId
+}) => {
+  const [loading, setLoading] = useState(true)
+  const [announcementId, setAnnouncementId ] = useState()
+  const [ modalVisible, setModalVisible ] = useState(false)
+  const ref = useRef()
+
+  //获得当前公告列表
+  const getAncList = () => {
+    dispatch({
+      type: 'announcement/fetchAncList',
+      payload: {
+        courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  //删除某公告
+  const deleteAncInfo = () => {
+    dispatch({
+      type: 'announcement/deleteAncInfo',
+      payload: {
+        courseId, announcementId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  useMount(() => {
+    getAncList()
+    //console.log(hwList)
+  })
+  
+  const columns = [
     {
-        title: '公告名称',
-        dataIndex: 'title',
-        key: '1',
-        render: (text, index) => {
-          return <a>{text}</a>
-        },
+      title: '公告名称',
+      dataIndex: 'title',
+      width: '20%',
+      render: (text, index) => {
+        return <a>{text}</a>
+      },
     },
     {
-        title: '公告内容',
-        dataIndex: 'content',
-        key: '2',
+      title: '公告内容',
+      dataIndex: 'des',
+      width: '30%',
     },
     {
       title: '发布者',
-      dataIndex: 'owner',
-      key: '3',
+      dataIndex: 'creator',
+      width: '15%',
     },
     {
-        title: '日期',
-        dataIndex: 'date',
-        key: '4',
+      title: '修改日期',
+      dataIndex: 'updateTime',
+      width: '15%',
     },
     {
-        title: '操作',
-        dataIndex: 'opr',
-        key: '5',
-        render: () => (
-            <Space size="middle">
-              <a href='http://localhost:8000/announcement/anc-list/anc-info'>查看详情</a>
-              <a href='http://localhost:8000/announcement/anc-list/anc-edit'>编辑</a>
-              <a>删除</a>
-            </Space>
-        ),
-    },
-];
+      title: '操作',
+      dataIndex: 'opr',
+      width: '15%',
+      render: (_, record) => (
+        <>
+          <Link to={`/announcement/anc-list/anc-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
+          <Link to={`/announcement/anc-list/anc-edit/${record.key}`}>编辑</Link>
+          <Button 
+            type='link' 
+            onClick={() => {
+              setModalVisible(true)
+              setAnnouncementId(record.key)
+            }}
+          >删除</Button>
+        </>
+      )
+    }
+  ]
 
-const data = [
-    {
-      key: '1',
-      title: '作业',
-      content: '第一次作业发啦',
-      date: '2020.11.24',
-      owner: 'Dri',
-    },
-    {
-      key: '2',
-      title: '作业',
-      content: '第二次作业发啦',
-      date: '2020.11.24',
-      owner: 'Dri',
-    },
-    {
-        key: '3',
-        title: '作业',
-        content: '第三次作业发啦',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-    {
-        key: '4',
-        title: '作业',
-        content: '第四次作业发啦',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-    {
-        key: '5',
-        title: '作业',
-        content: '第五次作业发啦',
-        date: '2020.11.24',
-        owner: 'Dri',
-    },
-];
-
-const Bread = () => {
-return (
+  return (
     <PageContainer>
-      <div
-        style={{
-          height: '100vh',
-          background: '#fff',
+      <ProTable
+        headerTitle='公告列表'
+        toolBarRender={() => [
+          <Button type='primary'>
+            <Link to='/announcement/anc-list/anc-add'>
+              <PlusOutlined />添加
+            </Link>
+          </Button>,
+        ]}
+        // actionRef={ref}
+        // search={false}
+        dataSource={FormatData(ancList)}
+        columns={columns}
+      />
+      <Modal 
+        visible={modalVisible}
+        title='提示'
+        onOk={() => {
+          setModalVisible(false)
+          deleteAncInfo()
+        }}
+        onCancel={() => {
+          setModalVisible(false)
         }}
       >
-        <div style={{paddingTop: '20px', marginLeft: '126px', width: '30%'}}>
-            <Search placeholder="" 
-                    onSearch={onSearch} 
-                    enterButton
-                    block='false' />
-              
-        </div>
-        <div style={{paddingTop: '20px', width: '100%', textAlign: 'center'}}>
-          <Button type="dashed" style={{width: '80%'}} onClick={() => {window.location.href="http://localhost:8000/announcement/anc-list/anc-edit"}}>
-             + 添加
-          </Button>
-        </div> 
-        <div style={{width: '100%', textAlign: 'center'}}>
-          <Table dataSource={data} columns={columns}
-                 style={{width: '80%', margin: 'auto'}}>
-          </Table>
-        </div>
-      </div>
+        <p>确认删除吗？</p>
+      </Modal>
     </PageContainer>
   )
 }
 
-export default Bread
+export default connect(mapStateToProps)(AncList)

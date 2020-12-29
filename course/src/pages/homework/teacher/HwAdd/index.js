@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Form, Input, Button, } from 'antd';
-import { connect, useParams } from 'umi'
+import { connect } from 'umi'
 import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
@@ -11,7 +11,6 @@ const { TextArea } = Input
 
 const mapStateToProps = ({ homework, Course, user }) => ({
   hwList: homework.hwList,
-  info: homework.hwInfo,
   courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
 })
@@ -33,8 +32,7 @@ const FormatData = (hwList) => {
   return formattedHwList
 }
 
-const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
-  const params = useParams()
+const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
   const [hwInfo, setLecInfo] = useState({
     homeworkTitle: "",
     homeworkDescription: "",
@@ -42,22 +40,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     homeworkEndTime: "",
   })
   const [loading, setLoading] = useState(true)
-  const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
   const [form] = Form.useForm()
-
-  // const FormatData = (hwList) => {
-  //   const formattedLecInfo = {}
-  //   for (let i = 0; i < hwList.length; i++) {
-  //     if (hwList[i].homeworkId === homeworkId) {
-  //       formattedLecInfo.homeworkTitle = hwList[i].homeworkTitle
-  //       formattedLecInfo.homeworkDescription = hwList[i].homeworkDescription
-  //       formattedLecInfo.startTime = hwList[i].startTime
-  //       formattedLecInfo.endTime = hwList[i].endTime
-  //       break
-  //     }
-  //   }
-  //   return formattedLecInfo
-  // }
 
   //获得当前作业列表
   const getHwList = () => {
@@ -71,42 +54,36 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     })
   }
 
-  //修改某作业信息
-  const modifyHwInfo = () => {
+  //新建某作业信息
+  const addHwInfo = () => {
+    console.log(hwInfo)
+    // console.log(currentUser)
     dispatch({
-      type: 'homework/modifyHwInfo',
+      type: 'homework/addHwInfo',
       payload: {
-        courseId, homeworkId, hwInfo,
-      }
-    })
-  }
-
-  //获得某作业信息
-  const getHwInfo = () => {
-    dispatch({
-      type: 'homework/fetchHwInfo',
-      payload: {
-        courseId, homeworkId,
-      }
+        courseId, hwInfo,
+      },
+      onFinish: setLoading.bind(this, false),
     })
   }
 
   useMount(() => {
     getHwList()
-    getHwInfo()
-    // info = FormatData(hwList)
-    // console.log(params.courseChapterId)
-    // console.log(courseId)
-    console.log(info)
   })
+
+  const onChange = (value) => {
+    console.log(value)
+    lecInfo.courseChapterTitle = value
+  }
 
   const handleHwInfo = () => {
     hwInfo.homeworkTitle = form.getFieldValue('title')
     hwInfo.homeworkDescription = form.getFieldValue('des')
     hwInfo.homeworkStartTime = new Date(form.getFieldValue('startTime')).toISOString()
     hwInfo.homeworkEndTime = new Date(form.getFieldValue('endTime')).toISOString()
-    // console.log(hwInfo.homeworkTitle)
-    modifyHwInfo();
+    // console.log(hwInfo.homeworkCreateTime)
+    // console.log(hwList)
+    addHwInfo();
   }
 
   return (
@@ -121,7 +98,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
         <Form
           form={form}
           name="basic"
-          initialValues={{ remember: true, title: info.homeworkTitle }}
+          initialValues={{ remember: true }}
         >
           <Form.Item
             label="作业名称"
@@ -137,9 +114,9 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入内容！' }]}
           >
-            <TextArea />
-            </Form.Item>
-            <Form.Item
+              <TextArea />
+          </Form.Item>
+          <Form.Item
             label="开始日期"
             name="startTime"
             style={{width: '80%'}}
@@ -155,6 +132,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
           >
             <Input placeholder="注意格式为xxxx-xx-xx"/>
           </Form.Item>
+          {/* </Form><Form.Item {...tailLayout}> */}
           <Form.Item>
             <Button>
               <Link to='/homework/hw-list'>

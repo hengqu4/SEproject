@@ -1,71 +1,136 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
+import {connect} from 'umi'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Space} from 'antd'
+import {Button, Modal} from 'antd'
+import {Link} from 'react-router-dom'
+import { useMount } from 'react-use';
+import onError from '@/utils/onError';
+import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons'
 
-const { Column } = Table;
+const mapStateToProps = ({ lecture, Course }) => ({
+  lecList: lecture.lecList,
+  courseId: Course.currentCourseInfo.courseId,
+})
 
-const data = [
-    {
-      key: '1',
-      title: '第一节',
-      content: 'https://www.icourse163.org/course/TONGJI-284001',
-    },
-    {
-      key: '1',
-      title: '第二节',
-      content: 'https://www.icourse163.org/course/TONGJI-284001',
-    },
-    {
-        key: '1',
-        title: '第三节',
-        content: 'https://www.icourse163.org/course/TONGJI-284001',
-    },
-    {
-        key: '1',
-        title: '第四节',
-        content: 'https://www.icourse163.org/course/TONGJI-284001',
-    },
-    {
-        key: '1',
-        title: '第五节',
-        content: 'https://www.icourse163.org/course/TONGJI-284001',
-    },
-];
+const FormatData = (lecList) => {
+  const formattedLecList = []
+  for (let i = 0; i < lecList.length; i++) {
+    formattedLecList.push({
+      key: lecList[i].courseChapterId,
+      title: lecList[i].courseChapterTitle,
+      link: lecList[i].courseChapterMoocLink,
+    })
+  }
+  return formattedLecList
+}
 
-const Bread = () => {
-return (
+const LecList = ({
+  lecList = [],
+  dispatch = () => { },
+  courseId = courseId
+}) => {
+  const [loading, setLoading] = useState(true)
+  const [id, setId ] = useState()
+  const [ modalVisible, setModalVisible ] = useState(false)
+  const ref = useRef()
+
+  //获得当前章节信息列表
+  const getLecList = () => {
+    dispatch({
+      type: 'lecture/fetchLecList',
+      payload: {
+        courseId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  //删除某章节信息
+  const deleteLecInfo = () => {
+    dispatch({
+      type: 'lecture/deleteLecInfo',
+      payload: {
+        courseId, id,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  useMount(() => {
+    getLecList()
+  })
+  
+  const columns = [
+    {
+      title: '章节名称',
+      dataIndex: 'title',
+      width: '20%',
+      render: (text, index) => {
+        return <a>{text}</a>
+      },
+    },
+    {
+      title: '章节链接',
+      dataIndex: 'link',
+      width: '60%',
+      render: (text, index) => {
+        return <a href={text}>{text}</a>
+      },
+    },
+    {
+      title: '操作',
+      dataIndex: 'opr',
+      width: '20%',
+      // valueType: 'option',
+      render: (_, record) => (
+        <>
+          <Link to={`/course/chap-edit/${record.key}`}>编辑</Link>
+          <Button 
+            type='link' 
+            onClick={() => {
+              setModalVisible(true)
+              setId(record.key)
+            }}
+          >删除</Button>
+        </>
+      )
+    }
+  ]
+
+  return (
     <PageContainer>
-      <div
-        style={{
-          height: '100vh',
-          background: '#fff',
+      <ProTable
+        headerTitle='章节信息'
+        toolBarRender={() => [
+          <Button type='primary'>
+            <Link to='/course/chap-add'>
+              <PlusOutlined />添加
+            </Link>
+          </Button>,
+        ]}
+        // actionRef={ref}
+        // search={false}
+        dataSource={FormatData(lecList)}
+        columns={columns}
+      />
+      <Modal 
+        visible={modalVisible}
+        title='提示'
+        onOk={() => {
+          setModalVisible(false)
+          deleteLecInfo()
+        }}
+        onCancel={() => {
+          setModalVisible(false)
         }}
       >
-        <div style={{ width: '100%', textAlign: 'center', paddingTop: '40px' }}>
-          <Table dataSource={data} style={{ width: '80%', margin: 'auto'}}>
-            <Column title='小节名称' dataIndex='title' key='title' />
-            <Column
-            title= '小节链接'
-            key='content'
-            render={dataSource => (
-              <Space size="middle">
-                <a href={dataSource.content}>{dataSource.content}</a>
-              </Space>
-            )} />
-            <Column
-              title='操作'
-              key='opr'
-              render={() => (
-                <a href='http://localhost:8000/course/ed-chap'>
-                  编辑
-                </a>
-              )}
-            />
-          </Table>
-        </div>
-      </div>
+        <p>确认删除吗？</p>
+      </Modal>
     </PageContainer>
   )
 }
 
-export default Bread
+export default connect(mapStateToProps)(LecList)
