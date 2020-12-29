@@ -17,7 +17,7 @@ const mapStateToProps = ({ Contest, user }) => ({
 })
 
 const MatchHistory = ({
-  currentUser: { id: studentId = -1 } = {},
+  currentUser = {},
   matchDetail = {},
   dataSource = [],
   courseId,
@@ -30,7 +30,7 @@ const MatchHistory = ({
     dispatch({
       type: 'Contest/fetchStudentMatchHistory',
       payload: {
-        studentId,
+        studentId: currentUser.id,
         courseId,
       },
       onError: (err) => {
@@ -56,6 +56,7 @@ const MatchHistory = ({
           type: 'Contest/fetchStudentMatchDetail',
           payload: {
             matchId,
+            studentId: currentUser.id,
           },
           onSuccess: setViewMode.bind(this, 'detail'),
           onError: (err) => {
@@ -68,7 +69,7 @@ const MatchHistory = ({
         })
       }
     },
-    [matchDetail, dispatch],
+    [matchDetail, dispatch, currentUser],
   )
 
   const columns = useMemo(
