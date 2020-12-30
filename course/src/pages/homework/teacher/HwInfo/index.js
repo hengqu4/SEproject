@@ -65,6 +65,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
   const data = {
     title: FormatDataInfo(info).homeworkTitle,
     des: FormatDataInfo(info).homeworkDescription,
+    startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
     endTime: formatTime(FormatDataInfo(info).homeworkEndTime),
     owner: FormatDataInfo(info).homeworkDescription,
   }
@@ -81,6 +82,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
           <h1 style={{paddingTop: '20px', fontSize: '20px', fontWeight: 'bold'}}>
             {data.title}
           </h1>
+          <Tag color="blue">开始日期 {data.startTime}</Tag>
           <Tag color="blue">截止日期 {data.endTime}</Tag>
           <p style={{marginTop: '30px'}}>
             {data.des}
