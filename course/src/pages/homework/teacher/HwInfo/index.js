@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Form, Tag, Button, } from 'antd';
+import { Upload, Tag, Button, Divider } from 'antd';
 import { connect, useParams } from 'umi'
 import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
 import { values } from 'lodash';
 import formatTime from '@/utils/formatTime'
+import { UploadOutlined } from '@ant-design/icons';
 
 const mapStateToProps = ({ homework, Course, user }) => ({
   hwList: homework.hwList,
@@ -67,6 +68,7 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     des: FormatDataInfo(info).homeworkDescription,
     startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
     endTime: formatTime(FormatDataInfo(info).homeworkEndTime),
+    startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
     owner: FormatDataInfo(info).homeworkDescription,
   }
 
@@ -87,6 +89,12 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
           <p style={{marginTop: '30px'}}>
             {data.des}
           </p>
+        </div>
+        <div style={{ paddingLeft: '60px', paddingTop: '100px' }}>
+          <Divider />
+          <Upload name="logo" action="/upload.do" listType="picture">
+          <Button type='primary' icon={<UploadOutlined />}>上传文件</Button>
+        </Upload>
         </div>
         
       </div>

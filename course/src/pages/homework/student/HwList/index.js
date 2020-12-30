@@ -69,6 +69,10 @@ const HwList = ({
     getHwList()
     console.log(hwList)
   })
+
+  const data = {
+    grade: 100
+  }
   
   const columns = [
     {
@@ -98,6 +102,12 @@ const HwList = ({
       title: '截止日期',
       dataIndex: 'endTime',
       width: '15%',
+    },
+    {
+      title: '分数',
+      dataIndex: 'grade',
+      width: '5%',
+      data: {data},
     },
     {
       title: '操作',
