@@ -90,13 +90,6 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
             {data.des}
           </p>
         </div>
-        <div style={{ paddingLeft: '60px', paddingTop: '100px' }}>
-          <Divider />
-          <Upload name="logo" action="/upload.do" listType="picture">
-          <Button type='primary' icon={<UploadOutlined />}>上传文件</Button>
-        </Upload>
-        </div>
-        
       </div>
     </PageContainer>
   )
