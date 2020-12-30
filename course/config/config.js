@@ -204,6 +204,13 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
                     },
                     {
+                      name: '作业详情',
+                      path: '/homework/hw-ls/hw-info/:homeworkId',
+                      hideInMenu: true,
+                      component: './homework/student/HwInfo',
+                      authority: ['student'],
+                    },
+                    {
                       name: '新建作业详情',
                       path: '/homework/hw-list/hw-add',
                       hideInMenu: true,
