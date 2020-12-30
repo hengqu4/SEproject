@@ -415,6 +415,7 @@ export default defineConfig({
                       name: '编辑文件',
                       path: '/file/file-edit',
                       component: './file/teacher/FileEdit',
+                      authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
