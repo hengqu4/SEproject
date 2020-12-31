@@ -1,6 +1,9 @@
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import {Input, Button, Table, Tag, Space} from 'antd';
+import { Input, Button, Table, Tag, Space } from 'antd';
+import ProTable from '@ant-design/pro-table';
+import { Link } from 'react-router-dom'
+import { PlusOutlined } from '@ant-design/icons'
 
 const { Search } = Input;
 const { Column } = Table;
@@ -53,50 +56,65 @@ const columns = [
 const data = [
     {
       key: '1',
-      name: '作业',
-      note: '第一次',
+      name: '济南市不合格',
+      note: 'OK及格吗',
       size: '1',
       owner: 'Dri',
       date: '2020.11.24',
     },
     {
       key: '2',
-      name: '作业??????',
-      note: '第一次作业发啦',
+      name: '消防车',
+      note: '；朋友聊天看静宁都比',
       size: '1',
       owner: 'Dri',
       date: '2020.11.24',
     },
     {
       key: '3',
-      name: '作业',
-      note: '发啦',
+      name: '幸福的',
+      note: '你的儿阿尔哈',
       size: '1',
       owner: 'Dri',
       date: '2020.11.24',
     },
     {
       key: '4',
-      name: '作业',
-      note: '第一次作业发啦',
+      name: '每句话',
+      note: '艾特我也就',
       size: '1',
       owner: 'Dri',
       date: '2020.11.24',
     },
     {
       key: '5',
-      name: '作业',
-      note: '第一次作业发啦',
+      name: '吃个饭',
+      note: '请问大哥等一哈',
       size: '1',
       owner: 'Dri',
       date: '2020.11.24',
     },
 ];
 
+//“添加"按钮的链接、dataSource、columns待改
 const Bread = () => {
     return (
-        <PageContainer>
-          <div
+      <PageContainer>
+        <ProTable
+        headerTitle='文件列表'
+        toolBarRender={() => [
+          <Button type='primary'>
+            <Link to='/announcement/anc-list/anc-add'>
+              <PlusOutlined />添加
+            </Link>
+          </Button>,
+        ]}
+        // actionRef={ref}
+        // search={false}
+        dataSource={data}
+        columns={columns}
+      />
+          {/* <div
             style={{
               height: '100vh',
               background: '#fff',
@@ -119,7 +137,7 @@ const Bread = () => {
                      style={{width: '80%', margin: 'auto'}}>
               </Table>
             </div>
-          </div>
+          </div> */}
         </PageContainer>
       )
     }
