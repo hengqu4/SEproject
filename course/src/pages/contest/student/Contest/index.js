@@ -11,7 +11,8 @@ import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWeb
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
 import MatchingStatus from './matchingStatus'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, user, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
   currentContest: Contest.currentContest,
   participated: Contest.participated,
@@ -27,6 +28,7 @@ const Contest = ({
   participating = false,
   participated = false,
   channelId = null,
+  courseId,
   status,
   userIndex,
   dispatch = () => {},
@@ -40,7 +42,7 @@ const Contest = ({
       type: 'Contest/fetchCurrentContest',
       isTeacher: false,
       payload: {
-        courseId: 1,
+        courseId,
         userId: currentUser.id,
       },
       onError: (err) => {

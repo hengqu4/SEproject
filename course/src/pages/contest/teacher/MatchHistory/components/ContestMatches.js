@@ -5,13 +5,15 @@ import onError from '@/utils/onError'
 import formatTime from '@/utils/formatTime'
 import { useMount } from 'react-use'
 
-const mapStateToProps = ({ Contest = {} }) => ({
+const mapStateToProps = ({ Contest = {}, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   contests: Contest.contests,
   contestMatches: Contest.contestMatches,
   contestMatchesPagination: Contest.contestMatchesPagination,
 })
 
 const ContestMatches = ({
+  courseId = -1,
   contests = [],
   contestMatches = [],
   contestMatchesPagination = {},
@@ -23,9 +25,6 @@ const ContestMatches = ({
 
   useMount(() => {
     setContestsLoading(true)
-
-    // TODO: 获取courseId
-    const courseId = 1
 
     dispatch({
       type: 'Contest/fetchAllContests',
@@ -39,18 +38,20 @@ const ContestMatches = ({
 
   const onPanelChange = useCallback(
     (contestId) => {
-      setMatchesLoading(true)
-      setCurrContestId(contestId)
-      dispatch({
-        type: 'Contest/fetchContestMatches',
-        payload: {
-          pageNum: 1,
-          pageSize: 5,
-          contestId,
-        },
-        onError,
-        onFinish: setMatchesLoading(this, false),
-      })
+      if (contestId) {
+        setMatchesLoading(true)
+        setCurrContestId(contestId)
+        dispatch({
+          type: 'Contest/fetchContestMatches',
+          payload: {
+            pageNum: 1,
+            pageSize: 5,
+            contestId,
+          },
+          onError,
+          onFinish: setMatchesLoading(this, false),
+        })
+      }
     },
     [dispatch],
   )

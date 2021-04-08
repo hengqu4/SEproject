@@ -8,10 +8,9 @@ import formatTime from '@/utils/formatTime'
 import { connect } from 'umi'
 import MatchDetail from '@/pages/contest/student/MatchHistory/components/MatchDetail'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, Course, user }) => ({
   currentUser: user.currentUser,
-  // TODO: 修改courseId来源
-  courseId: Contest.courseId,
+  courseId: Course.currentCourseInfo.courseId,
   dataSource: Contest.studentMatchHistory,
   matchDetail: Contest.studentMatchDetail,
 })
@@ -20,7 +19,7 @@ const MatchHistory = ({
   currentUser = {},
   matchDetail = {},
   dataSource = [],
-  courseId,
+  courseId = -1,
   dispatch = () => {},
 }) => {
   const [tableLoading, setTableLoading] = useState(true)

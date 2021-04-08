@@ -7,13 +7,15 @@ import { useMount } from 'react-use'
 import ModalStudentMatches from '@/pages/contest/teacher/MatchHistory/components/ModalStudentMatches'
 import classes from '@/pages/contest/teacher/MatchHistory/style.less'
 
-const mapStateToProps = ({ Contest }) => ({
+const mapStateToProps = ({ Contest, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   students: Contest.students,
   studentsPagination: Contest.studentsPagination,
   studentMatches: Contest.studentMatches,
 })
 
 const StudentMatches = ({
+  courseId = -1,
   students = [],
   studentsPagination = {},
   studentMatches = [],
@@ -28,9 +30,6 @@ const StudentMatches = ({
     (pageNum, pageSize) => {
       setStudentsLoading(true)
 
-      // TODO: 获取courseId
-      const courseId = 1
-
       dispatch({
         type: 'Contest/fetchStudents',
         payload: {
@@ -42,7 +41,7 @@ const StudentMatches = ({
         onFinish: setStudentsLoading.bind(this, false),
       })
     },
-    [dispatch],
+    [dispatch, courseId],
   )
 
   useMount(() => {
@@ -51,9 +50,6 @@ const StudentMatches = ({
 
   const handleViewStudentMatches = useCallback(
     (student) => {
-      // TODO: 获取课程id
-      const courseId = 1
-
       const dismiss = message.info('正在加载该学生的比赛信息')
       setCurrStudent(student)
       dispatch({
@@ -69,7 +65,7 @@ const StudentMatches = ({
         },
       })
     },
-    [dispatch],
+    [dispatch, courseId],
   )
 
   const pagination = useMemo(

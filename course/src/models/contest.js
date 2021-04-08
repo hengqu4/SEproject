@@ -34,9 +34,6 @@ const defaultFilter = {
 }
 
 const defaultState = {
-  studentId: 3,
-  courseId: 1,
-  teacherId: 2,
   avatar: 'www.baidu.com',
   studentMatchHistory: [],
   studentMatchDetail: {},
@@ -125,7 +122,7 @@ const effects = {
     const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
     // TODO: 添加课程Id
-    const courseId = yield select((state) => state.Contest.courseId)
+    const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
     const publisherId = yield select((state) => state.user.currentUser.id)
 
     const newContestCopy = cloneDeep(newContest)
@@ -423,7 +420,7 @@ const effects = {
   clearMatchStatus: generateEffect(function* (_, { call, put, select }) {
     const [userId, courseId] = yield [
       select((s) => s.user.currentUser.id),
-      select((s) => s.Contest.courseId),
+      select((s) => s.Course.currentCourseInfo.courseId),
     ]
 
     const {

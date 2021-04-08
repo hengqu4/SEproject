@@ -12,7 +12,8 @@ import { useMount } from 'react-use'
 import omit from 'lodash/omit'
 import onError from '@/utils/onError'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, Course, user }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
   newContest: Contest.newContest,
   questionDetail: Contest.questionDetail,
@@ -28,6 +29,7 @@ const stepsDom = stepTitles.map((title) => <Steps.Step title={title} key={title}
 export const Match = ({
   currentUser: { id: userId = -1 } = {},
   newContest = {},
+  courseId = -1,
   questionDetail = {},
   selectedQuestions = [],
   currentContest = {},
@@ -45,13 +47,13 @@ export const Match = ({
       type: 'Contest/fetchCurrentContest',
       isTeacher: true,
       payload: {
-        courseId: 1,
+        courseId,
         userId,
       },
       onError,
       onFinish: setLoading.bind(this, false),
     })
-  }, [dispatch, userId])
+  }, [dispatch, userId, courseId])
 
   useMount(() => {
     getCurrentContest()
