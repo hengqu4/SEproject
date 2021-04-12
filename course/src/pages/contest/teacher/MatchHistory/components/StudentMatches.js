@@ -1,9 +1,8 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react'
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { connect } from 'umi'
 import { List, Avatar, Card, Space, message } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 import onError from '@/utils/onError'
-import { useMount } from 'react-use'
 import ModalStudentMatches from '@/pages/contest/teacher/MatchHistory/components/ModalStudentMatches'
 import classes from '@/pages/contest/teacher/MatchHistory/style.less'
 
@@ -44,9 +43,9 @@ const StudentMatches = ({
     [dispatch, courseId],
   )
 
-  useMount(() => {
+  useEffect(() => {
     getStudents(1, 24)
-  })
+  }, [getStudents])
 
   const handleViewStudentMatches = useCallback(
     (student) => {

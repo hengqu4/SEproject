@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Steps, Row, Col, message } from 'antd'
@@ -8,7 +8,6 @@ import ConfirmCreateQuestion from '@/pages/contest/teacher/CreateContest/compone
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
 import { connect } from 'umi'
-import { useMount } from 'react-use'
 import omit from 'lodash/omit'
 import onError from '@/utils/onError'
 
@@ -55,9 +54,7 @@ export const Match = ({
     })
   }, [dispatch, userId, courseId])
 
-  useMount(() => {
-    getCurrentContest()
-  })
+  useEffect(getCurrentContest, [getCurrentContest])
 
   const getQuestionDetail = useCallback(
     ({ questionId, questionType }) => {
@@ -82,7 +79,7 @@ export const Match = ({
   const onStepChange = async (newStep) => {
     if (step === 0) {
       try {
-        const values = await basicInfoFormRef.current.validateFileds()
+        const values = await basicInfoFormRef.current.validateFields()
         const contestInfo = { ...values }
         contestInfo.startTime = values.time[0].toISOString(true)
         contestInfo.endTime = values.time[1].toISOString(true)

@@ -1,10 +1,12 @@
 import useWebSocket from 'react-use-websocket'
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import onError from '@/utils/onError'
-import { notification, Avatar, Image } from 'antd'
+import { notification } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
-import { host, port } from '../../../../../../config/config'
+
+const host = '10.20.30.90'
+const port = 18080
 
 const useMatchWebSocket = ({
   studentId,
@@ -141,6 +143,8 @@ const useMatchWebSocket = ({
   useWebSocket(socketUrl, {
     onOpen,
     onMessage,
+    onError: clearStatus,
+    onClose: clearStatus,
   })
 }
 

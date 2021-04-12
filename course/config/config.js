@@ -3,7 +3,7 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
 
-export const host = 'localhost'
+export const host = '10.20.30.90'
 export const port = 8000
 
 export default defineConfig({
@@ -296,7 +296,7 @@ export default defineConfig({
                   name: '对抗系统',
                   icon: 'aim',
                   path: '/contest',
-                  authority: ['teacher', 'student'],
+                  authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
                   routes: [
                     {
                       name: '历史记录',
@@ -314,19 +314,19 @@ export default defineConfig({
                       name: '查看成绩',
                       path: '/contest/match-history',
                       component: './contest/teacher/MatchHistory',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '创建比赛',
                       path: '/contest/create-contest',
                       component: './contest/teacher/CreateContest',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '对抗题库',
                       path: '/contest/questions-bank',
                       component: './contest/teacher/QuestionBank',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -458,4 +458,5 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  mock: false,
 });

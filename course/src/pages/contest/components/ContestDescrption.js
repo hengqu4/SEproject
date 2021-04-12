@@ -14,6 +14,7 @@ const ContestDescription = ({ contest = {}, onShowQuestionDetail = () => {} }) =
               renderItem={(question) => (
                 <List.Item
                   actions={[
+                    /* eslint-disable-next-line */
                     <Button type='link' onClick={onShowQuestionDetail.bind(this, question)}>
                       详情
                     </Button>,
@@ -29,7 +30,7 @@ const ContestDescription = ({ contest = {}, onShowQuestionDetail = () => {} }) =
     }
 
     return null
-  }, [contest])
+  }, [contest, onShowQuestionDetail])
 
   return (
     <Descriptions

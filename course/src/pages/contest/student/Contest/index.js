@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { useMount, useUnmount } from 'react-use'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { notification, Spin, Row, Col, Button } from 'antd'
 import ProCard from '@ant-design/pro-card'
@@ -36,25 +35,6 @@ const Contest = ({
   const [loading, setLoading] = useState(false)
   const reconnectRef = useRef(false)
 
-  useMount(() => {
-    setLoading(true)
-    dispatch({
-      type: 'Contest/fetchCurrentContest',
-      isTeacher: false,
-      payload: {
-        courseId,
-        userId: currentUser.id,
-      },
-      onError: (err) => {
-        notification.error({
-          message: '获取比赛信息失败',
-          description: err.message,
-        })
-      },
-      onFinish: setLoading.bind(this, false),
-    })
-  })
-
   const clearStatus = useCallback(() => {
     dispatch({
       type: 'Contest/setMatchingStatus',
@@ -71,7 +51,32 @@ const Contest = ({
     })
   }, [dispatch])
 
+  useEffect(() => {
+    setLoading(true)
+    dispatch({
+      type: 'Contest/fetchCurrentContest',
+      isTeacher: false,
+      payload: {
+        courseId,
+        userId: currentUser.id,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取比赛信息失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+
+    return clearStatus
+  }, [clearStatus, dispatch, courseId, currentUser])
+
   const handleCancelMatching = useCallback(() => {
+    if ([MatchingStatus.IDLE, MatchingStatus.SEARCHING_ROOM].includes(status)) {
+      clearStatus()
+      return
+    }
     dispatch({
       type: 'Contest/cancelMatching',
       payload: {
@@ -81,11 +86,7 @@ const Contest = ({
       onError,
       onFinish: clearStatus,
     })
-  }, [clearStatus, dispatch, channelId, currentUser])
-
-  useUnmount(() => {
-    clearStatus()
-  })
+  }, [clearStatus, dispatch, channelId, currentUser, status])
 
   useMatchWebSocket({
     studentId: currentUser.id,

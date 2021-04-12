@@ -81,6 +81,8 @@ const effects = {
   fetchCurrentContest: generateEffect(function* ({ isTeacher, payload }, { call, put }) {
     const res = yield call(ContestServices.fetchCurrentContest, payload)
 
+    console.log('fetchCurrentContest: ', res)
+
     const { contest, bIsParticipated, bIsParticipating } = res
 
     if (isTeacher && contest?.contestId) {

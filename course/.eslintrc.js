@@ -8,14 +8,13 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': 2,
-    'no-unused-vars': 0,
-    '@typescript-eslint/no-unused-vars': [
+    'no-unused-vars': [
       1,
       {
         varsIgnorePattern: '^_',
       },
     ],
-    '@typescript-eslint/no-unused-expressions': [
+    'no-unused-expressions': [
       2,
       {
         allowShortCircuit: true,

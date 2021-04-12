@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { Collapse, Table, Row, Col, Space, Badge, Avatar, Spin } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 import formatTime from '@/utils/formatTime'
-import { useMount } from 'react-use'
 
 const mapStateToProps = ({ Contest = {}, Course }) => ({
   courseId: Course.currentCourseInfo.courseId,
@@ -23,7 +22,7 @@ const ContestMatches = ({
   const [matchesLoading, setMatchesLoading] = useState(false)
   const [currContestId, setCurrContestId] = useState()
 
-  useMount(() => {
+  useEffect(() => {
     setContestsLoading(true)
 
     dispatch({
@@ -34,7 +33,7 @@ const ContestMatches = ({
       onError,
       onFinish: setContestsLoading.bind(this, false),
     })
-  })
+  }, [dispatch, courseId])
 
   const onPanelChange = useCallback(
     (contestId) => {

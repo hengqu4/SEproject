@@ -112,13 +112,10 @@ const QuestionBank = ({
     [getQuestionDetail],
   )
 
-  const handleCreateQuestionBtnClick = useCallback(
-    (event) => {
-      setModalMode('create')
-      modalRef && modalRef.current.open()
-    },
-    [modalRef],
-  )
+  const handleCreateQuestionBtnClick = useCallback(() => {
+    setModalMode('create')
+    modalRef && modalRef.current.open()
+  }, [modalRef])
 
   const handleDeleteQuestion = useCallback(
     (question, event) => {

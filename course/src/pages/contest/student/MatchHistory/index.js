@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { useMount } from 'react-use'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Table, Space, message, notification, Button } from 'antd'
@@ -25,7 +24,7 @@ const MatchHistory = ({
   const [tableLoading, setTableLoading] = useState(true)
   const [viewMode, setViewMode] = useState('table')
 
-  useMount(() => {
+  useEffect(() => {
     dispatch({
       type: 'Contest/fetchStudentMatchHistory',
       payload: {
@@ -40,7 +39,7 @@ const MatchHistory = ({
       },
       onFinish: setTableLoading.bind(this, false),
     })
-  })
+  }, [dispatch, courseId, currentUser])
 
   const handleViewMatchDetail = useCallback(
     (matchId, event) => {
@@ -88,7 +87,7 @@ const MatchHistory = ({
         title: '排名',
         key: 'rank',
         dataIndex: 'rank',
-        render: (text, record, index) => <span>{`${text} / ${record.participantNumber}`}</span>,
+        render: (text, record) => <span>{`${text} / ${record.participantNumber}`}</span>,
       },
       {
         title: '分数',
@@ -104,7 +103,7 @@ const MatchHistory = ({
       {
         title: '操作',
         key: 'action',
-        render: (text, record, index) => (
+        render: (text, record) => (
           <Space size='middle'>
             <a onClick={handleViewMatchDetail.bind(this, record.matchId)}>查看比赛详情</a>
           </Space>

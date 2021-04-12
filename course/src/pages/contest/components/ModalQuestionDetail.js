@@ -96,13 +96,13 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
     return ''
   }, [mode])
 
-  const disabeld = mode === 'readonly'
+  const disabled = mode === 'readonly'
 
   let questionAnswerDom = null
 
   if (questionType === 1) {
     questionAnswerDom = (
-      <Checkbox.Group disabled={disabeld}>
+      <Checkbox.Group disabled={disabled}>
         {options.map((op) => (
           <Checkbox key={op} value={op}>
             {op}
@@ -112,7 +112,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
     )
   } else {
     questionAnswerDom = (
-      <Radio.Group disabled={disabeld}>
+      <Radio.Group disabled={disabled}>
         {options.map((op) => (
           <Radio key={op} value={op}>
             {op}
@@ -134,7 +134,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
         },
       ]}
     >
-      <Input.TextArea rows={2} placeholder={`请输入选项 ${op} 内容`} disabled={disabeld} />
+      <Input.TextArea rows={2} placeholder={`请输入选项 ${op} 内容`} disabled={disabled} />
     </Form.Item>
   ))
 
@@ -166,7 +166,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
             },
           ]}
         >
-          <Input.TextArea disabled={disabeld} rows={4} placeholder='请填写题目内容' />
+          <Input.TextArea disabled={disabled} rows={4} placeholder='请填写题目内容' />
         </Form.Item>
         <Form.Item
           label='题目类型'
@@ -178,7 +178,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
             },
           ]}
         >
-          <Radio.Group disabled={disabeld || mode === 'edit'}>
+          <Radio.Group disabled={disabled || mode === 'edit'}>
             <Radio value={0}>单选</Radio>
             <Radio value={1}>多选</Radio>
           </Radio.Group>
@@ -193,7 +193,7 @@ const ModalQuestionDetail = ({ mode = 'readonly', question = {}, ...restProps },
             },
           ]}
         >
-          <Input type='number' placeholder='请输入题目章节' disabled={disabeld} />
+          <Input type='number' placeholder='请输入题目章节' disabled={disabled} />
         </Form.Item>
         {choiceContentsDom}
         <Form.Item
