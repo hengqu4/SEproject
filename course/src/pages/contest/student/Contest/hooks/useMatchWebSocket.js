@@ -4,6 +4,7 @@ import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import onError from '@/utils/onError'
 import { notification, Avatar, Image } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
+import { host, port } from '../../../../../../config/config'
 
 const useMatchWebSocket = ({
   studentId,
@@ -16,7 +17,7 @@ const useMatchWebSocket = ({
   userIndex = -1,
 }) => {
   const socketUrl = useMemo(
-    () => (channelId ? `ws://fwdarling2020.cn:18080/api/v1/contest/sub?id=${channelId}` : null),
+    () => (channelId ? `ws://${host}:${port}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
 

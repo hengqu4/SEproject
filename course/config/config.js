@@ -3,6 +3,9 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
 
+export const host = 'localhost'
+export const port = 8000
+
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -451,7 +454,7 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      target: 'http://localhost:8000',
+      target: `http://${host}:${port}`,
       changeOrigin: true,
     },
   },
