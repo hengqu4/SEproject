@@ -6,7 +6,7 @@ import { notification } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
 
 const host = '10.20.30.90'
-const port = 18080
+const port = 8080
 
 const useMatchWebSocket = ({
   studentId,

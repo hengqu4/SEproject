@@ -121,7 +121,7 @@ const MatchQuestionsWrapper = ({
           </header>
           <Divider />
           <main>
-            <MatchQuestions questions={matchQuestions} onUserAnsewrChange={onUserAnswerChange} />
+            <MatchQuestions questions={matchQuestions} onUserAnswerChange={onUserAnswerChange} />
           </main>
           <Divider />
           <footer style={{ textAlign: 'center' }}>

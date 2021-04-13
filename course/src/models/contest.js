@@ -123,7 +123,6 @@ const effects = {
     const newContest = yield select((state) => state.Contest.newContest)
     const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
-    // TODO: 添加课程Id
     const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
     const publisherId = yield select((state) => state.user.currentUser.id)
 
