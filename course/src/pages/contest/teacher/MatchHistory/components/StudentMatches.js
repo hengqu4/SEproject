@@ -95,7 +95,6 @@ const StudentMatches = ({
             description={student.personalId}
           />
           <p className={classes.StudentCardDescription}>邮箱：{student.email}</p>
-          <p className={classes.StudentCardDescription}>昵称：{student.nickname}</p>
         </Card>
       </List.Item>
     ),
