@@ -1,4 +1,9 @@
-import { API_CONTEST_PREFIX, API_CONTEST_QUESTIONS_PREFIX, API_MATCH_PREFIX } from '@/url-prefixes'
+import {
+  API_CONTEST_PREFIX,
+  API_CONTEST_QUESTIONS_PREFIX,
+  API_MATCH_PREFIX,
+  API_COURSE_PREFIX,
+} from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
 import { pick, omit } from 'lodash'
@@ -99,12 +104,16 @@ export const fetchAllContests = (query) => {
 }
 
 export const fetchAllStudents = (query) => {
-  // TODO: 修改url
-  return request('/students', {
-    method: 'GET',
-    prefix: API_CONTEST_PREFIX,
-    params: query,
-  })
+  return request(
+    SafeUrlAssembler('/course-student-info/:courseId')
+      .param(pick(query, ['courseId']))
+      .toString(),
+    {
+      method: 'GET',
+      prefix: API_COURSE_PREFIX,
+      params: omit(query, ['courseId']),
+    },
+  )
 }
 
 export const fetchAllContestMatches = (query) => {
