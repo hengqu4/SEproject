@@ -1,7 +1,7 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi'
+import defaultSettings from './defaultSettings'
+import proxy from './proxy' // const { REACT_APP_ENV } = process.env
 
 export const host = '10.20.30.90'
 export const port = 8000
@@ -67,60 +67,64 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/SecurityLayout',
-          Routes: ['src/pages/Authorized'],
-          authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
-          routes: [          
+          routes: [
             {
               path: '/',
-              redirect: '/course',
-            },
-            {
-              name: '课程模块',
-              path: '/course',
-              icon: 'book',
-              authority: ['teacher', 'teachingAssistant','student', 'principal'],
+              component: '../layouts/BasicLayout',
+              Routes: ['src/pages/Authorized'],
+              authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
               routes: [
                 {
                   path: '/',
-                  redirect: '/course/course-list',
+                  redirect: '/course',
                 },
                 {
-                  name: '课程列表',
-                  icon: 'smile',
-                  path: '/course/course-list-teacher',
-                  component: './course/course-list-teacher',
-                  authority: ['teacher', 'teachingAssistant'],
-                }, 
-                {
-                  name: '课程列表',
-                  icon: 'smile',
-                  path: '/course/course-list',
-                  component: './course/course-list-principal',
-                  authority: ['principal'],
+                  name: '课程模块',
+                  path: '/course',
+                  icon: 'book',
+                  authority: ['teacher', 'teachingAssistant', 'student', 'principal'],
+                  routes: [
+                    {
+                      path: '/',
+                      redirect: '/course/course-list',
+                    },
+                    {
+                      name: '课程列表',
+                      icon: 'smile',
+                      path: '/course/course-list-teacher',
+                      component: './course/course-list-teacher',
+                      authority: ['teacher', 'teachingAssistant'],
+                    },
+                    {
+                      name: '课程列表',
+                      icon: 'smile',
+                      path: '/course/course-list',
+                      component: './course/course-list-principal',
+                      authority: ['principal'],
+                    },
+                    {
+                      name: '课程编辑',
+                      icon: 'smile',
+                      path: '/course/course-edit',
+                      component: './course/course-edit',
+                      authority: ['principal'],
+                    },
+                    {
+                      name: '绑定教师',
+                      icon: 'smile',
+                      path: '/course/course-bind',
+                      component: './course/course-bind',
+                      authority: ['principal'],
+                    },
+                    {
+                      name: '课程信息',
+                      icon: 'smile',
+                      path: '/course/course-info',
+                      component: './course/course-info',
+                      authority: ['student'],
+                    },
+                  ],
                 },
-                {
-                  name: '课程编辑',
-                  icon: 'smile',
-                  path: '/course/course-edit',
-                  component: './course/course-edit',
-                  authority: ['principal'],
-                },
-                {
-                  name: '绑定教师',
-                  icon: 'smile',
-                  path: '/course/course-bind',
-                  component: './course/course-bind',
-                  authority: ['principal'],
-                },
-                {
-                  name: '课程信息',
-                  icon: 'smile',
-                  path: '/course/course-info',
-                  component: './course/course-info',
-                  authority: ['student'],
-                },
-              ],
-            },
                 {
                   path: '/grade',
                   name: '成绩模块',
@@ -193,7 +197,6 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                   ],
-
                 },
                 {
                   name: '实验',
@@ -399,10 +402,12 @@ export default defineConfig({
                 },
               ],
             },
-          ]
+          ],
         },
       ],
-    
+    },
+  ],
+
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
@@ -423,4 +428,4 @@ export default defineConfig({
     },
   },
   mock: false,
-});
+})
