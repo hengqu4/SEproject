@@ -75,7 +75,7 @@ export default defineConfig({
               name: '课程模块',
               path: '/course',
               icon: 'book',
-              authority: ['teacher', 'teachingAssistant','student', 'principle'],
+              authority: ['teacher', 'teachingAssistant','student', 'principal'],
               routes: [
                 {
                   path: '/',
@@ -87,32 +87,27 @@ export default defineConfig({
                   path: '/course/course-list-teacher',
                   component: './course/course-list-teacher',
                   authority: ['teacher', 'teachingAssistant'],
-                }, // {
-                //   name: '课程信息',
-                //   icon: 'smile',
-                //   path: '/course/course-info',
-                //   component: '',
-                // },
+                }, 
                 {
                   name: '课程列表',
                   icon: 'smile',
                   path: '/course/course-list',
-                  component: './course/course-list-principle',
-                  authority: ['principle'],
+                  component: './course/course-list-principal',
+                  authority: ['principal'],
                 },
                 {
                   name: '课程编辑',
                   icon: 'smile',
                   path: '/course/course-edit',
                   component: './course/course-edit',
-                  authority: ['principle'],
+                  authority: ['principal'],
                 },
                 {
                   name: '绑定教师',
                   icon: 'smile',
                   path: '/course/course-bind',
                   component: './course/course-bind',
-                  authority: ['principle'],
+                  authority: ['principal'],
                 },
                 {
                   name: '课程信息',
@@ -120,16 +115,6 @@ export default defineConfig({
                   path: '/course/course-info',
                   component: './course/course-info',
                   authority: ['student'],
-                },
-                {
-                  name: '小节信息',
-                  path: '/course/chap-list',
-                  component: './course/teacher/ChapList',
-                },
-                {
-                  name: '编辑小节信息',
-                  path: '/course/ed-chap',
-                  component: './course/teacher/EditChap',
                 },
               ],
             },

@@ -10,8 +10,6 @@ import FormItem from 'antd/lib/form/FormItem'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
-const { RangePicker } = DatePicker
-
 const mapStateToProps = ({ Course }) => ({
   courseTeachList: Course.courseTeachList,
 })
@@ -24,14 +22,35 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
 
   const columns = [
     {
+      title: '绑定ID',
+      dataIndex: 'courseTeachID',
+      sorter: (a, b) => a.courseTeachID - b.courseTeachID,
+    },
+    {
       title: '课程ID',
       dataIndex: 'courseID',
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
+      sorter: (a, b) => a.courseID - b.courseID,
     },
     {
       title: '教师ID',
       dataIndex: 'teacherID',
       formItemProps: { rules: [{ required: true, message: '教师ID是必须项' }] },
+      sorter: (a, b) => a.teacherID - b.teacherID,
+    },
+    {
+      title: '课程名称',
+      dataIndex: 'courseName',
+    },
+    {
+      title: '课程学分',
+      dataIndex: 'courseCredit',
+    },
+    {
+      title: '课程描述',
+      dataIndex: 'courseDescription',
+      ellipsis: true,
+      formItemProps: { rules: [{ max: 50 }] },
     },
     {
       title: '操作',
@@ -40,12 +59,13 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
       render: (_, record) => (
         <>
           <a
-            onClick={() => {
-              removeCourseTeach(record.courseTeachId)
+            onClick={async() => {
+              await removeCourseTeach(record.courseTeachID)
+              message.success('删除课程绑定成功')
             }}
           >
             {' '}
-            删除{' '}
+            删除绑定{' '}
           </a>
         </>
       ),
@@ -55,7 +75,7 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
   useMount(() => {
     console.log('准备接受数据')
     dispatch({
-      type: 'Course/getAllCourseTeach', 
+      type: 'Course/getAllCourseTeach',
       onError,
     })
   })
@@ -69,9 +89,12 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
     for (let i = 0; i < courseTeachList.length; i++) {
       formattedCourseTeachList.push({
         key: i,
+        courseTeachID: courseTeachList[i].courseTeachId,
         courseID: courseTeachList[i].courseId,
         teacherID: courseTeachList[i].teacherId,
-        courseTeachId: courseTeachList[i].courseTeachId,
+        courseName: courseTeachList[i].courseName,
+        courseCredit: courseTeachList[i].courseCredit,
+        courseDescription: courseTeachList[i].courseDescription,
       })
     }
     return formattedCourseTeachList
@@ -108,21 +131,17 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
       type: 'Course/deleteCourseTeach',
       payload: value,
       onError,
-      onFinish: () => {
-        message.success('删除课程绑定成功')
-      },
     })
-  }, [])
+  }, [dispatch])
 
   const handleRemove = (selectedRows) => {
-    dispatch({
-      type: 'Course/deleteManyCourseTeach',
-      payload: selectedRows,
-      onError,
-      onFinish: () => {
-        message.success('批量删除成功')
-      }
-    })
+    console.log(selectedRows)
+    for (let i = 0; i < selectedRows.length; i++){
+      dispatch({
+        type: 'Course/deleteCourseTeach',
+        payload: selectedRows[i].courseTeachID,
+      })
+    }
   }
 
   return (
@@ -164,6 +183,7 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
               await handleRemove(selectedRowsState)
               setSelectedRows([])
               actionRef.current?.reloadAndRest?.()
+              message.success('批量删除成功')
             }}
           >
             批量删除
