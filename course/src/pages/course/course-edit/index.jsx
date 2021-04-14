@@ -63,7 +63,7 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
 
   const currentCourseId = currentCourseInfo.courseId
 
-  console.log(currentCourseId)
+  // console.log(currentCourseId)
 
   return (
     <PageContainer>

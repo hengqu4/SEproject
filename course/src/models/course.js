@@ -5,6 +5,8 @@ import generateReducer, {
   defaultObjectTransformer,
 } from '@/utils/generateReducer'
 import { cloneDeep } from 'lodash'
+import moment from 'moment'
+
 
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
@@ -44,7 +46,7 @@ const effects = {
     // console.log(res.data)
     yield put({
       type: 'setCourseList',
-      payload: res,
+      payload: res.data,
     })
   }),
 
@@ -71,12 +73,14 @@ const effects = {
     const newCourseInfoCopy = cloneDeep(payload)
 
     newCourseInfoCopy.course_creator_school_id = 'tongji'
-    newCourseInfoCopy.course_start_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
-      newCourseInfoCopy.course_time[0],
-    )[0]
-    newCourseInfoCopy.course_end_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
-      newCourseInfoCopy.course_time[1],
-    )[0]
+    // newCourseInfoCopy.course_start_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+    //   newCourseInfoCopy.course_time[0],
+    // )[0]
+    // newCourseInfoCopy.course_end_time = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
+    //   newCourseInfoCopy.course_time[1],
+    // )[0]
+    newCourseInfoCopy.course_start_time = moment(newCourseInfoCopy.course_time[0]).format()
+    newCourseInfoCopy.course_end_time = moment(newCourseInfoCopy.course_time[1]).format()
     newCourseInfoCopy.course_avatar = 'fake'
     newCourseInfoCopy.course_credit = parseInt(newCourseInfoCopy.course_credit)
     newCourseInfoCopy.course_study_time_needed = parseInt(
@@ -105,7 +109,7 @@ const effects = {
 
     yield put({
       type: 'setCourseList',
-      payload: res,
+      payload: res.data,
     })
   }),
 
@@ -126,12 +130,8 @@ const effects = {
       ) {
         newValues[key] = parseInt(newValues[key])
       } else if (key.toString() == 'courseTime') {
-        newValues.courseStartTime = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
-          newValues.courseTime[0],
-        )
-        newValues.courseEndTime = /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.exec(
-          newValues.courseTime[1],
-        )
+        newValues.courseStartTime = moment(newValues.courseTime[0]).format()
+        newValues.courseEndTime = moment(newValues.courseTime[1]).format()
         delete newValues[key]
       }
     }
@@ -139,8 +139,22 @@ const effects = {
     yield call(CourseServices.updateCourseInfo, newValues)
   }),
 
+  //删除课程信息
+  deleteCourseInfo: generateEffect(function* ({ payload }, { call, put }) {
+    console.log(payload)
+
+    yield call(CourseServices.deleteCourseInfo, payload)
+
+    const res = yield call(CourseServices.fetchAllCourseInfo)
+
+    yield put({
+      type: 'setCourseList',
+      payload: res.data,
+    })
+  }),
+
   //获取全部绑定关系列表
-  getAllCourseTeach: generateEffect(function* (_, { call, put }) {
+  getAllCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseTeach)
 
@@ -187,10 +201,6 @@ const effects = {
     })
   }),
 
-  // deleteManyCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
-  //   console.log(payload)
-
-  // }),
 }
 
 const reducers = {

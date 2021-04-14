@@ -7,14 +7,12 @@ import { Button, Divider, Drawer, message, DatePicker } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
-
 const mapStateToProps = ({ Course }) => ({
   currentCourseInfo: Course.currentCourseInfo,
   courseList: Course.courseList,
 })
 
 const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
-  
   /**
    * 设置当前课程
    * @param courseID
@@ -26,10 +24,6 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         type: 'Course/getCurrentCourseInfo',
         payload: index,
         onError,
-        onFinish: () => {
-          message.success('切换当前课程成功')
-          // console.log(currentCourseInfo)
-        }
       })
     },
     [currentCourseInfo, dispatch],
@@ -67,26 +61,6 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     return formattedCourseList
   }
 
-  /**
-   * 添加课程信息
-   * @param values
-   */
-  const addCourseInfo = useCallback(
-    (values) => {
-      dispatch({
-        type: 'Course/createNewCourse',
-        payload: values,
-        onError,
-        onFinish: () => {
-          message.success('创建课程成功')
-          console.log(courseList)
-        },
-      })
-    },
-    [dispatch],
-  )
-
-  const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
@@ -143,9 +117,14 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a onClick={() => {setCurrentCourse(record.key)}}>切换</a>
-          <Divider type='vertical' />
-          <a>删除</a>
+          <a
+            onClick={async () => {
+              await setCurrentCourse(record.key)
+              message.success('切换当前课程成功')
+            }}
+          >
+            切换
+          </a>
         </>
       ),
     },

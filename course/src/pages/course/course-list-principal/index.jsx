@@ -11,6 +11,7 @@ import FormItem from 'antd/lib/form/FormItem'
 import CreateForm from './components/CreateForm'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
+import { value } from 'numeral'
 
 const { RangePicker } = DatePicker
 
@@ -20,7 +21,6 @@ const mapStateToProps = ({ Course }) => ({
 })
 
 const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
-  
   /**
    * 设置当前课程
    * @param courseID
@@ -32,10 +32,6 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         type: 'Course/getCurrentCourseInfo',
         payload: index,
         onError,
-        onFinish: () => {
-          message.success('切换当前课程成功')
-          // console.log(currentCourseInfo)
-        }
       })
     },
     [currentCourseInfo, dispatch],
@@ -68,8 +64,10 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         courseStartTime: courseList[i].courseStartTime,
         courseEndTime: courseList[i].courseEndTime,
         courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
+        courseIsScorePublic: courseList[i].courseIsScorePublic ? '公开' : '不公开',
       })
     }
+    console.log(formattedCourseList)
     return formattedCourseList
   }
 
@@ -92,6 +90,17 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     [dispatch],
   )
 
+  const removeCourseInfo = useCallback(
+    (value) => {
+      dispatch({
+        type: 'Course/deleteCourseInfo',
+        payload: value,
+        onError,
+      })
+    },
+    [dispatch],
+  )
+
   const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -102,11 +111,16 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       title: '课程ID',
       dataIndex: 'courseID',
       hideInForm: true,
+      fixed: 'left',
+      width: 100,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
+      sorter: (a, b) => a.courseID - b.courseID,
     },
     {
       title: '课程名称',
       dataIndex: 'courseName',
+      fixed: 'left',
+      width: 150,
       formItemProps: { rules: [{ required: true }] },
       render: (dom, entity) => {
         return (
@@ -124,16 +138,21 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     {
       title: '课程学分',
       dataIndex: 'courseCredit',
+      width: 100,
       formItemProps: { rules: [{ required: true }] },
+      sorter: (a, b) => a.courseCredit - b.courseCredit,
     },
     {
       title: '课程学时',
       dataIndex: 'courseStudyTimeNeeded',
+      width: 100,
       formItemProps: { rules: [{ required: true }] },
+      sorter: (a, b) => a.courseStudyTimeNeeded - b.courseStudyTimeNeeded,
     },
     {
       title: '课程类型',
       dataIndex: 'courseType',
+      width: 100,
       formItemProps: { rules: [{ required: true }] },
     },
     {
@@ -141,17 +160,73 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       dataIndex: 'courseDescription',
       valueType: 'textarea',
       ellipsis: true,
+      width: 250,
       formItemProps: { rules: [{ required: true, max: 50 }] },
+    },
+    {
+      title: '开课学校',
+      width: 150,
+      dataIndex: 'courseCreatorSchoolId',
+    },
+    // {
+    //   title: '课程开始时间',
+    //   width: 250,
+    //   detaIndex: 'courseStartTime',
+    // },
+    // {
+    //   title: '课程结束时间',
+    //   width: 250,
+    //   detaIndex: 'courseEndTime',
+    // },
+    {
+      title: '理论课次数',
+      width: 150,
+      dataIndex: 'lectureCount',
+    },
+    {
+      title: '实验课次数',
+      width: 150,
+      dataIndex: 'experimentCount',
+    },
+    {
+      title: '作业次数',
+      width: 150,
+      dataIndex: 'homeworkCount',
+    },
+    {
+      title: '对抗练习次数',
+      width: 150,
+      dataIndex: 'contestCount',
+    },
+    {
+      title: '课程分数是否公开',
+      width: 150,
+      dataIndex: 'courseIsScorePublic',
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => (
         <>
-          <a onClick={() => {setCurrentCourse(record.key)}}>切换</a>
+          <a
+            onClick={async () => {
+              await setCurrentCourse(record.key)
+              message.success('切换当前课程成功')
+            }}
+          >
+            切换
+          </a>
           <Divider type='vertical' />
-          <a>删除</a>
+          <a
+            onClick={async () => {
+              await removeCourseInfo(record.courseID)
+              message.success('删除课程信息成功')
+            }}
+          >
+            删除
+          </a>
         </>
       ),
     },
@@ -210,6 +285,10 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       dataIndex: 'contestCount',
     },
     {
+      title: '课程分数是否公开',
+      dataIndex: 'courseIsScorePublic',
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -236,12 +315,13 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         // }}
         search={false}
         toolBarRender={() => [
-          <Button key = 'primary' type='primary' onClick={() => handleModalVisible(true)}>
+          <Button key='primary' type='primary' onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
         dataSource={FormatData(courseList)}
         columns={columns}
+        scroll={{ x: 1450 }}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
@@ -362,7 +442,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
             params={{
               id: row?.courseID,
             }}
-            columns={columnsPlus}
+            columns={columns}
           />
         )}
       </Drawer>

@@ -67,95 +67,60 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/SecurityLayout',
+          Routes: ['src/pages/Authorized'],
+          authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
           routes: [          
             {
               path: '/',
-              component: '../layouts/BasicLayout',
-              Routes: ['src/pages/Authorized'],
-              authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
+              redirect: '/course',
+            },
+            {
+              name: '课程模块',
+              path: '/course',
+              icon: 'book',
+              authority: ['teacher', 'teachingAssistant','student', 'principal'],
               routes: [
                 {
                   path: '/',
-                  redirect: '/course',
+                  redirect: '/course/course-list',
                 },
                 {
-                  name: '课程模块',
-                  path: '/course',
-                  icon: 'book',
-                  authority: ['teacher', 'teachingAssistant', 'student', 'principle'],
-                  routes: [
-                    {
-                      path: '/',
-                      redirect: '/course/course-list',
-                    },
-                    {
-                      name: '课程列表',
-                      icon: 'smile',
-                      path: '/course/course-list-teacher',
-                      component: './course/course-list-teacher',
-                      authority: ['teacher', 'teachingAssistant'],
-                    }, // {
-                    //   name: '课程信息',
-                    //   icon: 'smile',
-                    //   path: '/course/course-info',
-                    //   component: '',
-                    // },
-                    {
-                      name: '课程列表',
-                      icon: 'smile',
-                      path: '/course/course-list',
-                      component: './course/course-list-principle',
-                      authority: ['principle'],
-                    },
-                    {
-                      name: '课程编辑',
-                      icon: 'smile',
-                      path: '/course/course-edit',
-                      component: './course/course-edit',
-                      authority: ['principle'],
-                    },
-                    {
-                      name: '绑定教师',
-                      icon: 'smile',
-                      path: '/course/course-bind',
-                      component: './course/course-bind',
-                      authority: ['principle'],
-                    },
-                    {
-                      name: '课程信息',
-                      icon: 'smile',
-                      path: '/course/course-info',
-                      component: './course/course-info',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-list',
-                      component: './course/teacher/ChapList',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-ls',
-                      component: './course/student/ChapList',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '添加章节信息',
-                      path: '/course/chap-add',
-                      hideInMenu: true,
-                      component: './course/teacher/AddChap',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '编辑章节信息',
-                      path: '/course/chap-edit/:courseChapterId',
-                      hideInMenu: true,
-                      component: './course/teacher/EditChap',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                  ],
+                  name: '课程列表',
+                  icon: 'smile',
+                  path: '/course/course-list-teacher',
+                  component: './course/course-list-teacher',
+                  authority: ['teacher', 'teachingAssistant'],
+                }, 
+                {
+                  name: '课程列表',
+                  icon: 'smile',
+                  path: '/course/course-list',
+                  component: './course/course-list-principal',
+                  authority: ['principal'],
                 },
+                {
+                  name: '课程编辑',
+                  icon: 'smile',
+                  path: '/course/course-edit',
+                  component: './course/course-edit',
+                  authority: ['principal'],
+                },
+                {
+                  name: '绑定教师',
+                  icon: 'smile',
+                  path: '/course/course-bind',
+                  component: './course/course-bind',
+                  authority: ['principal'],
+                },
+                {
+                  name: '课程信息',
+                  icon: 'smile',
+                  path: '/course/course-info',
+                  component: './course/course-info',
+                  authority: ['student'],
+                },
+              ],
+            },
                 {
                   path: '/grade',
                   name: '成绩模块',
@@ -437,8 +402,7 @@ export default defineConfig({
           ]
         },
       ],
-    },
-  ],
+    
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
