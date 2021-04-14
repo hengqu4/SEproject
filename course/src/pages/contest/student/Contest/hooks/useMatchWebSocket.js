@@ -1,9 +1,12 @@
 import useWebSocket from 'react-use-websocket'
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import onError from '@/utils/onError'
-import { message, Avatar, Image } from 'antd'
+import { notification } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
+
+const host = '10.20.30.90'
+const port = 8080
 
 const useMatchWebSocket = ({
   studentId,
@@ -11,9 +14,12 @@ const useMatchWebSocket = ({
   dispatch = () => {},
   clearStatus = () => {},
   reconnect = false,
+  status = MatchingStatus.IDLE,
+  contestId,
+  userIndex = -1,
 }) => {
   const socketUrl = useMemo(
-    () => (channelId ? `ws://fwdarling2020.cn:18080/api/v1/contest/sub?id=${channelId}` : null),
+    () => (channelId ? `ws://${host}:${port}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
 
@@ -53,32 +59,52 @@ const useMatchWebSocket = ({
 
   const handleStartAnswering = useCallback(() => {
     dispatch({
-      type: 'Contest/setMatchingStatus',
-      payload: MatchingStatus.ANSWERING,
+      type: 'Contest/connectToMatch',
+      payload: {
+        studentId,
+        contestId,
+      },
     })
-  }, [dispatch])
+  }, [dispatch, studentId, contestId])
 
-  const handleCompetitorSubmit = useCallback((competitorIndex) => {
-    const messageContent = (
-      <div>
-        <Avatar src={<Image src={fakeUserInfoArr[competitorIndex].avatar} />} />
-        <span>{`${fakeUserInfoArr[competitorIndex].nickname}已提交答案`}</span>
-      </div>
-    )
-    message.info(messageContent)
-  }, [])
+  const handleCompetitorSubmit = useCallback(
+    (competitorIndex) => {
+      if (competitorIndex !== userIndex && status === MatchingStatus.ANSWERING) {
+        notification.info({
+          description: `${fakeUserInfoArr[competitorIndex].nickname} 已提交答案`,
+        })
+      }
+    },
+    [status, userIndex],
+  )
 
   const onOpen = useCallback(() => {
-    let newStatus = MatchingStatus.MATCHING
     if (reconnect.current) {
-      newStatus = MatchingStatus.ANSWERING
+      dispatch({
+        type: 'Contest/matchingComplete',
+        payload: {
+          studentId,
+          channelId,
+        },
+        onError: clearStatus,
+        onSuccess: () => {
+          dispatch({
+            type: 'Contest/connectToMatch',
+            payload: {
+              studentId,
+              contestId,
+            },
+            onError: clearStatus,
+          })
+        },
+      })
+    } else {
+      dispatch({
+        type: 'Contest/setMatchingStatus',
+        payload: MatchingStatus.MATCHING,
+      })
     }
-
-    dispatch({
-      type: 'Contest/setMatchingStatus',
-      payload: newStatus,
-    })
-  }, [dispatch, reconnect])
+  }, [dispatch, reconnect, studentId, channelId, contestId, clearStatus])
 
   const onMessage = useCallback(
     (event) => {
@@ -101,14 +127,24 @@ const useMatchWebSocket = ({
         case 4:
           handleStartAnswering(socketMessage.userIndex)
           break
+        case 5:
+          handleCompetitorSubmit(socketMessage.submitIndex)
       }
     },
-    [handleMatchingComplete, handleRoomDismiss, handleUserReady, handleStartAnswering],
+    [
+      handleMatchingComplete,
+      handleRoomDismiss,
+      handleUserReady,
+      handleStartAnswering,
+      handleCompetitorSubmit,
+    ],
   )
 
   useWebSocket(socketUrl, {
     onOpen,
     onMessage,
+    onError: clearStatus,
+    onClose: clearStatus,
   })
 }
 

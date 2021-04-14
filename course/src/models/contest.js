@@ -34,9 +34,6 @@ const defaultFilter = {
 }
 
 const defaultState = {
-  studentId: 3,
-  courseId: 1,
-  teacherId: 2,
   avatar: 'www.baidu.com',
   studentMatchHistory: [],
   studentMatchDetail: {},
@@ -84,9 +81,9 @@ const effects = {
   fetchCurrentContest: generateEffect(function* ({ isTeacher, payload }, { call, put }) {
     const res = yield call(ContestServices.fetchCurrentContest, payload)
 
-    const { contest, bIsParticipated, bIsParticipating } = res
-
     console.log('fetchCurrentContest: ', res)
+
+    const { contest, bIsParticipated, bIsParticipating } = res
 
     if (isTeacher && contest?.contestId) {
       const { questions } = yield call(ContestServices.fetchContestQuestions, {
@@ -126,8 +123,7 @@ const effects = {
     const newContest = yield select((state) => state.Contest.newContest)
     const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
-    // TODO: 添加课程Id
-    const courseId = yield select((state) => state.Contest.courseId)
+    const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
     const publisherId = yield select((state) => state.user.currentUser.id)
 
     const newContestCopy = cloneDeep(newContest)
@@ -140,8 +136,6 @@ const effects = {
         publisherId,
       },
     }
-
-    console.log('payload: ', payload)
 
     yield call(ContestServices.createContest, payload)
 
@@ -322,8 +316,6 @@ const effects = {
   startMatching: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.startMatching, payload)
 
-    console.log('startMatching: ', res)
-
     yield put({
       type: 'setChannelId',
       payload: res.channelId,
@@ -353,8 +345,6 @@ const effects = {
   fetchChannelId: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchChannelId, payload)
 
-    console.log('fetchChannelId: ', res)
-
     const { channelId } = res
 
     yield put({
@@ -374,7 +364,7 @@ const effects = {
 
     const defaultAnswers = questions.map((q) => ({
       ...pick(q, ['questionId', 'questionType']),
-      answer: null,
+      answer: '',
     }))
 
     const matchAnswersHistory = storage(`contest${contestId}`)
@@ -407,6 +397,10 @@ const effects = {
         type: 'setMatchTimeStamp',
         payload: timeStamp,
       }),
+      put({
+        type: 'setMatchingStatus',
+        payload: MatchingStatus.ANSWERING,
+      }),
     ]
   }),
   fetchRandomQuestions: generateEffect(function* ({ payload }, { call, put }) {
@@ -427,7 +421,7 @@ const effects = {
   clearMatchStatus: generateEffect(function* (_, { call, put, select }) {
     const [userId, courseId] = yield [
       select((s) => s.user.currentUser.id),
-      select((s) => s.Contest.courseId),
+      select((s) => s.Course.currentCourseInfo.courseId),
     ]
 
     const {
@@ -564,7 +558,7 @@ const reducers = {
   }),
   setUserIndex: generateReducer({
     attributeName: 'userIndex',
-    transformer: (payload) => payload || 0,
+    transformer: (payload) => payload ?? -1,
     defaultState,
   }),
   setMatchQuestions: generateReducer({

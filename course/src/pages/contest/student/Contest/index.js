@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { useMount, useUnmount } from 'react-use'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { notification, Spin, Row, Col, Button } from 'antd'
 import ProCard from '@ant-design/pro-card'
@@ -11,13 +10,15 @@ import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWeb
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
 import MatchingStatus from './matchingStatus'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, user, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
   currentContest: Contest.currentContest,
   participated: Contest.participated,
   participating: Contest.participating,
   channelId: Contest.channelId,
   status: Contest.matchingStatus,
+  userIndex: Contest.userIndex,
 })
 
 const Contest = ({
@@ -26,19 +27,37 @@ const Contest = ({
   participating = false,
   participated = false,
   channelId = null,
+  courseId,
   status,
+  userIndex,
   dispatch = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
   const reconnectRef = useRef(false)
 
-  useMount(() => {
+  const clearStatus = useCallback(() => {
+    dispatch({
+      type: 'Contest/setMatchingStatus',
+      payload: MatchingStatus.IDLE,
+    })
+    dispatch({
+      type: 'Contest/setChannelId',
+    })
+    dispatch({
+      type: 'Contest/setReadyArr',
+    })
+    dispatch({
+      type: 'Contest/setUserIndex',
+    })
+  }, [dispatch])
+
+  useEffect(() => {
     setLoading(true)
     dispatch({
       type: 'Contest/fetchCurrentContest',
       isTeacher: false,
       payload: {
-        courseId: 1,
+        courseId,
         userId: currentUser.id,
       },
       onError: (err) => {
@@ -49,19 +68,15 @@ const Contest = ({
       },
       onFinish: setLoading.bind(this, false),
     })
-  })
 
-  const clearStatus = useCallback(() => {
-    dispatch({
-      type: 'Contest/setMatchingStatus',
-      payload: MatchingStatus.IDLE,
-    })
-    dispatch({
-      type: 'Contest/setChannelId',
-    })
-  }, [dispatch])
+    return clearStatus
+  }, [clearStatus, dispatch, courseId, currentUser])
 
   const handleCancelMatching = useCallback(() => {
+    if ([MatchingStatus.IDLE, MatchingStatus.SEARCHING_ROOM].includes(status)) {
+      clearStatus()
+      return
+    }
     dispatch({
       type: 'Contest/cancelMatching',
       payload: {
@@ -69,13 +84,9 @@ const Contest = ({
         studentId: currentUser.id,
       },
       onError,
-      onSuccess: clearStatus,
+      onFinish: clearStatus,
     })
-  }, [clearStatus, dispatch, channelId, currentUser])
-
-  useUnmount(() => {
-    handleCancelMatching()
-  })
+  }, [clearStatus, dispatch, channelId, currentUser, status])
 
   useMatchWebSocket({
     studentId: currentUser.id,
@@ -83,6 +94,9 @@ const Contest = ({
     dispatch,
     clearStatus: handleCancelMatching,
     reconnect: reconnectRef,
+    status,
+    contestId: currentContest.contestId,
+    userIndex,
   })
 
   const handleModalOpen = useCallback(() => {

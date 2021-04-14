@@ -3,7 +3,7 @@ import { List, Divider } from 'antd'
 import Question from '@/pages/contest/components/Question'
 import classes from '@/pages/contest/components/style.less'
 
-const MatchQuestions = ({ questions = [], score, onUserAnsewrChange }) => {
+const MatchQuestions = ({ questions = [], score, onUserAnswerChange }) => {
   const footer =
     score != null ? (
       <React.Fragment>
@@ -18,8 +18,8 @@ const MatchQuestions = ({ questions = [], score, onUserAnsewrChange }) => {
         dataSource={questions}
         size='large'
         renderItem={(question) => (
-          <List.Item key={question.questionId}>
-            <Question question={question} onChange={onUserAnsewrChange} />
+          <List.Item key={`${question.questionId}+${question.questionType}`}>
+            <Question question={question} onChange={onUserAnswerChange} />
           </List.Item>
         )}
       />

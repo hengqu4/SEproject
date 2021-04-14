@@ -9,8 +9,7 @@ const disabledDate = (time) => {
   return time && time < moment().startOf('day')
 }
 
-const disabledTime = (time, type) => {
-  console.log('time', time, type)
+const disabledTime = (time) => {
   if (!time) {
     return {}
   }
@@ -24,11 +23,11 @@ const disabledTime = (time, type) => {
   return { disabledHours: () => disabledHours, disabledMinutes: () => disabledMinutes }
 }
 
-const ContestBasicInfo = ({ onNextStep = () => {}, contest, ...restProps }, ref) => {
+const ContestBasicInfo = ({ onNextStep = () => {}, contest }, ref) => {
   const [form] = Form.useForm(null)
 
   React.useImperativeHandle(ref, () => ({
-    validateFileds: form.validateFields,
+    validateFields: form.validateFields,
     setFieldsValue: form.setFieldsValue,
   }))
 

@@ -32,7 +32,6 @@ const LecList = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const [id, setId ] = useState()
-  const [ modalVisible, setModalVisible ] = useState(false)
   const ref = useRef()
 
   //获得当前章节信息列表
@@ -80,55 +79,17 @@ const LecList = ({
         return <a href={text}>{text}</a>
       },
     },
-    {
-      title: '操作',
-      dataIndex: 'opr',
-      width: '20%',
-      // valueType: 'option',
-      render: (_, record) => (
-        <>
-          <Link to={`/course/chap-edit/${record.key}`}>编辑</Link>
-          <Button 
-            type='link' 
-            onClick={() => {
-              setModalVisible(true)
-              setId(record.key)
-            }}
-          >删除</Button>
-        </>
-      )
-    }
   ]
 
   return (
     <PageContainer>
       <ProTable
         headerTitle='章节信息'
-        toolBarRender={() => [
-          <Button type='primary'>
-            <Link to='/course/chap-add'>
-              <PlusOutlined />添加
-            </Link>
-          </Button>,
-        ]}
         // actionRef={ref}
         // search={false}
         dataSource={FormatData(lecList)}
         columns={columns}
       />
-      <Modal 
-        visible={modalVisible}
-        title='提示'
-        onOk={() => {
-          setModalVisible(false)
-          deleteLecInfo()
-        }}
-        onCancel={() => {
-          setModalVisible(false)
-        }}
-      >
-        <p>确认删除吗？</p>
-      </Modal>
     </PageContainer>
   )
 }

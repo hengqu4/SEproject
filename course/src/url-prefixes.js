@@ -17,3 +17,11 @@ export const API_LAB_COURSE_CASE = '/api/v1/experiment/course-cases'
 export const API_LAB_COURSE_CASE_STUDENT = '/api/v1/experiment/student/case'
 
 export const API_LAB_STATISTICS = '/api/v1/experiment/statistics/course-case/'
+
+export const API_LECTURE_PREFIX = '/api/v1/lecture/course-chapter-description'
+
+export const API_HOMEWORK_PREFIX = '/api/v1/lecture/course-homework'
+
+export const API_ANNOUNCEMENT_PREFIX = '/api/v1/course-bulletin'
+
+export const API_FILE_PREFIX = '/api/v1/course-databse'

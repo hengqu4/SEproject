@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { message, Button, Select, List, Input, Table, Space, Form, Row, Col } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
-import { useMount } from 'react-use'
 import { isNaN } from 'lodash'
 import isInt from 'validator/es/lib/isInt'
 import classes from '@/pages/contest/teacher/CreateContest/style.less'
@@ -51,16 +50,14 @@ const SelectQuestions = ({
 
   const [form] = Form.useForm(null)
 
-  useMount(() => {
-    if (!questions.length) {
-      setLoading(true)
-      dispatch({
-        type: 'Contest/setFiltersAndFetchQuestions',
-        onError,
-        onFinish: setLoading.bind(this, false),
-      })
-    }
-  })
+  useEffect(() => {
+    setLoading(true)
+    dispatch({
+      type: 'Contest/setFiltersAndFetchQuestions',
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }, [dispatch])
 
   const getRandomQuestions = useCallback(
     (payload) => {
@@ -113,7 +110,7 @@ const SelectQuestions = ({
 
       if (randomQuestions) {
         const singleChoiceQuestionNum = +values.singleCnt
-        const multipleChoiceQuestionNum = +values.mutipleCnt
+        const multipleChoiceQuestionNum = +values.multipleCnt
 
         if (isNaN(singleChoiceQuestionNum) || isNaN(multipleChoiceQuestionNum)) {
           return message.error('请正确填写表单项')
@@ -298,10 +295,10 @@ const SelectQuestions = ({
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    key='mutipleCnt'
+                    key='multipleCnt'
                     {...formItemLayout}
                     label='多选题数目'
-                    name='mutipleCnt'
+                    name='multipleCnt'
                     rules={[
                       {
                         validator(_, value) {

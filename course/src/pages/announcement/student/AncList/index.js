@@ -9,42 +9,41 @@ import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
 
-const mapStateToProps = ({ homework, Course }) => ({
-  hwList: homework.hwList,
+const mapStateToProps = ({ announcement, Course }) => ({
+  ancList: announcement.ancList,
   courseId: Course.currentCourseInfo.courseId,
 })
 
-const FormatData = (hwList) => {
-  const formattedHwList = []
-  for (let i = 0; i < hwList.length; i++) {
-    formattedHwList.push({
-      key: hwList[i].homeworkId,
-      title: hwList[i].homeworkTitle,
-      des: hwList[i].homeworkDescription,
-      createTime: formatTime(hwList[i].homeworkCreateTimestamp),
-      updateTime: formatTime(hwList[i].homeworkUpdateTimestamp),
-      startTime: formatTime(hwList[i].homeworkStartTimestamp),
-      endTime: formatTime(hwList[i].homeworkEndTimestamp),
-      creator: hwList[i].homeworkCreator,
+const FormatData = (ancList) => {
+  const formattedAncList = []
+  for (let i = 0; i < ancList.length; i++) {
+    formattedAncList.push({
+      key: ancList[i].announcementId,
+      title: ancList[i].announcementTitle,
+      des: ancList[i].announcementContents,
+      isPinned: ancList[i].announcementIsPinned,
+      createTime: formatTime(ancList[i].announcementPublishTime),
+      updateTime: formatTime(ancList[i].announcementLastUpdateTime),
+      creator: ancList[i].announcementSenderId,
     })
   }
-  return formattedHwList
+  return formattedAncList
 }
 
-const HwList = ({
-  hwList = [],
+const AncList = ({
+  ancList = [],
   dispatch = () => { },
   courseId = courseId
 }) => {
   const [loading, setLoading] = useState(true)
-  const [homeworkId, setHomeworkId ] = useState()
+  const [announcementId, setAnnouncementId ] = useState()
   const [ modalVisible, setModalVisible ] = useState(false)
   const ref = useRef()
 
-  //获得当前作业列表
-  const getHwList = () => {
+  //获得当前公告列表
+  const getAncList = () => {
     dispatch({
-      type: 'homework/fetchHwList',
+      type: 'announcement/fetchAncList',
       payload: {
         courseId,
       },
@@ -53,12 +52,12 @@ const HwList = ({
     })
   }
 
-  //删除某作业
-  const deleteHwInfo = () => {
+  //删除某公告
+  const deleteAncInfo = () => {
     dispatch({
-      type: 'homework/deleteHwInfo',
+      type: 'announcement/deleteAncInfo',
       payload: {
-        courseId, homeworkId,
+        courseId, announcementId,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -66,48 +65,33 @@ const HwList = ({
   }
 
   useMount(() => {
-    getHwList()
-    console.log(hwList)
+    getAncList()
+    //console.log(hwList)
   })
-
-  const data = {
-    grade: 100
-  }
   
   const columns = [
     {
-      title: '作业名称',
+      title: '公告名称',
       dataIndex: 'title',
-      width: '15%',
+      width: '20%',
       render: (text, index) => {
         return <a>{text}</a>
       },
     },
     {
-      title: '作业内容',
+      title: '公告内容',
       dataIndex: 'des',
       width: '30%',
     },
     {
       title: '发布者',
       dataIndex: 'creator',
-      width: '10%',
-    },
-    {
-      title: '创建日期',
-      dataIndex: 'createTime',
       width: '15%',
     },
     {
-      title: '截止日期',
-      dataIndex: 'endTime',
+      title: '修改日期',
+      dataIndex: 'updateTime',
       width: '15%',
-    },
-    {
-      title: '分数',
-      dataIndex: 'grade',
-      width: '5%',
-      data: {data},
     },
     {
       title: '操作',
@@ -115,7 +99,7 @@ const HwList = ({
       width: '15%',
       render: (_, record) => (
         <>
-          <Link to={`/homework/hw-list/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
+          <Link to={`/announcement/anc-list/anc-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
         </>
       )
     }
@@ -124,14 +108,14 @@ const HwList = ({
   return (
     <PageContainer>
       <ProTable
-        headerTitle='作业列表'
+        headerTitle='公告列表'
         // actionRef={ref}
         // search={false}
-        dataSource={FormatData(hwList)}
+        dataSource={FormatData(ancList)}
         columns={columns}
       />
     </PageContainer>
   )
 }
 
-export default connect(mapStateToProps)(HwList)
+export default connect(mapStateToProps)(AncList)
