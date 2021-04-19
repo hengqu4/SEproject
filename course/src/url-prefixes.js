@@ -26,4 +26,4 @@ export const API_HOMEWORK_PREFIX = '/api/v1/lecture/course-homework'
 
 export const API_ANNOUNCEMENT_PREFIX = '/api/v1/course-bulletin'
 
-export const API_FILE_PREFIX = '/api/v1/course-databse'
+export const API_FILE_PREFIX = '/api/v1/course-database/course-file-database'

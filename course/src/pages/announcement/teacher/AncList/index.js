@@ -125,7 +125,7 @@ const AncList = ({
           </Button>,
         ]}
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(ancList)}
         columns={columns}
       />

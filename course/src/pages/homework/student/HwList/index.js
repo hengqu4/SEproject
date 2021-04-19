@@ -126,7 +126,7 @@ const HwList = ({
       <ProTable
         headerTitle='作业列表'
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
       />

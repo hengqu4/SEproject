@@ -8,6 +8,7 @@ import { yellow } from 'chalk'
 
 const defaultState = {
   fileList: [],
+  url: '',
 }
 
 const effects = {
@@ -20,24 +21,11 @@ const effects = {
     })
   }),
   addFile: generateEffect(function* ({ payload }, { call, put }) {
-    yield call(FileServices.addFile, payload)
-    const res = yield call(FileServices.fetchFileList, payload)
-
+    const res = yield call(FileServices.addFile, payload)
+    console.log(res.FILE_PUT_URL)
     yield put({
-      type: 'setFileList',
-      payload: res,
-    })
-  }),
-  getFile: generateEffect(function* ({ payload }, { call }) {
-    yield call(FileServices.getFile, payload)
-  }),
-  modifyInfo: generateEffect(function* ({ payload }, { call, put }) {
-    yield call(FileServices.modifyInfo, payload)
-    const res = yield call(FileServices.fetchFileList, payload)
-
-    yield put({
-      type: 'setFileList',
-      payload: res,
+      type: 'setUrl',
+      payload: res.FILE_PUT_URL,
     })
   }),
   deleteFile: generateEffect(function* ({ payload }, { call, put }) {
@@ -54,6 +42,11 @@ const effects = {
 const reducers = {
   setFileList: generateReducer({
     attributeName: 'fileList',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setUrl: generateReducer({
+    attributeName: 'url',
     transformer: defaultArrayTransformer,
     defaultState,
   })

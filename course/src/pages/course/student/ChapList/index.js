@@ -86,7 +86,7 @@ const LecList = ({
       <ProTable
         headerTitle='章节信息'
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(lecList)}
         columns={columns}
       />

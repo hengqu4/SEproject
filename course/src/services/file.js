@@ -12,30 +12,12 @@ export const fetchFileList = (params) => {
 export const addFile = (params) => {
   return request(safeUrlAssembler('/course/:courseId').param({courseId: params.courseId}).toString(), {
       method: 'POST',
-      prefix: API_FILE_PREFIX,
-      //把数组转化为json字符串
-      // body: JSON.stringify({
-      //   homeworkTitle: params.hwInfo.homeworkTitle,
-      //   homeworkDescription: params.hwInfo.homeworkDescription,
-      //   homeworkStartTime: params.hwInfo.homeworkStartTime,
-      //   homeworkEndTime: params.hwInfo.homeworkEndTime,
-      // })
-  })
-}
-
-export const getFile = (params) => {
-  return request(safeUrlAssembler('/course/:courseId/:fileId/file').param({courseId: params.courseId, fileId: params.fileId}).toString(), {
-    method: 'GET',
     prefix: API_FILE_PREFIX,
-  })
-}
-
-export const modifyInfo = (params) => {
-  return request(safeUrlAssembler('/course/:courseId/:fileId').param({courseId: params.courseId, fileId: params.fileId}).toString(), {
-    method: 'PUT',
-    prefix: API_FILE_PREFIX,
+    //把数组转化为json字符串
     body: JSON.stringify({
-      fileComment: params.fileComment,
+      fileDisplayName: params.fileInfo.fileDisplayName,
+      fileComment: params.fileInfo.fileComment,
+      fileUploader: params.fileInfo.fileUploader,
     })
   })
 }
