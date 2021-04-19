@@ -1,7 +1,10 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi'
+import defaultSettings from './defaultSettings'
+import proxy from './proxy' // const { REACT_APP_ENV } = process.env
+
+export const host = '10.20.30.90'
+export const port = 8000
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -64,7 +67,7 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/SecurityLayout',
-          routes: [          
+          routes: [
             {
               path: '/',
               component: '../layouts/BasicLayout',
@@ -79,7 +82,7 @@ export default defineConfig({
                   name: '课程模块',
                   path: '/course',
                   icon: 'book',
-                  authority: ['teacher', 'teachingAssistant', 'student', 'principle'],
+                  authority: ['teacher', 'teachingAssistant', 'student', 'principal'],
                   routes: [
                     {
                       path: '/',
@@ -91,32 +94,27 @@ export default defineConfig({
                       path: '/course/course-list-teacher',
                       component: './course/course-list-teacher',
                       authority: ['teacher', 'teachingAssistant'],
-                    }, // {
-                    //   name: '课程信息',
-                    //   icon: 'smile',
-                    //   path: '/course/course-info',
-                    //   component: '',
-                    // },
+                    },
                     {
                       name: '课程列表',
                       icon: 'smile',
                       path: '/course/course-list',
-                      component: './course/course-list-principle',
-                      authority: ['principle'],
+                      component: './course/course-list-principal',
+                      authority: ['principal'],
                     },
                     {
                       name: '课程编辑',
                       icon: 'smile',
                       path: '/course/course-edit',
                       component: './course/course-edit',
-                      authority: ['principle'],
+                      authority: ['principal'],
                     },
                     {
                       name: '绑定教师',
                       icon: 'smile',
                       path: '/course/course-bind',
                       component: './course/course-bind',
-                      authority: ['principle'],
+                      authority: ['principal'],
                     },
                     {
                       name: '课程信息',
@@ -124,32 +122,6 @@ export default defineConfig({
                       path: '/course/course-info',
                       component: './course/course-info',
                       authority: ['student'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-list',
-                      component: './course/teacher/ChapList',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-ls',
-                      component: './course/student/ChapList',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '添加章节信息',
-                      path: '/course/chap-add',
-                      hideInMenu: true,
-                      component: './course/teacher/AddChap',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '编辑章节信息',
-                      path: '/course/chap-edit/:courseChapterId',
-                      hideInMenu: true,
-                      component: './course/teacher/EditChap',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -225,7 +197,6 @@ export default defineConfig({
                       authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                   ],
-
                 },
                 {
                   name: '实验',
@@ -293,7 +264,7 @@ export default defineConfig({
                   name: '对抗系统',
                   icon: 'aim',
                   path: '/contest',
-                  authority: ['teacher', 'student'],
+                  authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
                   routes: [
                     {
                       name: '历史记录',
@@ -311,19 +282,19 @@ export default defineConfig({
                       name: '查看成绩',
                       path: '/contest/match-history',
                       component: './contest/teacher/MatchHistory',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '创建比赛',
                       path: '/contest/create-contest',
                       component: './contest/teacher/CreateContest',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '对抗题库',
                       path: '/contest/questions-bank',
                       component: './contest/teacher/QuestionBank',
-                      authority: ['teacher'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -432,11 +403,12 @@ export default defineConfig({
                 },
               ],
             },
-          ]
+          ],
         },
       ],
     },
   ],
+
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
@@ -452,8 +424,9 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      target: 'http://localhost:8000',
+      target: `http://${host}:${port}`,
       changeOrigin: true,
     },
   },
-});
+  mock: false,
+})

@@ -1,17 +1,18 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { Collapse, Table, Row, Col, Space, Badge, Avatar, Spin } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 import formatTime from '@/utils/formatTime'
-import { useMount } from 'react-use'
 
-const mapStateToProps = ({ Contest = {} }) => ({
+const mapStateToProps = ({ Contest = {}, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   contests: Contest.contests,
   contestMatches: Contest.contestMatches,
   contestMatchesPagination: Contest.contestMatchesPagination,
 })
 
 const ContestMatches = ({
+  courseId = -1,
   contests = [],
   contestMatches = [],
   contestMatchesPagination = {},
@@ -21,11 +22,8 @@ const ContestMatches = ({
   const [matchesLoading, setMatchesLoading] = useState(false)
   const [currContestId, setCurrContestId] = useState()
 
-  useMount(() => {
+  useEffect(() => {
     setContestsLoading(true)
-
-    // TODO: 获取courseId
-    const courseId = 1
 
     dispatch({
       type: 'Contest/fetchAllContests',
@@ -35,22 +33,24 @@ const ContestMatches = ({
       onError,
       onFinish: setContestsLoading.bind(this, false),
     })
-  })
+  }, [dispatch, courseId])
 
   const onPanelChange = useCallback(
     (contestId) => {
-      setMatchesLoading(true)
-      setCurrContestId(contestId)
-      dispatch({
-        type: 'Contest/fetchContestMatches',
-        payload: {
-          pageNum: 1,
-          pageSize: 5,
-          contestId,
-        },
-        onError,
-        onFinish: setMatchesLoading(this, false),
-      })
+      if (contestId) {
+        setMatchesLoading(true)
+        setCurrContestId(contestId)
+        dispatch({
+          type: 'Contest/fetchContestMatches',
+          payload: {
+            pageNum: 1,
+            pageSize: 5,
+            contestId,
+          },
+          onError,
+          onFinish: setMatchesLoading(this, false),
+        })
+      }
     },
     [dispatch],
   )

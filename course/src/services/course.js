@@ -78,6 +78,17 @@ export const updateCourseInfo = (data) => {
   )
 }
 
+//删除课程信息
+export const deleteCourseInfo = (params) => {
+  return request(
+    SafeUrlAssembler('/course-info/:course_id').param({ course_id: params }).toString(),
+    {
+      method: 'DELETE',
+      prefix: API_COURSE_PREFIX,
+    },
+  )
+}
+
 //获取全部课程绑定信息
 export const fetchAllCourseTeach = () => {
   return request('/teach', {

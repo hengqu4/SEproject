@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { useMount } from 'react-use'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Table, Space, message, notification, Button } from 'antd'
@@ -8,10 +7,9 @@ import formatTime from '@/utils/formatTime'
 import { connect } from 'umi'
 import MatchDetail from '@/pages/contest/student/MatchHistory/components/MatchDetail'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, Course, user }) => ({
   currentUser: user.currentUser,
-  // TODO: 修改courseId来源
-  courseId: Contest.courseId,
+  courseId: Course.currentCourseInfo.courseId,
   dataSource: Contest.studentMatchHistory,
   matchDetail: Contest.studentMatchDetail,
 })
@@ -20,13 +18,13 @@ const MatchHistory = ({
   currentUser = {},
   matchDetail = {},
   dataSource = [],
-  courseId,
+  courseId = -1,
   dispatch = () => {},
 }) => {
   const [tableLoading, setTableLoading] = useState(true)
   const [viewMode, setViewMode] = useState('table')
 
-  useMount(() => {
+  useEffect(() => {
     dispatch({
       type: 'Contest/fetchStudentMatchHistory',
       payload: {
@@ -41,7 +39,7 @@ const MatchHistory = ({
       },
       onFinish: setTableLoading.bind(this, false),
     })
-  })
+  }, [dispatch, courseId, currentUser])
 
   const handleViewMatchDetail = useCallback(
     (matchId, event) => {
@@ -89,7 +87,7 @@ const MatchHistory = ({
         title: '排名',
         key: 'rank',
         dataIndex: 'rank',
-        render: (text, record, index) => <span>{`${text} / ${record.participantNumber}`}</span>,
+        render: (text, record) => <span>{`${text} / ${record.participantNumber}`}</span>,
       },
       {
         title: '分数',
@@ -105,7 +103,7 @@ const MatchHistory = ({
       {
         title: '操作',
         key: 'action',
-        render: (text, record, index) => (
+        render: (text, record) => (
           <Space size='middle'>
             <a onClick={handleViewMatchDetail.bind(this, record.matchId)}>查看比赛详情</a>
           </Space>

@@ -30,7 +30,7 @@ const MatchQuestionsWrapper = ({
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
   const [submited, setSubmited] = useState(false)
-  const [submitError, setSubmtError] = useState(null)
+  const [submitError, setSubmitError] = useState(null)
 
   const onUserAnswerChange = (questionId, questionType, newAnswer) => {
     const answersCopy = cloneDeep(matchQuestionAnswers)
@@ -68,7 +68,7 @@ const MatchQuestionsWrapper = ({
         answers: matchQuestionAnswers,
       },
       onError: (err) => {
-        setSubmtError(err)
+        setSubmitError(err)
       },
       onFinish: () => {
         setSubmited(true)
@@ -121,7 +121,7 @@ const MatchQuestionsWrapper = ({
           </header>
           <Divider />
           <main>
-            <MatchQuestions questions={matchQuestions} onUserAnsewrChange={onUserAnswerChange} />
+            <MatchQuestions questions={matchQuestions} onUserAnswerChange={onUserAnswerChange} />
           </main>
           <Divider />
           <footer style={{ textAlign: 'center' }}>

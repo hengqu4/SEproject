@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Steps, Row, Col, message } from 'antd'
@@ -8,11 +8,11 @@ import ConfirmCreateQuestion from '@/pages/contest/teacher/CreateContest/compone
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import ModalQuestionDetail from '@/pages/contest/components/ModalQuestionDetail'
 import { connect } from 'umi'
-import { useMount } from 'react-use'
 import omit from 'lodash/omit'
 import onError from '@/utils/onError'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, Course, user }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
   newContest: Contest.newContest,
   questionDetail: Contest.questionDetail,
@@ -28,6 +28,7 @@ const stepsDom = stepTitles.map((title) => <Steps.Step title={title} key={title}
 export const Match = ({
   currentUser: { id: userId = -1 } = {},
   newContest = {},
+  courseId = -1,
   questionDetail = {},
   selectedQuestions = [],
   currentContest = {},
@@ -45,17 +46,15 @@ export const Match = ({
       type: 'Contest/fetchCurrentContest',
       isTeacher: true,
       payload: {
-        courseId: 1,
+        courseId,
         userId,
       },
       onError,
       onFinish: setLoading.bind(this, false),
     })
-  }, [dispatch, userId])
+  }, [dispatch, userId, courseId])
 
-  useMount(() => {
-    getCurrentContest()
-  })
+  useEffect(getCurrentContest, [getCurrentContest])
 
   const getQuestionDetail = useCallback(
     ({ questionId, questionType }) => {
@@ -80,7 +79,7 @@ export const Match = ({
   const onStepChange = async (newStep) => {
     if (step === 0) {
       try {
-        const values = await basicInfoFormRef.current.validateFileds()
+        const values = await basicInfoFormRef.current.validateFields()
         const contestInfo = { ...values }
         contestInfo.startTime = values.time[0].toISOString(true)
         contestInfo.endTime = values.time[1].toISOString(true)

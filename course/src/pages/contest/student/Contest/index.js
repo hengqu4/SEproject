@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react'
-import { useMount, useUnmount } from 'react-use'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { notification, Spin, Row, Col, Button } from 'antd'
 import ProCard from '@ant-design/pro-card'
@@ -11,7 +10,8 @@ import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWeb
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
 import MatchingStatus from './matchingStatus'
 
-const mapStateToProps = ({ Contest, user }) => ({
+const mapStateToProps = ({ Contest, user, Course }) => ({
+  courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
   currentContest: Contest.currentContest,
   participated: Contest.participated,
@@ -27,31 +27,13 @@ const Contest = ({
   participating = false,
   participated = false,
   channelId = null,
+  courseId,
   status,
   userIndex,
   dispatch = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
   const reconnectRef = useRef(false)
-
-  useMount(() => {
-    setLoading(true)
-    dispatch({
-      type: 'Contest/fetchCurrentContest',
-      isTeacher: false,
-      payload: {
-        courseId: 1,
-        userId: currentUser.id,
-      },
-      onError: (err) => {
-        notification.error({
-          message: '获取比赛信息失败',
-          description: err.message,
-        })
-      },
-      onFinish: setLoading.bind(this, false),
-    })
-  })
 
   const clearStatus = useCallback(() => {
     dispatch({
@@ -69,7 +51,32 @@ const Contest = ({
     })
   }, [dispatch])
 
+  useEffect(() => {
+    setLoading(true)
+    dispatch({
+      type: 'Contest/fetchCurrentContest',
+      isTeacher: false,
+      payload: {
+        courseId,
+        userId: currentUser.id,
+      },
+      onError: (err) => {
+        notification.error({
+          message: '获取比赛信息失败',
+          description: err.message,
+        })
+      },
+      onFinish: setLoading.bind(this, false),
+    })
+
+    return clearStatus
+  }, [clearStatus, dispatch, courseId, currentUser])
+
   const handleCancelMatching = useCallback(() => {
+    if ([MatchingStatus.IDLE, MatchingStatus.SEARCHING_ROOM].includes(status)) {
+      clearStatus()
+      return
+    }
     dispatch({
       type: 'Contest/cancelMatching',
       payload: {
@@ -79,11 +86,7 @@ const Contest = ({
       onError,
       onFinish: clearStatus,
     })
-  }, [clearStatus, dispatch, channelId, currentUser])
-
-  useUnmount(() => {
-    clearStatus()
-  })
+  }, [clearStatus, dispatch, channelId, currentUser, status])
 
   useMatchWebSocket({
     studentId: currentUser.id,

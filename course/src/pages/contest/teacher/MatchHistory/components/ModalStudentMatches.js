@@ -85,7 +85,7 @@ const ModalStudentMatches = ({ studentMatches = [], student = {} }, ref) => {
     >
       <Space>
         <Avatar src={student.avatar} />
-        <span>{student.personal_id}</span>
+        <span>{student.personalId}</span>
         <span>{student.realname}</span>
       </Space>
       <Divider />

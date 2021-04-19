@@ -34,9 +34,6 @@ const defaultFilter = {
 }
 
 const defaultState = {
-  studentId: 3,
-  courseId: 1,
-  teacherId: 2,
   avatar: 'www.baidu.com',
   studentMatchHistory: [],
   studentMatchDetail: {},
@@ -84,6 +81,8 @@ const effects = {
   fetchCurrentContest: generateEffect(function* ({ isTeacher, payload }, { call, put }) {
     const res = yield call(ContestServices.fetchCurrentContest, payload)
 
+    console.log('fetchCurrentContest: ', res)
+
     const { contest, bIsParticipated, bIsParticipating } = res
 
     if (isTeacher && contest?.contestId) {
@@ -124,8 +123,7 @@ const effects = {
     const newContest = yield select((state) => state.Contest.newContest)
     const selectedQuestions = yield select((state) => state.Contest.selectedQuestions)
 
-    // TODO: 添加课程Id
-    const courseId = yield select((state) => state.Contest.courseId)
+    const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
     const publisherId = yield select((state) => state.user.currentUser.id)
 
     const newContestCopy = cloneDeep(newContest)
@@ -273,7 +271,7 @@ const effects = {
       payload: res.pagination,
     })
   }),
-  fetchAllContests: generateEffect(function* ({ payload }, { call, put, select }) {
+  fetchAllContests: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(ContestServices.fetchAllContests, payload)
 
     yield put({
@@ -326,7 +324,7 @@ const effects = {
   cancelMatching: generateEffect(function* ({ payload }, { call }) {
     yield call(ContestServices.cancelMatching, payload)
   }),
-  matchingComplete: generateEffect(function* ({ payload }, { select, call, put }) {
+  matchingComplete: generateEffect(function* ({ payload }, { call, put }) {
     yield put({
       type: 'setMatchingStatus',
       payload: MatchingStatus.WAITING_FOR_READY,
@@ -423,7 +421,7 @@ const effects = {
   clearMatchStatus: generateEffect(function* (_, { call, put, select }) {
     const [userId, courseId] = yield [
       select((s) => s.user.currentUser.id),
-      select((s) => s.Contest.courseId),
+      select((s) => s.Course.currentCourseInfo.courseId),
     ]
 
     const {
