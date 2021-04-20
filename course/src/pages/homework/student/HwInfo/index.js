@@ -9,11 +9,12 @@ import { values } from 'lodash';
 import formatTime from '@/utils/formatTime'
 import { UploadOutlined } from '@ant-design/icons';
 
-const mapStateToProps = ({ homework, Course, user }) => ({
+const mapStateToProps = ({ homework, Course, user, file }) => ({
   hwList: homework.hwList,
   info: homework.hwInfo,
   courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser,
+  url: file.url,
 })
 
 const FormatDataInfo = (info) => {
@@ -22,6 +23,7 @@ const FormatDataInfo = (info) => {
     homeworkDescription: "",
     startTime: "",
     endTime: "",
+    url:'',
   }
   formattedHwInfo.homeworkTitle = info.homeworkTitle
   formattedHwInfo.homeworkDescription = info.homeworkDescription
@@ -57,6 +59,16 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
       }
     })
   }
+
+  //上传某文件
+  const addFile = () => {
+    dispatch({
+      type: 'file/addFile',
+      payload: {
+        courseId, fileInfo,
+      }
+    })
+  }
   
   useMount(() => {
     // getHwList()
@@ -70,6 +82,30 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
     owner: FormatDataInfo(info).homeworkDescription,
   }
+
+  const props = {
+    action: url,
+    method: 'PUT',
+    maxCount: 1,
+    showUploadList: false,
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        // console.log(url)
+        // console.log(fileInfo.fileDisplayName)
+        message.success(`${info.file.name} 上传成功！`);
+        location.reload(false)
+      }
+      else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 上传失败！`);
+      }
+    },
+    beforeUpload(file) {
+      // fileInfo.fileDisplayName = file.name
+    },
+  };
 
   return (
     <PageContainer>
@@ -91,9 +127,12 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
         </div>
         <div style={{ paddingLeft: '60px', paddingTop: '100px' }}>
           <Divider />
-          <Upload name="logo" action="/upload.do" listType="picture">
-          <Button type='primary' icon={<UploadOutlined />}>上传文件</Button>
-        </Upload>
+          <Upload {...props}>
+            {/* <Button icon={<UploadOutlined />}> */}
+            <Button icon={<UploadOutlined />} onClick={() => { addFile() }}>
+              上传文件
+            </Button>
+          </Upload>,
         </div>
         
       </div>

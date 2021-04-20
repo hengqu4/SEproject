@@ -131,7 +131,7 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId }) => {
           </Button>,
         ]}
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
       />
