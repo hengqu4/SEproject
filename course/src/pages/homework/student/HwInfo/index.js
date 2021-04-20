@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Upload, Tag, Button, Divider } from 'antd';
+import { Upload, Tag, Button, Divider, message } from 'antd';
 import { connect, useParams } from 'umi'
 import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
@@ -13,7 +13,7 @@ const mapStateToProps = ({ homework, Course, user, file }) => ({
   hwList: homework.hwList,
   info: homework.hwInfo,
   courseId: Course.currentCourseInfo.courseId,
-  currentUser: user.currentUser,
+  currentUser: user.currentUser.name,
   url: file.url,
 })
 
@@ -23,7 +23,6 @@ const FormatDataInfo = (info) => {
     homeworkDescription: "",
     startTime: "",
     endTime: "",
-    url:'',
   }
   formattedHwInfo.homeworkTitle = info.homeworkTitle
   formattedHwInfo.homeworkDescription = info.homeworkDescription
@@ -32,11 +31,15 @@ const FormatDataInfo = (info) => {
   return formattedHwInfo
 }
 
-const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
+const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = courseId, url='', currentUser = currentUser }) => {
   const params = useParams()
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
-
+  const [fileInfo, setFileInfo] = useState({
+    fileDisplayName: "test",
+    fileComment: "test",
+    fileUploader: currentUser,
+  })
 
   //获得当前作业列表
   const getHwList = () => {
@@ -83,28 +86,39 @@ const HwInfo = ({ info = {}, hwList = [], dispatch = () => {}, courseId = course
     owner: FormatDataInfo(info).homeworkDescription,
   }
 
+  //这里修改传给后端的数据，但我尝试的form-data转binary的方法都还不对，回宿舍了
+  const transformFile = (file) => {
+    // let formData = new FormData()
+    // formData.append('file', file)
+    // console.log(formData)
+    // return formData
+  }
+
   const props = {
     action: url,
     method: 'PUT',
     maxCount: 1,
-    showUploadList: false,
+    showUploadList: true,
     onChange(info) {
+      console.log('2nd url', url)
+      console.log('status', info.file.status)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        // console.log(url)
-        // console.log(fileInfo.fileDisplayName)
+        
+        console.log(fileInfo.fileDisplayName)
         message.success(`${info.file.name} 上传成功！`);
-        location.reload(false)
       }
       else if (info.file.status === 'error') {
         message.error(`${info.file.name} 上传失败！`);
       }
     },
+    // beforeUpload: beforeUpload
     beforeUpload(file) {
-      // fileInfo.fileDisplayName = file.name
+      fileInfo.fileDisplayName = file.name
     },
+    transformFile,
   };
 
   return (

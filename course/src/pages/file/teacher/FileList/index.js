@@ -3,7 +3,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Upload, message } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
-import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
@@ -126,6 +125,20 @@ const FileList = ({
       )
     }
   ]
+  
+  // const beforeUpload = async (file) => {
+  //     fileInfo.fileDisplayName = file.name
+  //     await addFile()
+  // }
+
+  //这里修改传给后端的数据，但我尝试的form-data转binary的方法都还不对，回宿舍了
+  const transformFile = (file) => {
+    // console.log(file)
+    // let formData = new FormData()
+    // formData.append('file', file)
+    // console.log(formData)
+    // return formData
+  }
 
   const props = {
     action: url,
@@ -133,22 +146,25 @@ const FileList = ({
     maxCount: 1,
     showUploadList: false,
     onChange(info) {
+      console.log('2nd url', url)
+      console.log('status', info.file.status)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        // console.log(url)
-        // console.log(fileInfo.fileDisplayName)
+        
+        console.log(fileInfo.fileDisplayName)
         message.success(`${info.file.name} 上传成功！`);
-        location.reload(false)
       }
       else if (info.file.status === 'error') {
         message.error(`${info.file.name} 上传失败！`);
       }
     },
+    // beforeUpload: beforeUpload
     beforeUpload(file) {
-      // fileInfo.fileDisplayName = file.name
+      fileInfo.fileDisplayName = file.name
     },
+    transformFile,
   };
 
   return (

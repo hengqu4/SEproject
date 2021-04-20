@@ -178,7 +178,6 @@ export default defineConfig({
                   name: '作业',
                   icon: 'highlight',
                   path: '/homework',
-
                   routes: [
                     {
                       name: '作业列表',
@@ -199,7 +198,7 @@ export default defineConfig({
                       path: '/homework/hw-list/hw-info/:homeworkId',
                       hideInMenu: true,
                       component: './homework/teacher/HwInfo',
-                      authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
+                      authority: ['principle', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '作业详情',

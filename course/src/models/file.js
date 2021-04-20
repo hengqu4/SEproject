@@ -22,7 +22,7 @@ const effects = {
   }),
   addFile: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(FileServices.addFile, payload)
-    console.log(res.FILE_PUT_URL)
+    console.log('2nd url', res.FILE_PUT_URL)
     yield put({
       type: 'setUrl',
       payload: res.FILE_PUT_URL,
