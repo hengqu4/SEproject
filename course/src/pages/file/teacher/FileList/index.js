@@ -6,11 +6,10 @@ import {connect} from 'umi'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
-import { UploadOutlined } from '@ant-design/icons'
+import axios from 'axios';
 
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
-  url: file.url,
   courseId: Course.currentCourseInfo.courseId,
   currentUser: user.currentUser.name,
 })
@@ -41,11 +40,10 @@ const FileList = ({
   const [fileId, setFileId ] = useState()
   const [ modalVisible, setModalVisible ] = useState(false)
   const ref = useRef()
-  const [fileInfo, setFileInfo] = useState({
-    fileDisplayName: "test",
-    fileComment: "test",
-    fileUploader: currentUser,
-  })
+  var fileName
+  var binary
+
+  const host = 'localhost'
 
   //获得当前文件列表
   const getFileList = () => {
@@ -72,14 +70,51 @@ const FileList = ({
     })
   }
 
-  //上传某文件
-  const addFile = () => {
-    dispatch({
-      type: 'file/addFile',
-      payload: {
-        courseId, fileInfo,
-      }
+  const handleChange = event => {
+    fileName = event.target.value
+    // 因为这样获取到的 fileName 包含路径，所以要对fileName进行切割
+    // "/" 和 "\" 都有可能
+    var tempFileNameList = fileName.split("\\")
+    var tempFileName = tempFileNameList.pop()
+    tempFileNameList = tempFileName.split("/")
+    tempFileName = tempFileNameList.pop()
+    fileName = tempFileName
+
+    const reader = new FileReader();
+    var inputBox = document.getElementById("inputbox");
+    reader.readAsArrayBuffer(inputBox.files[0]);
+    reader.onload = function(){
+      // 读取完成后，数据保存在对象的result属性中
+      // console.log(this.result)
+      binary = this.result
+    }
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    var firstResponse
+    var putUrl
+    axios.post(`http://${host}:8000/api/v1/course-database/course-file-database/course/${courseId}`, {
+        fileDisplayName: fileName,
+        fileComment: "no comment",
+        fileUploader: currentUser,
     })
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+        firstResponse = res.data
+        putUrl = firstResponse.FILE_PUT_URL
+        console.log(putUrl);
+        axios({
+          method: "put",
+          url: putUrl,
+          data: binary,
+          headers: { "Content-Type": `application/octet-stream`, }
+        })
+          .then(
+            getFileList()
+          )
+      })
   }
 
   useMount(() => {
@@ -92,7 +127,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost:8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr='http://' + host + ':8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
         return <a href={addr}
         >{record.name}</a>
       },
@@ -125,59 +160,16 @@ const FileList = ({
       )
     }
   ]
-  
-  // const beforeUpload = async (file) => {
-  //     fileInfo.fileDisplayName = file.name
-  //     await addFile()
-  // }
-
-  //这里修改传给后端的数据，但我尝试的form-data转binary的方法都还不对，回宿舍了
-  const transformFile = (file) => {
-    // console.log(file)
-    // let formData = new FormData()
-    // formData.append('file', file)
-    // console.log(formData)
-    // return formData
-  }
-
-  const props = {
-    action: url,
-    method: 'PUT',
-    maxCount: 1,
-    showUploadList: false,
-    onChange(info) {
-      console.log('2nd url', url)
-      console.log('status', info.file.status)
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        
-        console.log(fileInfo.fileDisplayName)
-        message.success(`${info.file.name} 上传成功！`);
-      }
-      else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败！`);
-      }
-    },
-    // beforeUpload: beforeUpload
-    beforeUpload(file) {
-      fileInfo.fileDisplayName = file.name
-    },
-    transformFile,
-  };
 
   return (
     <PageContainer>
       <ProTable
         headerTitle='文件列表'
         toolBarRender={() => [
-          <Upload {...props}>
-            {/* <Button icon={<UploadOutlined />}> */}
-            <Button icon={<UploadOutlined />} onClick={() => { addFile() }}>
-              上传文件
-            </Button>
-          </Upload>,
+          <form onSubmit={handleSubmit}>
+            <input type="file" name="name" id="inputbox" onChange={handleChange} />
+            <input type="submit"/>
+          </form>
         ]}
         // actionRef={ref}
         search={false}

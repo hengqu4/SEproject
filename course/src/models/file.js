@@ -20,14 +20,6 @@ const effects = {
       payload: res,
     })
   }),
-  addFile: generateEffect(function* ({ payload }, { call, put }) {
-    const res = yield call(FileServices.addFile, payload)
-    console.log('2nd url', res.FILE_PUT_URL)
-    yield put({
-      type: 'setUrl',
-      payload: res.FILE_PUT_URL,
-    })
-  }),
   deleteFile: generateEffect(function* ({ payload }, { call, put }) {
     yield call(FileServices.deleteFile, payload)
     const res = yield call(FileServices.fetchFileList, payload)
