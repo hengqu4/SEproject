@@ -3,8 +3,8 @@ import { defineConfig } from 'umi'
 import defaultSettings from './defaultSettings'
 import proxy from './proxy' // const { REACT_APP_ENV } = process.env
 
-export const host = '10.20.30.90'
-export const port = 8000
+export const ip = process.env.DEV_SERVER_IP
+export const port = +process.env.PORT || 8000
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -449,7 +449,7 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      target: `http://${host}:${port}`,
+      target: `http://${ip}:${port}`,
       changeOrigin: true,
     },
   },

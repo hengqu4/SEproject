@@ -5,8 +5,8 @@ import onError from '@/utils/onError'
 import { notification } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
 
-const host = '10.20.30.90'
-const port = 8080
+const ip = process.env.SERVER_IP
+const port = +process.env.WEBSOCKET_PORT || 8080
 
 const useMatchWebSocket = ({
   studentId,
@@ -19,7 +19,7 @@ const useMatchWebSocket = ({
   userIndex = -1,
 }) => {
   const socketUrl = useMemo(
-    () => (channelId ? `ws://${host}:${port}/api/v1/contest/sub?id=${channelId}` : null),
+    () => (channelId ? `ws://${ip}:${port}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
 
