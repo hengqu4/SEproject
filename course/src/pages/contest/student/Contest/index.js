@@ -73,10 +73,6 @@ const Contest = ({
   }, [clearStatus, dispatch, courseId, currentUser])
 
   const handleCancelMatching = useCallback(() => {
-    if ([MatchingStatus.IDLE, MatchingStatus.SEARCHING_ROOM].includes(status)) {
-      clearStatus()
-      return
-    }
     dispatch({
       type: 'Contest/cancelMatching',
       payload: {
@@ -86,7 +82,7 @@ const Contest = ({
       onError,
       onFinish: clearStatus,
     })
-  }, [clearStatus, dispatch, channelId, currentUser, status])
+  }, [clearStatus, dispatch, channelId, currentUser])
 
   useMatchWebSocket({
     studentId: currentUser.id,
