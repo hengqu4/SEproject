@@ -391,6 +391,12 @@ export default defineConfig({
                       component: './account/settings',
                     },
                     {
+                      name: '空白页面',
+                      icon: 'smile',
+                      path: '/account/importmutiaccount',
+                      component: './account/InputMutiAccount',
+                    },
+                    {
                       name: '导入单个账号',
                       icon: 'smile',
                       path: '/account/import',
