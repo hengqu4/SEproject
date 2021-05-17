@@ -77,7 +77,7 @@ const AllLabCase = ({ lab, user, Course }) => ({
   courseId: Course.currentCourseInfo.courseId
 })
 
-const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], courseId = courseId, dispatch = () => {} }) => {
+const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], courseId, dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
@@ -194,7 +194,7 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], cours
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllLabCase',
-      payload: 1,
+      payload: courseId,
       onError: (err) => {
         notification.error({
           message: '获取实验列表失败',
