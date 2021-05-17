@@ -1,107 +1,86 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { notification, Spin, Row, Col, Button } from 'antd'
+import { Row, Col, notification } from 'antd'
 import ProCard from '@ant-design/pro-card'
-import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { connect } from 'umi'
 import ModalMatching from '@/pages/contest/student/Contest/components/ModalMatching'
 import onError from '@/utils/onError'
-import useMatchWebSocket from '@/pages/contest/student/Contest/hooks/useMatchWebSocket'
-import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWapper'
 import MatchingStatus from './matchingStatus'
+import ContestContent from '@/pages/contest/student/Contest/components/ContestContent'
+import useStateRef from './hooks/useStateRef'
+import fakeUserInfoArr from './fakeUserInfo'
+import useWebSocket from 'react-use-websocket'
 
-const mapStateToProps = ({ Contest, user, Course }) => ({
-  courseId: Course.currentCourseInfo.courseId,
-  currentUser: user.currentUser,
+// eslint-disable-next-line
+const ip = SERVER_IP
+// eslint-disable-next-line
+const port = WEBSOCKET_PORT
+
+console.log(`ws://${ip}:${port}/api/v1/contest/sub`)
+
+const SocketMessageType = {
+  MATCHING_COMPLETE: 'MATCHING_COMPLETE',
+  ROOM_DISMISS: 'ROOM_DISMISS',
+  COMPETITOR_READY: 'COMPETITOR_READY',
+  START_ANSWERING: 'START_ANSWERING',
+  COMPETITOR_SUBMIT: 'COMPETITOR_SUBMIT',
+}
+const getSocketMessageType = (numType) => {
+  return [null, ...Object.keys(SocketMessageType)][numType]
+}
+
+const mapStateToProps = ({ Contest, user }) => ({
+  studentId: user.currentUser.id,
   currentContest: Contest.currentContest,
-  participated: Contest.participated,
-  participating: Contest.participating,
   channelId: Contest.channelId,
   status: Contest.matchingStatus,
   userIndex: Contest.userIndex,
 })
 
 const Contest = ({
-  currentUser = {},
+  studentId,
   currentContest = {},
-  participating = false,
-  participated = false,
   channelId = null,
-  courseId,
   status,
   userIndex,
   dispatch = () => {},
 }) => {
-  const [loading, setLoading] = useState(false)
-  const reconnectRef = useRef(false)
+  const [isReconnect, setIsReconnect] = useStateRef(false)
 
-  const clearStatus = useCallback(() => {
+  const socketUrl = useMemo(
+    () => (channelId ? `ws://${ip}:${port}/api/v1/contest/sub?id=${channelId}` : null),
+    [channelId],
+  )
+
+  const clearMatchState = useCallback(() => {
     dispatch({
       type: 'Contest/setMatchingStatus',
       payload: MatchingStatus.IDLE,
     })
-    dispatch({
-      type: 'Contest/setChannelId',
-    })
-    dispatch({
-      type: 'Contest/setReadyArr',
-    })
-    dispatch({
-      type: 'Contest/setUserIndex',
-    })
+    dispatch({ type: 'Contest/setChannelId' })
+    dispatch({ type: 'Contest/setReadyArr' })
+    dispatch({ type: 'Contest/setUserIndex' })
   }, [dispatch])
 
-  useEffect(() => {
-    setLoading(true)
-    dispatch({
-      type: 'Contest/fetchCurrentContest',
-      isTeacher: false,
-      payload: {
-        courseId,
-        userId: currentUser.id,
-      },
-      onError: (err) => {
-        notification.error({
-          message: '获取比赛信息失败',
-          description: err.message,
-        })
-      },
-      onFinish: setLoading.bind(this, false),
-    })
-  }, [dispatch, courseId, currentUser])
-
-  const handleCancelMatching = useCallback(() => {
+  const onCancelMatching = useCallback(() => {
     if (channelId) {
       dispatch({
         type: 'Contest/cancelMatching',
         payload: {
           channelId,
-          studentId: currentUser.id,
+          studentId,
         },
         onError,
       })
     }
-    clearStatus()
-  }, [clearStatus, dispatch, channelId, currentUser])
+    clearMatchState()
+  }, [clearMatchState, dispatch, channelId, studentId])
 
-  useMatchWebSocket({
-    studentId: currentUser.id,
-    channelId,
-    dispatch,
-    clearStatus,
-    cancelMatching: handleCancelMatching,
-    reconnect: reconnectRef,
-    status,
-    contestId: currentContest.contestId,
-    userIndex,
-  })
-
-  const handleModalOpen = useCallback(() => {
+  const onStartMatching = useCallback(() => {
     dispatch({
       type: 'Contest/setMatchingStatus',
       payload: MatchingStatus.SEARCHING_ROOM,
     })
-    const studentId = currentUser.id
     const { contestId } = currentContest
 
     dispatch({
@@ -118,12 +97,10 @@ const Contest = ({
         })
       },
     })
-  }, [dispatch, currentContest, currentUser])
+  }, [dispatch, currentContest, studentId])
 
-  const handleReconnect = useCallback(() => {
-    reconnectRef.current = true
-
-    const studentId = currentUser.id
+  const onReconnect = useCallback(() => {
+    setIsReconnect(true)
 
     dispatch({
       type: 'Contest/fetchChannelId',
@@ -131,7 +108,7 @@ const Contest = ({
         studentId,
       },
       onError: (err) => {
-        reconnectRef.current = false
+        setIsReconnect(false)
         onError(err)
         dispatch({
           type: 'Contest/setMatchingStatus',
@@ -139,72 +116,138 @@ const Contest = ({
         })
       },
     })
-  }, [dispatch, currentUser])
+  }, [dispatch, studentId, setIsReconnect])
 
-  const currentContestValid = useMemo(() => Object.keys(currentContest).length !== 0, [
-    currentContest,
-  ])
+  const onReady = useCallback(() => {
+    dispatch({
+      type: 'Contest/readyForMatch',
+      payload: {
+        studentId,
+        channelId,
+        status: true,
+      },
+    })
+  }, [dispatch, channelId, studentId])
 
-  const getContestDescriptionDom = useCallback(() => {
-    if (loading) return null
-    return currentContestValid ? (
-      <ContestDescription contest={currentContest} />
-    ) : (
-      <h1 style={{ textAlign: 'center', fontSize: 40, margin: 40 }}>当前没有比赛</h1>
-    )
-  }, [loading, currentContestValid, currentContest])
+  const onMatchingComplete = useCallback(() => {
+    dispatch({
+      type: 'Contest/matchingComplete',
+      payload: {
+        studentId,
+        channelId,
+      },
+      onError: (err) => {
+        onError(err)
+        onCancelMatching()
+      },
+    })
+  }, [channelId, dispatch, onCancelMatching, studentId])
 
-  const getBtnDom = useCallback(() => {
-    if (loading || !currentContestValid) return null
+  const onRoomDismiss = useCallback(() => {
+    dispatch({
+      type: 'Contest/setMatchingStatus',
+      payload: MatchingStatus.MATCHING,
+    })
+    dispatch({ type: 'Contest/setReadyArr' })
+  }, [dispatch])
 
-    const btnAttrs = {
-      block: true,
-      type: 'primary',
-    }
+  const onCompetitorReady = useCallback(
+    ({ readyArray }) => {
+      dispatch({
+        type: 'Contest/setReadyArr',
+        payload: readyArray,
+      })
+    },
+    [dispatch],
+  )
 
-    let btnText = ''
+  const onStartAnswering = useCallback(() => {
+    dispatch({
+      type: 'Contest/connectToMatch',
+      payload: {
+        studentId,
+        contestId: currentContest.contestId,
+      },
+    })
+  }, [dispatch, studentId, currentContest.contestId])
 
-    if (participating) {
-      btnText = '您正在参加一场对抗，点击继续'
-      btnAttrs.onClick = handleReconnect
-    } else if (participated) {
-      btnText = '您已参加过该比赛'
-      btnAttrs.disabled = true
+  const onCompetitorSubmit = useCallback(
+    ({ submitIndex: competitorIndex }) => {
+      if (competitorIndex !== userIndex && status === MatchingStatus.ANSWERING) {
+        notification.info({
+          description: `${fakeUserInfoArr[competitorIndex].nickname} 已提交答案`,
+        })
+      }
+    },
+    [status, userIndex],
+  )
+
+  const onSocketConnected = useCallback(() => {
+    if (isReconnect) {
+      dispatch({
+        type: 'Contest/matchingComplete',
+        payload: {
+          studentId,
+          channelId,
+        },
+        onError: onCancelMatching,
+        onSuccess: () => {
+          dispatch({
+            type: 'Contest/connectToMatch',
+            payload: {
+              studentId,
+              contestId: currentContest.contestId,
+            },
+            onError: onCancelMatching,
+          })
+        },
+      })
     } else {
-      btnText = '开始匹配'
-      btnAttrs.onClick = handleModalOpen
+      dispatch({
+        type: 'Contest/setMatchingStatus',
+        payload: MatchingStatus.MATCHING,
+      })
     }
+  }, [isReconnect, dispatch, studentId, channelId, currentContest.contestId, onCancelMatching])
 
-    return (
-      <div style={{ margin: '20px 0' }}>
-        <Button {...btnAttrs}>{btnText}</Button>
-      </div>
-    )
-  }, [loading, currentContestValid, participated, participating, handleModalOpen, handleReconnect])
+  const actionMap = useMemo(
+    () => ({
+      [SocketMessageType.MATCHING_COMPLETE]: onMatchingComplete,
+      [SocketMessageType.ROOM_DISMISS]: onRoomDismiss,
+      [SocketMessageType.COMPETITOR_READY]: onCompetitorReady,
+      [SocketMessageType.START_ANSWERING]: onStartAnswering,
+      [SocketMessageType.COMPETITOR_SUBMIT]: onCompetitorSubmit,
+    }),
+    [onMatchingComplete, onRoomDismiss, onCompetitorReady, onStartAnswering, onCompetitorSubmit],
+  )
 
-  const contentDom = useMemo(() => {
-    if (status === MatchingStatus.ANSWERING) {
-      return <MatchQuestionsWrapper />
-    }
+  const onSocketMessage = useCallback(
+    ({ data }) => {
+      const socketMessage = JSON.parse(data)
+      console.log('socketMessage: ', socketMessage)
 
-    return (
-      <div>
-        {getContestDescriptionDom()}
-        {getBtnDom()}
-      </div>
-    )
-  }, [getBtnDom, getContestDescriptionDom, status])
+      const { type } = socketMessage
+      const defaultAction = () => {}
+      ;(actionMap[getSocketMessageType(type)] || defaultAction)(socketMessage)
+    },
+    [actionMap],
+  )
+
+  useWebSocket(socketUrl, {
+    onOpen: onSocketConnected,
+    onMessage: onSocketMessage,
+    onError: onCancelMatching,
+  })
 
   return (
     <PageContainer title={false}>
       <ProCard>
         <Row justify='center'>
           <Col span={18} xs={24} sm={20} lg={16}>
-            <Spin spinning={loading} />
-            {contentDom}
+            <ContestContent onReconnect={onReconnect} onStartMatching={onStartMatching} />
           </Col>
         </Row>
-        <ModalMatching onCancel={handleCancelMatching} />
+        <ModalMatching onReady={onReady} onCancel={onCancelMatching} />
       </ProCard>
     </PageContainer>
   )

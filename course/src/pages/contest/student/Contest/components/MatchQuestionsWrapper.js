@@ -29,7 +29,7 @@ const MatchQuestionsWrapper = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [submited, setSubmited] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState(null)
 
   const onUserAnswerChange = (questionId, questionType, newAnswer) => {
@@ -71,7 +71,7 @@ const MatchQuestionsWrapper = ({
         setSubmitError(err)
       },
       onFinish: () => {
-        setSubmited(true)
+        setSubmitted(true)
       },
     })
   }
@@ -97,14 +97,14 @@ const MatchQuestionsWrapper = ({
   }
 
   const modalContent = useMemo(() => {
-    if (submited) {
+    if (submitted) {
       if (submitError) {
         return '提交失败'
       }
       return '提交成功'
     }
     return '正在提交'
-  }, [submited, submitError])
+  }, [submitted, submitError])
 
   return (
     <>
@@ -135,7 +135,7 @@ const MatchQuestionsWrapper = ({
             destroyOnClose
             closable={false}
             footer={
-              submited ? (
+              submitted ? (
                 <Button type='primary' onClick={clearMatchStatus}>
                   确认
                 </Button>

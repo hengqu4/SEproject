@@ -20,7 +20,7 @@ const ModalMatching = ({
   userIndex = 0,
   channelId,
   status,
-  dispatch = () => {},
+  onReady = () => {},
   onCancel = () => {},
 }) => {
   const userInfoArr = fakeUserInfoArr
@@ -39,18 +39,6 @@ const ModalMatching = ({
 
     return ''
   }, [status])
-
-  const handleReadyForMatch = useCallback(() => {
-    const studentId = currentUser.id
-    dispatch({
-      type: 'Contest/readyForMatch',
-      payload: {
-        studentId,
-        channelId,
-        status: true,
-      },
-    })
-  }, [dispatch, channelId, currentUser])
 
   return (
     <Modal
@@ -80,7 +68,7 @@ const ModalMatching = ({
               actions={
                 userIndex === index && !readyArr[userIndex]
                   ? [
-                      <Button key='ready' type='primary' onClick={handleReadyForMatch}>
+                      <Button key='ready' type='primary' onClick={onReady}>
                         准备
                       </Button>,
                     ]
