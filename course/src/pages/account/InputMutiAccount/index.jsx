@@ -4,6 +4,7 @@ import { Upload, message, Card, Button } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
 import { useModel } from 'umi'
+import testState from '@/models/course'
 
 const { Dragger } = Upload
 
@@ -35,7 +36,7 @@ const InputMutiAccount = () => {
   const onClicked = () => {
     //TODO: modify upload request
     // console.log(file)
-    console.log(test)
+    console.log(testState.state.currentCourseInfo.courseId)
 
   }
 
@@ -44,14 +45,14 @@ const InputMutiAccount = () => {
   }
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
-  const test = useModel("demo");
+  const test = useModel("Course");
   useEffect(() => {
     setTimeout(() => {
-      setLoading(false);
+      setLoading(false); 
     }, 3000);
   }, []);
   return (
-    <PageContainer content="这是一个新页面，从这里进行开发！" className={styles.main}>
+    <PageContainer content="导入多个学生数据" className={styles.main}>
       <div
         style={{
           paddingTop: 100,

@@ -69,14 +69,15 @@ const FormatData = (allLabsData, mySubmission, currentUser) => {
   return formattedLabList
 }
 
-const AllLabCase = ({ lab, user }) => ({
+const AllLabCase = ({ lab, user, Course }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
   mySubmission: lab.mySubmissionList,
   currentUser: user.currentUser,
+  courseId: Course.courseId
 })
 
-const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], dispatch = () => {} }) => {
+const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], courseId = courseId, dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);

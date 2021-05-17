@@ -1,6 +1,8 @@
 import {Badge,Card,Descriptions,Popover,Table,} from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useCallback } from 'react';
+import onError from '@/utils/onError'
+import { useMount } from 'react-use'
 import { connect } from 'umi';
 import styles from './style.less';
 

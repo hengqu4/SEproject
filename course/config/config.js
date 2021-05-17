@@ -1,11 +1,10 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi'
-import defaultSettings from './defaultSettings'
-import proxy from './proxy' // const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi';
+import defaultSettings from './defaultSettings';
+import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
 
-export const ip = process.env.DEV_SERVER_IP
-export const port = +process.env.PORT || 8000
-
+export const ip = process.env.DEV_SERVER_IP;
+export const port = +process.env.PORT || 8000;
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -391,22 +390,18 @@ export default defineConfig({
                       component: './account/settings',
                     },
                     {
-                      name: '空白页面',
+                      name: '导入多个账号',
                       icon: 'smile',
                       path: '/account/importmutiaccount',
                       component: './account/InputMutiAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
-                      name: '导入单个账号',
+                      name: '导入一个账号',
                       icon: 'smile',
-                      path: '/account/import',
-                      component: './account/bulkimport',
-                    },
-                    {
-                      name: '批量导入账号',
-                      icon: 'smile',
-                      path: '/account/bulkimport',
-                      component: './account/bulkimport',
+                      path: '/account/importsingleaccount',
+                      component: './account/ImportSingleAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -439,7 +434,6 @@ export default defineConfig({
       ],
     },
   ],
-
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
@@ -460,4 +454,4 @@ export default defineConfig({
     },
   },
   mock: false,
-})
+});
