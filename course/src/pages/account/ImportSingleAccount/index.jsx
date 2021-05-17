@@ -1,10 +1,9 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, Popover, Progress } from 'antd';
+import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, Popover, Progress, notification } from 'antd';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import styles from './style.less';
-import { visible } from 'chalk';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -29,7 +28,13 @@ const ImportSingleAccount = (props) => {
   const [visible, setvisible] = useState(false)
   const [popover, setpopover] = useState(false)
   const confirmDirty = false
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
+
+  const [personalId, setPersonalId] = useState()
+  const [password, setPassword] = useState()
+  const [realname, setRealname] = useState()
+  const [email, setEmail] = useState()
+  const { dispatch } = props
+
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -64,22 +69,40 @@ const ImportSingleAccount = (props) => {
     },
   };
 
-  const onFinish = (values) => {
-    const { dispatch } = props;
+  const onFinish = () => {
+    const data = {
+      personalId: personalId.toString(),
+      realname,
+      password,
+      universityName: 'tj',
+      schoolName: 'sse',
+      university_id: '1',
+      school_id: '1',
+      character: '4',
+      email,
+    }
     dispatch({
-      type: 'accountAndImportSingleAccount/submitRegularForm',
-      payload: values,
-    });
+      type: 'account/uploadSingleAccount',
+      payload: data,
+      onError: (err) => {
+        notification.error({
+          message: '导入失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '导入成功',
+        })
+      }
+    })
   };
 
-  const onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
-
-  const onValuesChange = (changedValues) => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
+  const onValuesChange = (_, allValues) => {
+    setPassword(allValues.password)
+    setRealname(allValues.realname)
+    setPersonalId(allValues.personal_id)
+    setEmail(allValues.email)
   };
 
   const getPasswordStatus = () =>{
@@ -162,13 +185,12 @@ const ImportSingleAccount = (props) => {
             public: '1',
           }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
         >
           <FormItem
             {...formItemLayout}
             label = "邮箱"
-            name = "Email"
+            name = "email"
             rules = {[
               {
                 required: true,
@@ -288,7 +310,12 @@ const ImportSingleAccount = (props) => {
               marginTop: 32,
             }}
           >
-            <Button type="primary" htmlType="submit" loading={submitting}>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              loading={submitting}
+              // onClick={onConfirmClicked()}
+            >
               提交
             </Button>
           </FormItem>
@@ -298,4 +325,4 @@ const ImportSingleAccount = (props) => {
   );
 };
 
-export default ImportSingleAccount
+export default connect()(ImportSingleAccount)

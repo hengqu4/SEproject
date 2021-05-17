@@ -13,6 +13,9 @@ const defaultState = {
 const effects = {
     uploadAccount: generateEffect(function* ({payload}, {call}){
         yield call(uploadFile.uploadAccount, payload)
+    }),
+    uploadSingleAccount: generateEffect(function*({payload}, {call}){
+        yield call(uploadFile.uploadSingleAccount, payload)
     })
 }
 
