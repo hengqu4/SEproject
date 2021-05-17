@@ -191,6 +191,7 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], cours
     },
   ]
 
+  //FIXME: error when allLabsData = []
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllLabCase',

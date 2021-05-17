@@ -10,13 +10,14 @@ import Submit from './components/Submit'
 
 const { TabPane } = Tabs
 
-const AllLabCase = ({ lab }) => ({
+const AllLabCase = ({ lab, Course }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
   labStatistics: lab.labStatistics,
+  courseId: Course.currentCourseInfo.courseId
 })
 
-const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () => {} }) => {
+const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
   const [currentLab, setCurrentLab] = useState()
   const [labAnalyseDataSum, setLabAnalyseDataSum] = useState(0)
@@ -172,10 +173,11 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, dispatch = () =>
     setSubmitVisible(false)
   }
 
+  //FIXME: undefined courseCaseId when allLabsData is []
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllLabCase',
-      payload: 1,
+      payload: courseId,
       onError: (err) => {
         notification.error({
           message: '获取统计信息失败',
