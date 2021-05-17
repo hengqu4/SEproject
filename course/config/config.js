@@ -8,9 +8,6 @@ export const ip =
 export const port = +process.env.PORT
 
 console.log(`address: ${ip}:${port}`)
-
-export const ip = process.env.DEV_SERVER_IP;
-export const port = +process.env.PORT || 8000;
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
