@@ -3,9 +3,11 @@ import { defineConfig } from 'umi'
 import defaultSettings from './defaultSettings'
 import proxy from './proxy' // const { REACT_APP_ENV } = process.env
 
-export const host = '10.20.30.90'
-export const port = 8000
+export const ip =
+  process.env.NODE_ENV === 'development' ? process.env.DEV_SERVER_IP : process.env.SERVER_IP
+export const port = +process.env.PORT
 
+console.log(`address: ${ip}:${port}`)
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -76,7 +78,7 @@ export default defineConfig({
               routes: [
                 {
                   path: '/',
-                  redirect: '/course',
+                  redirect: '/contest',
                 },
                 {
                   name: '课程模块',
@@ -87,6 +89,7 @@ export default defineConfig({
                     {
                       path: '/',
                       redirect: '/course/course-list',
+                      authority: ['principal']
                     },
                     {
                       name: '课程列表',
@@ -152,14 +155,13 @@ export default defineConfig({
                   name: '作业',
                   icon: 'highlight',
                   path: '/homework',
-
                   routes: [
                     {
                       name: '作业列表',
                       icon: 'smile',
                       path: '/homework/hw-list',
                       component: './homework/teacher/HwList',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '作业列表',
@@ -173,7 +175,7 @@ export default defineConfig({
                       path: '/homework/hw-list/hw-info/:homeworkId',
                       hideInMenu: true,
                       component: './homework/teacher/HwInfo',
-                      authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '作业详情',
@@ -183,18 +185,18 @@ export default defineConfig({
                       authority: ['student'],
                     },
                     {
-                      name: '新建作业详情',
+                      name: '新建作业',
                       path: '/homework/hw-list/hw-add',
                       hideInMenu: true,
                       component: './homework/teacher/HwAdd',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '编辑作业详情',
                       path: '/homework/hw-list/hw-edit/:homeworkId',
                       hideInMenu: true,
                       component: './homework/teacher/HwEdit',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -314,7 +316,7 @@ export default defineConfig({
                       name: '公告列表',
                       path: '/announcement/anc-list',
                       component: './announcement/teacher/AncList',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '公告列表',
@@ -327,21 +329,21 @@ export default defineConfig({
                       path: '/announcement/anc-list/anc-info/:announcementId',
                       hideInMenu: true,
                       component: './announcement/teacher/AncInfo',
-                      authority: ['principle', 'teacher', 'teachingAssistant', 'student'],
+                      authority: ['principal', 'teacher', 'teachingAssistant', 'student'],
                     },
                     {
                       name: '编辑公告详情',
                       path: '/announcement/anc-list/anc-edit/:announcementId',
                       hideInMenu: true,
                       component: './announcement/teacher/AncEdit',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
-                      name: '新建公告详情',
+                      name: '新建公告',
                       path: '/announcement/anc-list/anc-add',
                       hideInMenu: true,
                       component: './announcement/teacher/AncAdd',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -366,16 +368,18 @@ export default defineConfig({
                       component: './account/settings',
                     },
                     {
-                      name: '导入单个账号',
+                      name: '导入多个账号',
                       icon: 'smile',
-                      path: '/account/import',
-                      component: './account/bulkimport',
+                      path: '/account/importmutiaccount',
+                      component: './account/InputMutiAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
-                      name: '批量导入账号',
+                      name: '导入一个账号',
                       icon: 'smile',
-                      path: '/account/bulkimport',
-                      component: './account/bulkimport',
+                      path: '/account/importsingleaccount',
+                      component: './account/ImportSingleAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -388,12 +392,13 @@ export default defineConfig({
                       name: '文件列表',
                       path: '/file/file-list',
                       component: './file/teacher/FileList',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
-                      name: '编辑文件',
-                      path: '/file/file-edit',
-                      component: './file/teacher/FileEdit',
-                      authority: ['principle', 'teacher', 'teachingAssistant'],
+                      name: '文件列表',
+                      path: '/file/file-ls',
+                      component: './file/student/FileList',
+                      authority: ['student'],
                     },
                   ],
                 },
@@ -407,7 +412,6 @@ export default defineConfig({
       ],
     },
   ],
-
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
@@ -423,9 +427,13 @@ export default defineConfig({
   // Proxy for integrated test
   proxy: {
     '/api/v1': {
-      target: `http://${host}:${port}`,
+      target: `http://${ip}:${port}`,
       changeOrigin: true,
     },
   },
   mock: false,
+  define: {
+    SERVER_IP: ip,
+    WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
+  },
 })
