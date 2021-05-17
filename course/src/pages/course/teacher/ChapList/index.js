@@ -112,7 +112,7 @@ const LecList = ({
           </Button>,
         ]}
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(lecList)}
         columns={columns}
       />

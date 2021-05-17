@@ -59,7 +59,7 @@ const defaultFooterDom = (
         title: '联系方式',
         href: 'https://sse.tongji.edu.cn/',
         blankTarget: true,
-      },      
+      },
     ]}
   />
 )
@@ -124,7 +124,11 @@ const BasicLayout = (props) => {
         itemRender={(route, params, routes, paths) => {
           const first = routes.indexOf(route) === 0
           // return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>
-          return first ? <span to={paths.join('/')}>{route.breadcrumbName}</span> : <span>{route.breadcrumbName}</span>
+          return first ? (
+            <span to={paths.join('/')}>{route.breadcrumbName}</span>
+          ) : (
+            <span>{route.breadcrumbName}</span>
+          )
         }}
         footerRender={() => defaultFooterDom}
         menuDataRender={menuDataRender}

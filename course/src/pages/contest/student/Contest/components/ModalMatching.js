@@ -59,7 +59,7 @@ const ModalMatching = ({
       closable={false}
       title={title}
       footer={
-        status !== MatchingStatus.WAITING_FOR_READY ? (
+        status !== MatchingStatus.WAITING_FOR_READY && channelId ? (
           <div>
             <Button type='primary' onClick={onCancel}>
               取消匹配

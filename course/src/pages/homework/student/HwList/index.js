@@ -115,7 +115,7 @@ const HwList = ({
       width: '15%',
       render: (_, record) => (
         <>
-          <Link to={`/homework/hw-list/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
+          <Link to={`/homework/hw-ls/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
         </>
       )
     }
@@ -126,7 +126,7 @@ const HwList = ({
       <ProTable
         headerTitle='作业列表'
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
       />

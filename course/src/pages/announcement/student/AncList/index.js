@@ -110,7 +110,7 @@ const AncList = ({
       <ProTable
         headerTitle='公告列表'
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(ancList)}
         columns={columns}
       />

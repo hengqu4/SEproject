@@ -68,31 +68,28 @@ const Contest = ({
       },
       onFinish: setLoading.bind(this, false),
     })
-
-    return clearStatus
-  }, [clearStatus, dispatch, courseId, currentUser])
+  }, [dispatch, courseId, currentUser])
 
   const handleCancelMatching = useCallback(() => {
-    if ([MatchingStatus.IDLE, MatchingStatus.SEARCHING_ROOM].includes(status)) {
-      clearStatus()
-      return
+    if (channelId) {
+      dispatch({
+        type: 'Contest/cancelMatching',
+        payload: {
+          channelId,
+          studentId: currentUser.id,
+        },
+        onError,
+      })
     }
-    dispatch({
-      type: 'Contest/cancelMatching',
-      payload: {
-        channelId,
-        studentId: currentUser.id,
-      },
-      onError,
-      onFinish: clearStatus,
-    })
-  }, [clearStatus, dispatch, channelId, currentUser, status])
+    clearStatus()
+  }, [clearStatus, dispatch, channelId, currentUser])
 
   useMatchWebSocket({
     studentId: currentUser.id,
     channelId,
     dispatch,
-    clearStatus: handleCancelMatching,
+    clearStatus,
+    cancelMatching: handleCancelMatching,
     reconnect: reconnectRef,
     status,
     contestId: currentContest.contestId,

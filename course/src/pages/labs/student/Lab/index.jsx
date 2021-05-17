@@ -30,22 +30,23 @@ const { TextArea } = Input
 const { Paragraph } = Typography
 const { Countdown } = Statistic;
 
-const FormatData = (courseCaseId,userId,fileUpload) => {
+const FormatData = (courseCaseId,fileUpload, courseId) => {
   const formattedLab = {
     courseCaseId: courseCaseId,
-    submissionUploader: userId,
-    submissionFileToken: "student submit fake token"
+    submissionFileName: "student submit fake token",
+    courseId
   }
   return formattedLab
 }
 
-const LabCase = ({ lab,user }) => ({
+const LabCase = ({ lab,user, Course }) => ({
   isSuccess: lab.isSuccess,
   labData: lab.labCaseList,
   currentUser: user.currentUser,
+  courseId: Course.currentCourseInfo.courseId
 })
 
-const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
+const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () => {} }) => {
   const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
@@ -113,8 +114,9 @@ const Lab = ({ props, labData = [], currentUser = [],dispatch = () => {} }) => {
 
   const onFinish = (form) => {
     console.log(params.courseCaseId,currentUser.id,form.fileUpload)
-    const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload)
-
+    const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload, courseId)
+    console.log("FSS")
+    console.log(submitData)
     dispatch({
       type: 'lab/submitLabCase',
       payload: submitData,

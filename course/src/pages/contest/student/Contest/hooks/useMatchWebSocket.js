@@ -5,21 +5,26 @@ import onError from '@/utils/onError'
 import { notification } from 'antd'
 import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
 
-const host = '10.20.30.90'
-const port = 8080
+// eslint-disable-next-line
+const ip = SERVER_IP
+// eslint-disable-next-line
+const port = WEBSOCKET_PORT
+
+console.log(`ws://${ip}:${port}/api/v1/contest/sub`)
 
 const useMatchWebSocket = ({
   studentId,
   channelId,
   dispatch = () => {},
   clearStatus = () => {},
+  cancelMatching = () => {},
   reconnect = false,
   status = MatchingStatus.IDLE,
   contestId,
   userIndex = -1,
 }) => {
   const socketUrl = useMemo(
-    () => (channelId ? `ws://${host}:${port}/api/v1/contest/sub?id=${channelId}` : null),
+    () => (channelId ? `ws://${ip}:${port}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
 
@@ -32,10 +37,10 @@ const useMatchWebSocket = ({
       },
       onError: (err) => {
         onError(err)
-        clearStatus()
+        cancelMatching()
       },
     })
-  }, [channelId, dispatch, clearStatus, studentId])
+  }, [channelId, dispatch, cancelMatching, studentId])
 
   const handleRoomDismiss = useCallback(() => {
     dispatch({
@@ -86,7 +91,7 @@ const useMatchWebSocket = ({
           studentId,
           channelId,
         },
-        onError: clearStatus,
+        onError: cancelMatching,
         onSuccess: () => {
           dispatch({
             type: 'Contest/connectToMatch',
@@ -94,7 +99,7 @@ const useMatchWebSocket = ({
               studentId,
               contestId,
             },
-            onError: clearStatus,
+            onError: cancelMatching,
           })
         },
       })
@@ -104,7 +109,7 @@ const useMatchWebSocket = ({
         payload: MatchingStatus.MATCHING,
       })
     }
-  }, [dispatch, reconnect, studentId, channelId, contestId, clearStatus])
+  }, [dispatch, reconnect, studentId, channelId, contestId, cancelMatching])
 
   const onMessage = useCallback(
     (event) => {
@@ -143,8 +148,8 @@ const useMatchWebSocket = ({
   useWebSocket(socketUrl, {
     onOpen,
     onMessage,
-    onError: clearStatus,
-    onClose: clearStatus,
+    onError: cancelMatching,
+    // onClose: clearStatus,
   })
 }
 

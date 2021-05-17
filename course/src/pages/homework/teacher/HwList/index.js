@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react'
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout'
 import { Input, Button, Table, Modal, Space } from 'antd'
 import formatTime from '@/utils/formatTime'
-import {connect} from 'umi'
-import {Link} from 'react-router-dom'
-import { useMount } from 'react-use';
-import onError from '@/utils/onError';
-import ProTable from '@ant-design/pro-table';
+import { connect } from 'umi'
+import { Link } from 'react-router-dom'
+import { useMount } from 'react-use'
+import onError from '@/utils/onError'
+import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
 
 const mapStateToProps = ({ homework, Course }) => ({
@@ -31,17 +31,13 @@ const FormatData = (hwList) => {
   return formattedHwList
 }
 
-const HwList = ({
-  hwList = [],
-  dispatch = () => { },
-  courseId = courseId
-}) => {
+const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId }) => {
   const [loading, setLoading] = useState(true)
-  const [homeworkId, setHomeworkId ] = useState()
-  const [ modalVisible, setModalVisible ] = useState(false)
+  const [homeworkId, setHomeworkId] = useState()
+  const [modalVisible, setModalVisible] = useState(false)
   const ref = useRef()
 
-  //获得当前作业列表
+  // 获得当前作业列表
   const getHwList = () => {
     dispatch({
       type: 'homework/fetchHwList',
@@ -53,12 +49,13 @@ const HwList = ({
     })
   }
 
-  //删除某作业
+  // 删除某作业
   const deleteHwInfo = () => {
     dispatch({
       type: 'homework/deleteHwInfo',
       payload: {
-        courseId, homeworkId,
+        courseId,
+        homeworkId,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -69,7 +66,7 @@ const HwList = ({
     getHwList()
     console.log(hwList)
   })
-  
+
   const columns = [
     {
       title: '作业名称',
@@ -107,16 +104,18 @@ const HwList = ({
         <>
           <Link to={`/homework/hw-list/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
           <Link to={`/homework/hw-list/hw-edit/${record.key}`}>编辑</Link>
-          <Button 
-            type='link' 
+          <Button
+            type='link'
             onClick={() => {
               setModalVisible(true)
               setHomeworkId(record.key)
             }}
-          >删除</Button>
+          >
+            删除
+          </Button>
         </>
-      )
-    }
+      ),
+    },
   ]
 
   return (
@@ -126,16 +125,17 @@ const HwList = ({
         toolBarRender={() => [
           <Button type='primary'>
             <Link to='/homework/hw-list/hw-add'>
-              <PlusOutlined />添加
+              <PlusOutlined />
+              添加
             </Link>
           </Button>,
         ]}
         // actionRef={ref}
-        // search={false}
+        search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
       />
-      <Modal 
+      <Modal
         visible={modalVisible}
         title='提示'
         onOk={() => {
