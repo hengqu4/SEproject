@@ -3,8 +3,11 @@ import { defineConfig } from 'umi'
 import defaultSettings from './defaultSettings'
 import proxy from './proxy' // const { REACT_APP_ENV } = process.env
 
-export const ip = process.env.DEV_SERVER_IP
-export const port = +process.env.PORT || 8000
+export const ip =
+  process.env.NODE_ENV === 'development' ? process.env.DEV_SERVER_IP : process.env.SERVER_IP
+export const port = +process.env.PORT
+
+console.log(process.env)
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -454,4 +457,8 @@ export default defineConfig({
     },
   },
   mock: false,
+  define: {
+    SERVER_IP: ip,
+    WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
+  },
 })
