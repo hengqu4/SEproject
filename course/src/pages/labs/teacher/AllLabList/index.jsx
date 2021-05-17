@@ -25,12 +25,13 @@ const FormatData = (allLabList) => {
   return formattedLabList
 }
 
-const LabDatabase = ({ labDatabase }) => ({
+const LabDatabase = ({ labDatabase , Course }) => ({
   isSuccess: labDatabase.isSuccess,
   allLabList: labDatabase.allLabList,
+  courseId: Course.currentCourseInfo.courseId,
 })
 
-const TableList = ({ allLabList = [], dispatch = () => {} }) => {
+const TableList = ({ allLabList = [], dispatch = () => {}, courseId }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const [updateModalVisible, handleUpdateModalVisible] = useState(false)
   const [publishModalVisible, handlePublishModalVisible] = useState(false)
@@ -185,6 +186,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
             onClick={() => {
               handlePublishModalVisible(true)
               setPublishCaseId(record.key)
+              console.log(courseId)
             }}
           >
             发布
@@ -200,7 +202,7 @@ const TableList = ({ allLabList = [], dispatch = () => {} }) => {
       caseId: publishCaseId,
       caseStartTimestamp: value[0].format(),
       caseEndTimestamp: value[1].format(),
-      courseId: 1,
+      courseId
     }
 
     publishLabCase(payload)

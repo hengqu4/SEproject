@@ -74,7 +74,7 @@ const AllLabCase = ({ lab, user, Course }) => ({
   allLabsData: lab.allLabCaseList,
   mySubmission: lab.mySubmissionList,
   currentUser: user.currentUser,
-  courseId: Course.courseId
+  courseId: Course.currentCourseInfo.courseId
 })
 
 const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], courseId = courseId, dispatch = () => {} }) => {
