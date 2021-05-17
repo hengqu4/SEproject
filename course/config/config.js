@@ -7,7 +7,7 @@ export const ip =
   process.env.NODE_ENV === 'development' ? process.env.DEV_SERVER_IP : process.env.SERVER_IP
 export const port = +process.env.PORT
 
-console.log(process.env)
+console.log(`address: ${ip}:${port}`)
 
 export default defineConfig({
   nodeModulesTransform: {

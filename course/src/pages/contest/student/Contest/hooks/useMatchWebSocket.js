@@ -37,10 +37,10 @@ const useMatchWebSocket = ({
       },
       onError: (err) => {
         onError(err)
-        clearStatus()
+        cancelMatching()
       },
     })
-  }, [channelId, dispatch, clearStatus, studentId])
+  }, [channelId, dispatch, cancelMatching, studentId])
 
   const handleRoomDismiss = useCallback(() => {
     dispatch({
@@ -91,7 +91,7 @@ const useMatchWebSocket = ({
           studentId,
           channelId,
         },
-        onError: clearStatus,
+        onError: cancelMatching,
         onSuccess: () => {
           dispatch({
             type: 'Contest/connectToMatch',
@@ -99,7 +99,7 @@ const useMatchWebSocket = ({
               studentId,
               contestId,
             },
-            onError: clearStatus,
+            onError: cancelMatching,
           })
         },
       })
@@ -109,7 +109,7 @@ const useMatchWebSocket = ({
         payload: MatchingStatus.MATCHING,
       })
     }
-  }, [dispatch, reconnect, studentId, channelId, contestId, clearStatus])
+  }, [dispatch, reconnect, studentId, channelId, contestId, cancelMatching])
 
   const onMessage = useCallback(
     (event) => {
@@ -149,7 +149,7 @@ const useMatchWebSocket = ({
     onOpen,
     onMessage,
     onError: cancelMatching,
-    onClose: clearStatus,
+    // onClose: clearStatus,
   })
 }
 
