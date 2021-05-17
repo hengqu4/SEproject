@@ -68,27 +68,28 @@ const Contest = ({
       },
       onFinish: setLoading.bind(this, false),
     })
-
-    return clearStatus
-  }, [clearStatus, dispatch, courseId, currentUser])
+  }, [dispatch, courseId, currentUser])
 
   const handleCancelMatching = useCallback(() => {
-    dispatch({
-      type: 'Contest/cancelMatching',
-      payload: {
-        channelId,
-        studentId: currentUser.id,
-      },
-      onError,
-      onFinish: clearStatus,
-    })
+    if (channelId) {
+      dispatch({
+        type: 'Contest/cancelMatching',
+        payload: {
+          channelId,
+          studentId: currentUser.id,
+        },
+        onError,
+      })
+    }
+    clearStatus()
   }, [clearStatus, dispatch, channelId, currentUser])
 
   useMatchWebSocket({
     studentId: currentUser.id,
     channelId,
     dispatch,
-    clearStatus: handleCancelMatching,
+    clearStatus,
+    cancelMatching: handleCancelMatching,
     reconnect: reconnectRef,
     status,
     contestId: currentContest.contestId,

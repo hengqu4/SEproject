@@ -1,7 +1,13 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy'; // const { REACT_APP_ENV } = process.env
+import { defineConfig } from 'umi'
+import defaultSettings from './defaultSettings'
+import proxy from './proxy' // const { REACT_APP_ENV } = process.env
+
+export const ip =
+  process.env.NODE_ENV === 'development' ? process.env.DEV_SERVER_IP : process.env.SERVER_IP
+export const port = +process.env.PORT
+
+console.log(`address: ${ip}:${port}`)
 
 export const ip = process.env.DEV_SERVER_IP;
 export const port = +process.env.PORT || 8000;
@@ -75,104 +81,104 @@ export default defineConfig({
               routes: [
                 {
                   path: '/',
-                  redirect: '/course',
+                  redirect: '/contest',
                 },
-                {
-                  name: '课程模块',
-                  path: '/course',
-                  icon: 'book',
-                  authority: ['teacher', 'teachingAssistant', 'student', 'principal'],
-                  routes: [
-                    {
-                      path: '/',
-                      redirect: '/course/course-list',
-                    },
-                    {
-                      name: '课程列表',
-                      icon: 'smile',
-                      path: '/course/course-list-teacher',
-                      component: './course/course-list-teacher',
-                      authority: ['teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '课程列表',
-                      icon: 'smile',
-                      path: '/course/course-list',
-                      component: './course/course-list-principal',
-                      authority: ['principal'],
-                    },
-                    {
-                      name: '课程编辑',
-                      icon: 'smile',
-                      path: '/course/course-edit',
-                      component: './course/course-edit',
-                      authority: ['principal'],
-                    },
-                    {
-                      name: '绑定教师',
-                      icon: 'smile',
-                      path: '/course/course-bind',
-                      component: './course/course-bind',
-                      authority: ['principal'],
-                    },
-                    {
-                      name: '课程信息',
-                      icon: 'smile',
-                      path: '/course/course-info',
-                      component: './course/course-info',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-list',
-                      component: './course/teacher/ChapList',
-                      authority: ['principal', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '章节列表',
-                      path: '/course/chap-ls',
-                      component: './course/student/ChapList',
-                      authority: ['student'],
-                    },
-                    {
-                      name: '添加章节信息',
-                      path: '/course/chap-add',
-                      hideInMenu: true,
-                      component: './course/teacher/AddChap',
-                      authority: ['principal', 'teacher', 'teachingAssistant'],
-                    },
-                    {
-                      name: '编辑章节信息',
-                      path: '/course/chap-edit/:courseChapterId',
-                      hideInMenu: true,
-                      component: './course/teacher/EditChap',
-                      authority: ['principal', 'teacher', 'teachingAssistant'],
-                    },
-                  ],
-                },
-                {
-                  path: '/grade',
-                  name: '成绩模块',
-                  icon: 'dashboard',
-                  routes: [
-                    {
-                      path: '/',
-                      redirect: '/grade/analysis',
-                    },
-                    {
-                      name: '成绩看板',
-                      icon: 'smile',
-                      path: '/grade/analysis',
-                      component: './dashboard/teacherDashboard',
-                    },
-                    {
-                      name: '我的成绩',
-                      icon: 'smile',
-                      path: '/grade/mygrade',
-                      component: './dashboard/studentDashboard',
-                    },
-                  ],
-                },
+                // {
+                //   name: '课程模块',
+                //   path: '/course',
+                //   icon: 'book',
+                //   authority: ['teacher', 'teachingAssistant', 'student', 'principal'],
+                //   routes: [
+                //     {
+                //       path: '/',
+                //       redirect: '/course/course-list',
+                //     },
+                //     {
+                //       name: '课程列表',
+                //       icon: 'smile',
+                //       path: '/course/course-list-teacher',
+                //       component: './course/course-list-teacher',
+                //       authority: ['teacher', 'teachingAssistant'],
+                //     },
+                //     {
+                //       name: '课程列表',
+                //       icon: 'smile',
+                //       path: '/course/course-list',
+                //       component: './course/course-list-principal',
+                //       authority: ['principal'],
+                //     },
+                //     {
+                //       name: '课程编辑',
+                //       icon: 'smile',
+                //       path: '/course/course-edit',
+                //       component: './course/course-edit',
+                //       authority: ['principal'],
+                //     },
+                //     {
+                //       name: '绑定教师',
+                //       icon: 'smile',
+                //       path: '/course/course-bind',
+                //       component: './course/course-bind',
+                //       authority: ['principal'],
+                //     },
+                //     {
+                //       name: '课程信息',
+                //       icon: 'smile',
+                //       path: '/course/course-info',
+                //       component: './course/course-info',
+                //       authority: ['student'],
+                //     },
+                //     {
+                //       name: '章节列表',
+                //       path: '/course/chap-list',
+                //       component: './course/teacher/ChapList',
+                //       authority: ['principal', 'teacher', 'teachingAssistant'],
+                //     },
+                //     {
+                //       name: '章节列表',
+                //       path: '/course/chap-ls',
+                //       component: './course/student/ChapList',
+                //       authority: ['student'],
+                //     },
+                //     {
+                //       name: '添加章节信息',
+                //       path: '/course/chap-add',
+                //       hideInMenu: true,
+                //       component: './course/teacher/AddChap',
+                //       authority: ['principal', 'teacher', 'teachingAssistant'],
+                //     },
+                //     {
+                //       name: '编辑章节信息',
+                //       path: '/course/chap-edit/:courseChapterId',
+                //       hideInMenu: true,
+                //       component: './course/teacher/EditChap',
+                //       authority: ['principal', 'teacher', 'teachingAssistant'],
+                //     },
+                //   ],
+                // },
+                // {
+                //   path: '/grade',
+                //   name: '成绩模块',
+                //   icon: 'dashboard',
+                //   routes: [
+                //     {
+                //       path: '/',
+                //       redirect: '/grade/analysis',
+                //     },
+                //     {
+                //       name: '成绩看板',
+                //       icon: 'smile',
+                //       path: '/grade/analysis',
+                //       component: './dashboard/teacherDashboard',
+                //     },
+                //     {
+                //       name: '我的成绩',
+                //       icon: 'smile',
+                //       path: '/grade/mygrade',
+                //       component: './dashboard/studentDashboard',
+                //     },
+                //   ],
+                // },
                 {
                   name: '作业',
                   icon: 'highlight',
@@ -454,4 +460,8 @@ export default defineConfig({
     },
   },
   mock: false,
-});
+  define: {
+    SERVER_IP: ip,
+    WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
+  },
+})

@@ -1,12 +1,6 @@
 import { API_USER_PREFIX } from '@/url-prefixes'
 import request from '@/utils/request'
-
-// export async function fakeRegister(params) {
-//   return request('/api/register', {
-//     method: 'POST',
-//     data: params,
-//   })
-// }
+import SafeUrlAssembler from 'safe-url-assembler'
 
 export async function userAccountRegister(data) {
   return request('/register/', {

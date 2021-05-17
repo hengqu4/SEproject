@@ -104,7 +104,11 @@ const ContestBasicInfo = ({ onNextStep = () => {}, contest }, ref) => {
             }}
           />
         </Form.Item>
-        <Form.Item name='description' label='比赛描述'>
+        <Form.Item
+          name='description'
+          label='比赛描述'
+          rules={[{ required: true, message: '请输入描述' }]}
+        >
           <Input.TextArea placeholder='请输入比赛描述' />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 20 }}>

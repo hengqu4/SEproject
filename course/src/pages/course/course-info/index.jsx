@@ -1,9 +1,9 @@
 import {Badge,Card,Descriptions,Popover,Table,} from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import React, { Component, Fragment, useCallback } from 'react';
-import onError from '@/utils/onError'
+import React, { useState, useRef, useCallback } from 'react'
 import { useMount } from 'react-use'
 import { connect } from 'umi';
+import onError from '@/utils/onError'
 import styles from './style.less';
 
 const mapStateToProps = ({ Course }) => ({
@@ -11,7 +11,7 @@ const mapStateToProps = ({ Course }) => ({
   // courseList: Course.courseList,
 })
 
-const course_info = ({ currentCourseInfo = {}, dispatch = () => { } }) => {
+const course_info = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
   /**
    * 设置当前课程
    * @param courseID
@@ -29,13 +29,12 @@ const course_info = ({ currentCourseInfo = {}, dispatch = () => { } }) => {
   )
 
   useMount(() => {
-    // console.log('准备接受数据')
-    // dispatch({
-    //   type: 'Course/getAllCourse',
-    //   onError,
-    //   onFinish: setCurrentCourse(0),
-    // })
-    setCurrentCourse(0)
+    console.log('准备接受数据')
+    dispatch({
+      type: 'Course/getAllCourse',
+      onError,
+      // onFinish: setCurrentCourse(0),
+    })
   })
 
   const tempData = {
