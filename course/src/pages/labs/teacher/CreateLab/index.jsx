@@ -21,6 +21,9 @@ const FormatData = (labCase) => {
     experimentName: labCase.expName,
     experimentCaseName: labCase.caseName,
     experimentCaseDescription: labCase.caseDesc,
+    // FIXME: lack of experiment_case_file_name and answer_file_name
+    experimentCaseFileName: 'eF1',
+    answerFileName: 'aF1',
     experimentCaseFileToken:"fake file token",
     answerFileToken:"fake file token",
   }

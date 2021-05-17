@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Form, Input, Button, } from 'antd';
-import { connect } from 'umi'
+import { Form, Input, Button, DatePicker, notification } from 'antd';
+import { connect, history } from 'umi'
 import { useMount } from 'react-use';
 import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
 import { values } from 'lodash';
+import moment from 'moment';
 
 const { TextArea } = Input
 
@@ -32,6 +33,7 @@ const FormatData = (hwList) => {
   return formattedHwList
 }
 
+
 const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, currentUser = [] }) => {
   const [hwInfo, setLecInfo] = useState({
     homeworkTitle: "",
@@ -41,6 +43,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
   })
   const [loading, setLoading] = useState(true)
   const [form] = Form.useForm()
+  const [startTime, setStartTime] = useState(null)
 
   //获得当前作业列表
   const getHwList = () => {
@@ -54,16 +57,38 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
     })
   }
 
+
+  const checkDeadline = (_, value) => {
+    const promise = Promise
+    if(startTime == null){
+      return promise.resolve
+    }
+
+    if(value.startOf('day') <= startTime.startOf('day')){
+      return promise.reject('请选择有效的截止日期')
+    }
+  
+    return promise.resolve()
+  
+  }
+  
+
   //新建某作业信息
   const addHwInfo = () => {
-    console.log(hwInfo)
-    // console.log(currentUser)
     dispatch({
       type: 'homework/addHwInfo',
       payload: {
         courseId, hwInfo,
       },
-      onFinish: setLoading.bind(this, false),
+      onFinish:() => {
+        setLoading.bind(this, false)
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '布置成功',
+        })
+        history.goBack()
+      }
     })
   }
 
@@ -81,8 +106,6 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
     hwInfo.homeworkDescription = form.getFieldValue('des')
     hwInfo.homeworkStartTime = new Date(form.getFieldValue('startTime')).toISOString()
     hwInfo.homeworkEndTime = new Date(form.getFieldValue('endTime')).toISOString()
-    // console.log(hwInfo.homeworkCreateTime)
-    // console.log(hwList)
     addHwInfo();
   }
 
@@ -99,6 +122,7 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
           form={form}
           name="basic"
           initialValues={{ remember: true }}
+          onFinish={handleHwInfo}
         >
           <Form.Item
             label="作业名称"
@@ -122,15 +146,23 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入日期！' }]}
           >
-            <Input placeholder="注意格式为xxxx-xx-xx"/>
+            <DatePicker 
+              disabledDate={(current)=>(current < moment().startOf('day'))}
+              onChange={(date)=>{setStartTime(date)}}
+            />
           </Form.Item>
           <Form.Item
             label="截止日期"
             name="endTime"
             style={{width: '80%'}}
-            rules={[{ required: true, message: '请输入日期！' }]}
+            rules={[
+              { required: true, message: '请输入日期！' },
+              { validator: checkDeadline },
+            ]}
           >
-            <Input placeholder="注意格式为xxxx-xx-xx"/>
+            <DatePicker
+              disabledDate={(current)=>(current.startOf('day') <= form.getFieldValue('startTime'))}
+            />
           </Form.Item>
           {/* </Form><Form.Item {...tailLayout}> */}
           <Form.Item>
@@ -142,13 +174,8 @@ const HwInfo = ({ hwList = [], dispatch = () => {}, courseId = courseId, current
             <Button 
               type="primary"
               htmlType="submit"
-              onClick={() => {
-                handleHwInfo()
-              }}
             >
-              <Link to='/homework/hw-list'>
-                保存
-              </Link>
+              保存
             </Button>
           </Form.Item>
         </Form>

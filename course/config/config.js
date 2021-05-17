@@ -8,7 +8,6 @@ export const ip =
 export const port = +process.env.PORT
 
 console.log(`address: ${ip}:${port}`)
-
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -394,18 +393,18 @@ export default defineConfig({
                       component: './account/settings',
                     },
                     {
-                      name: '导入单个账号',
+                      name: '导入多个账号',
                       icon: 'smile',
-                      path: '/account/import',
-                      component: './account/bulkimport',
-                      authority: ['principal'],
+                      path: '/account/importmutiaccount',
+                      component: './account/InputMutiAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
-                      name: '批量导入账号',
+                      name: '导入一个账号',
                       icon: 'smile',
-                      path: '/account/bulkimport',
-                      component: './account/bulkimport',
-                      authority: ['principal'],
+                      path: '/account/importsingleaccount',
+                      component: './account/ImportSingleAccount',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                   ],
                 },
@@ -438,7 +437,6 @@ export default defineConfig({
       ],
     },
   ],
-
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,

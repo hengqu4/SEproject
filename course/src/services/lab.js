@@ -24,9 +24,8 @@ export const fetchAllStudentReport = (courseCaseId) => {
   })
 }
 // publish lab (teacher)
-// TODO: modify URL
 export const publishLabCase = (data) => {
-  return request('/list/1', {
+  return request(SafeUrlAssembler('/list/').segment(data.courseId).toString(), {
     method: 'POST',
     prefix: API_LAB_COURSE_CASE,
     data,

@@ -69,14 +69,15 @@ const FormatData = (allLabsData, mySubmission, currentUser) => {
   return formattedLabList
 }
 
-const AllLabCase = ({ lab, user }) => ({
+const AllLabCase = ({ lab, user, Course }) => ({
   isSuccess: lab.isSuccess,
   allLabsData: lab.allLabCaseList,
   mySubmission: lab.mySubmissionList,
   currentUser: user.currentUser,
+  courseId: Course.currentCourseInfo.courseId
 })
 
-const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], dispatch = () => {} }) => {
+const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], courseId, dispatch = () => {} }) => {
   const actionRef = useRef();
   const [row, setRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
@@ -190,10 +191,11 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], dispa
     },
   ]
 
+  //FIXME: error when allLabsData = []
   useMount(() => {
     dispatch({
       type: 'lab/fetchAllLabCase',
-      payload: 1,
+      payload: courseId,
       onError: (err) => {
         notification.error({
           message: '获取实验列表失败',
