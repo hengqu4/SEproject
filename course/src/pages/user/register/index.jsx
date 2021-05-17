@@ -1,4 +1,15 @@
-import { Form, Button, Col, Input, Popover, Progress, Row, Select, message, notification } from 'antd'
+import {
+  Form,
+  Button,
+  Col,
+  Input,
+  Popover,
+  Progress,
+  Row,
+  Select,
+  message,
+  notification,
+} from 'antd'
 import React, { useState, useEffect } from 'react'
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi'
 import styles from './style.less'
@@ -24,6 +35,8 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   const [visible, setvisible] = useState(false)
   const [prefix, setprefix] = useState('86')
   const [popover, setpopover] = useState(false)
+  const [universityList, setUniveristyList] = useState([{ label: '同济大学', value: 1 }])
+  const [schoolList, setSchoolList] = useState([{ label: '软件学院', value: 1 }])
   const confirmDirty = false
   let interval
   const [form] = Form.useForm()
@@ -52,19 +65,6 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     },
     [],
   )
-
-  const onGetCaptcha = () => {
-    let counts = 59
-    setcount(counts)
-    interval = window.setInterval(() => {
-      counts -= 1
-      setcount(counts)
-
-      if (counts === 0) {
-        clearInterval(interval)
-      }
-    }, 1000)
-  }
 
   const getPasswordStatus = () => {
     const value = form.getFieldValue('password')
@@ -95,13 +95,12 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             account,
           },
         })
-      }
-      else {
+      } else {
         const errorText = response.error.message
         notification.error({
           message: `注册失败`,
           description: errorText,
-        })        
+        })
       }
     })
   }
@@ -196,33 +195,44 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           rules={[
             {
               required: true,
-              message: '请输入学校编号！',
+              message: '请选择学校！',
             },
           ]}
         >
-          <Input size='large' placeholder='学校编号' />
+          <Select size='large' placeholder='所属学校' options={universityList} />
         </FormItem>
         <FormItem
           name='university_id'
           rules={[
             {
               required: true,
-              message: '请输入学院编号！',
+              message: '请选择学院！',
             },
           ]}
         >
-          <Input size='large' placeholder='学院编号' />
+          <Select size='large' placeholder='所属学院' options={schoolList} />
         </FormItem>
         <FormItem
           name='character'
           rules={[
             {
               required: true,
-              message: '请输入角色编号！',
+              message: '请选择账号类型！',
             },
           ]}
         >
-          <Input size='large' placeholder='角色编号' />
+          <Select size='large' placeholder='账号类型'>
+            <Option value='1' disabled>
+              责任教师
+            </Option>
+            <Option value='2' disabled>
+              教师
+            </Option>
+            <Option value='3' disabled>
+              助教
+            </Option>
+            <Option value='4'>学生</Option>
+          </Select>
         </FormItem>
         <FormItem
           name='personal_id'
