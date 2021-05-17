@@ -29,7 +29,7 @@ const defaultState = {
 
 const effects = {
   //获取全部课程信息
-  getAllCourse: generateEffect(function* (_, { call, put }) {
+  getAllCourse: generateEffect(function* (_, { call, put, select }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseInfo)
     // CourseServices.fetchAllCourseInfo()
@@ -48,6 +48,21 @@ const effects = {
       type: 'setCourseList',
       payload: res.data,
     })
+    const courseList = yield select((state) => state.Course.courseList)
+    // console.log(courseList)
+    const currentCourse = courseList[0]
+    
+    if (currentCourse == undefined) {
+      console.log(currentCourse)
+    } else {
+      const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+      yield put({
+        type: 'setCurrentCourse',
+        payload: res2.data,
+      })
+      // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
+      // console.log(currentCourseInfo)
+    }
   }),
 
   //获取当前课程信息
@@ -62,7 +77,7 @@ const effects = {
     // console.log(res.data)
     yield put({
       type: 'setCurrentCourse',
-      payload: currentCourse,
+      payload: res.data,
     })
     // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
     // console.log(currentCourseInfo)

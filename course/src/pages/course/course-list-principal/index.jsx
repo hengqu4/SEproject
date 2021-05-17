@@ -42,7 +42,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     dispatch({
       type: 'Course/getAllCourse',
       onError,
-      onFinish: setCurrentCourse(0),
+      // onFinish: setCurrentCourse(0),
     })
   })
 
