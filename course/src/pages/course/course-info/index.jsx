@@ -8,20 +8,23 @@ import styles from './style.less';
 
 const mapStateToProps = ({ Course }) => ({
   currentCourseInfo: Course.currentCourseInfo,
-  // courseList: Course.courseList,
+  courseList: Course.courseList,
 })
 
-const course_info = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
+//FIXME : cant set currentCourseId properly using students' account
+//TODO: modify index(payload)
+const course_info = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
   /**
    * 设置当前课程
    * @param courseID
    */
   const setCurrentCourse = useCallback(
     (index) => {
-      console.log(index)
       dispatch({
-        type: 'Course/getCurrentCourseInfo',
-        payload: index,
+        type: 'Course/getCurrentCourseInfoStudent',
+        payload: {
+          courseId: 1
+        },
         onError,
       })
     },
@@ -33,7 +36,10 @@ const course_info = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
     dispatch({
       type: 'Course/getAllCourse',
       onError,
-      // onFinish: setCurrentCourse(0),
+      onFinish:() => {
+        setCurrentCourse(0)
+        console.log(courseList)
+      },
     })
   })
 
