@@ -7,7 +7,6 @@ export const ip =
   process.env.NODE_ENV === 'development' ? process.env.DEV_SERVER_IP : process.env.SERVER_IP
 export const port = +process.env.PORT
 
-console.log(`address: ${ip}:${port}`)
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
@@ -89,7 +88,7 @@ export default defineConfig({
                     {
                       path: '/',
                       redirect: '/course/course-list',
-                      authority: ['principal']
+                      authority: ['principal'],
                     },
                     {
                       name: '课程列表',

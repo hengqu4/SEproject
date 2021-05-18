@@ -8,11 +8,16 @@ import onError from '@/utils/onError'
 import MatchingStatus from './matchingStatus'
 import ContestContent from '@/pages/contest/student/Contest/components/ContestContent'
 import useStateRef from './hooks/useStateRef'
-import { fakeUserInfoArr, IP, PORT, WAITING_FOR_READY_TIME } from './constant'
+import {
+  fakeUserInfoArr,
+  IP,
+  PORT,
+  WAITING_FOR_READY_TIME,
+  START_SIGNAL_CACHING_TIME,
+} from './constant'
 import useWebSocket from 'react-use-websocket'
-import { useUnmount, useLocalStorage } from 'react-use'
-
-console.log(`ws://${IP}:${PORT}/api/v1/contest/sub`)
+import { useUnmount } from 'react-use'
+import store from 'store2'
 
 const SocketMessageType = {
   MATCHING_COMPLETE: 'MATCHING_COMPLETE',
@@ -31,6 +36,7 @@ const mapStateToProps = ({ Contest, user }) => ({
   channelId: Contest.channelId,
   status: Contest.matchingStatus,
   userIndex: Contest.userIndex,
+  readyArr: Contest.readyArr,
 })
 
 const Contest = ({
@@ -39,20 +45,21 @@ const Contest = ({
   channelId = null,
   status,
   userIndex,
+  readyArr = [],
   dispatch = () => {},
 }) => {
   const [isReconnect, setIsReconnect] = useStateRef(false)
   const [timer, setTimer] = useStateRef(null)
 
-  const [_1, _2, removeStartTime] = useLocalStorage(
-    `startTime: ${studentId}.${currentContest.contestId}`,
-    0,
-  )
-
   const socketUrl = useMemo(
     () => (channelId ? `ws://${IP}:${PORT}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
+
+  const storageString = useMemo(() => `startTime:${studentId}.${currentContest.contestId}`, [
+    studentId,
+    currentContest.contestId,
+  ])
 
   const clearMatchState = useCallback(() => {
     dispatch({
@@ -66,17 +73,21 @@ const Contest = ({
 
   const onCancelMatching = useCallback(() => {
     if (channelId) {
-      dispatch({
-        type: 'Contest/cancelMatching',
-        payload: {
-          channelId,
-          studentId,
-        },
-        onError,
-      })
+      const enableTime = (store(storageString) || 0) + START_SIGNAL_CACHING_TIME
+      if (enableTime > Date.now()) {
+        dispatch({
+          type: 'Contest/cancelMatching',
+          payload: {
+            channelId,
+            studentId,
+          },
+          onSuccess: () => store.remove(storageString),
+          onError,
+        })
+      }
     }
     clearMatchState()
-  }, [clearMatchState, dispatch, channelId, studentId])
+  }, [clearMatchState, dispatch, channelId, studentId, storageString])
 
   const onStartMatching = useCallback(() => {
     dispatch({
@@ -91,6 +102,7 @@ const Contest = ({
         studentId,
         contestId,
       },
+      onSuccess: () => store(storageString, Date.now()),
       onError: (err) => {
         onError(err)
         dispatch({
@@ -99,7 +111,7 @@ const Contest = ({
         })
       },
     })
-  }, [dispatch, currentContest, studentId])
+  }, [dispatch, currentContest, studentId, storageString])
 
   const onReconnect = useCallback(() => {
     setIsReconnect(true)
@@ -142,8 +154,10 @@ const Contest = ({
         setTimer(
           setTimeout(() => {
             clearMatchState()
-            removeStartTime()
-            notification.warn('十五秒内有人未准备，房间解散，请重新匹配')
+            notification.warn({
+              message: '匹配失败',
+              description: '十五秒内有人未准备，房间解散，请重新匹配',
+            })
           }, WAITING_FOR_READY_TIME),
         )
       },
@@ -152,17 +166,23 @@ const Contest = ({
         onCancelMatching()
       },
     })
-  }, [channelId, dispatch, onCancelMatching, studentId, setTimer, clearMatchState, removeStartTime])
+  }, [channelId, dispatch, onCancelMatching, setTimer, studentId, clearMatchState])
 
   useUnmount(() => clearTimeout(timer))
 
   const onRoomDismiss = useCallback(() => {
-    dispatch({
-      type: 'Contest/setMatchingStatus',
-      payload: MatchingStatus.MATCHING,
-    })
-    dispatch({ type: 'Contest/setReadyArr' })
-  }, [dispatch])
+    clearTimeout(timer)
+    if (!readyArr[userIndex]) {
+      clearMatchState()
+    } else {
+      dispatch({
+        type: 'Contest/setMatchingStatus',
+        payload: MatchingStatus.MATCHING,
+      })
+      dispatch({ type: 'Contest/setReadyArr' })
+      dispatch({ type: 'Contest/setUserIndex' })
+    }
+  }, [clearMatchState, timer, dispatch, readyArr, userIndex])
 
   const onCompetitorReady = useCallback(
     ({ readyArray }) => {
@@ -175,6 +195,7 @@ const Contest = ({
   )
 
   const onStartAnswering = useCallback(() => {
+    clearTimeout(timer)
     dispatch({
       type: 'Contest/connectToMatch',
       payload: {
@@ -182,7 +203,7 @@ const Contest = ({
         contestId: currentContest.contestId,
       },
     })
-  }, [dispatch, studentId, currentContest.contestId])
+  }, [dispatch, studentId, currentContest.contestId, timer])
 
   const onCompetitorSubmit = useCallback(
     ({ submitIndex: competitorIndex }) => {
