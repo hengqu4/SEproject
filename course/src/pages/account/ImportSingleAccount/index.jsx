@@ -80,6 +80,7 @@ const ImportSingleAccount = (props) => {
       school_id: '1',
       character: '4',
       email,
+      avatar: {},
     }
     dispatch({
       type: 'account/uploadSingleAccount',
