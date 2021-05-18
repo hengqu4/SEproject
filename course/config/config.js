@@ -62,6 +62,11 @@ export default defineConfig({
               component: './user/Login',
             },
             {
+              name: '找回密码',
+              path: '/user/retrievepassword',
+              component: './user/RetrievePassword',
+            },
+            {
               component: '404',
             },
           ],
@@ -89,7 +94,7 @@ export default defineConfig({
                     {
                       path: '/',
                       redirect: '/course/course-list',
-                      authority: ['principal']
+                      authority: ['principal'],
                     },
                     {
                       name: '课程列表',
