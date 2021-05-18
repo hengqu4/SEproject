@@ -1,8 +1,8 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { Modal, Spin, Tag, List, Button, Avatar } from 'antd'
 import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
 import { connect } from 'umi'
-import fakeUserInfoArr from '@/pages/contest/student/Contest/fakeUserInfo'
+import { fakeUserInfoArr } from '@/pages/contest/student/Contest/constant'
 
 const mapStateToProps = ({ Contest, user }) => ({
   currentUser: user.currentUser,

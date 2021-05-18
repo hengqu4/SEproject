@@ -8,15 +8,11 @@ import onError from '@/utils/onError'
 import MatchingStatus from './matchingStatus'
 import ContestContent from '@/pages/contest/student/Contest/components/ContestContent'
 import useStateRef from './hooks/useStateRef'
-import fakeUserInfoArr from './fakeUserInfo'
+import { fakeUserInfoArr, IP, PORT, WAITING_FOR_READY_TIME } from './constant'
 import useWebSocket from 'react-use-websocket'
+import { useUnmount, useLocalStorage } from 'react-use'
 
-// eslint-disable-next-line
-const ip = SERVER_IP
-// eslint-disable-next-line
-const port = WEBSOCKET_PORT
-
-console.log(`ws://${ip}:${port}/api/v1/contest/sub`)
+console.log(`ws://${IP}:${PORT}/api/v1/contest/sub`)
 
 const SocketMessageType = {
   MATCHING_COMPLETE: 'MATCHING_COMPLETE',
@@ -46,9 +42,15 @@ const Contest = ({
   dispatch = () => {},
 }) => {
   const [isReconnect, setIsReconnect] = useStateRef(false)
+  const [timer, setTimer] = useStateRef(null)
+
+  const [_1, _2, removeStartTime] = useLocalStorage(
+    `startTime: ${studentId}.${currentContest.contestId}`,
+    0,
+  )
 
   const socketUrl = useMemo(
-    () => (channelId ? `ws://${ip}:${port}/api/v1/contest/sub?id=${channelId}` : null),
+    () => (channelId ? `ws://${IP}:${PORT}/api/v1/contest/sub?id=${channelId}` : null),
     [channelId],
   )
 
@@ -136,12 +138,23 @@ const Contest = ({
         studentId,
         channelId,
       },
+      onSuccess: () => {
+        setTimer(
+          setTimeout(() => {
+            clearMatchState()
+            removeStartTime()
+            notification.warn('十五秒内有人未准备，房间解散，请重新匹配')
+          }, WAITING_FOR_READY_TIME),
+        )
+      },
       onError: (err) => {
         onError(err)
         onCancelMatching()
       },
     })
-  }, [channelId, dispatch, onCancelMatching, studentId])
+  }, [channelId, dispatch, onCancelMatching, studentId, setTimer, clearMatchState, removeStartTime])
+
+  useUnmount(() => clearTimeout(timer))
 
   const onRoomDismiss = useCallback(() => {
     dispatch({

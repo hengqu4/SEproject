@@ -1,9 +1,12 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import MatchingStatus from '../matchingStatus'
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWrapper'
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { Button, Spin, notification } from 'antd'
 import { connect } from 'umi'
+import { useLocalStorage, useMount, useUnmount } from 'react-use'
+import { START_SIGNAL_CACHING_TIME } from '@/pages/contest/student/Contest/constant'
+import useStateRef from '../hooks/useStateRef'
 
 const mapStateToProps = ({ Contest, user, Course }) => ({
   courseId: Course.currentCourseInfo.courseId,
@@ -26,6 +29,31 @@ const ContestContent = ({
   onReconnect = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
+  const [disabledTime, setDisabledTime] = useState(-1)
+  const [timer, setTimer] = useStateRef(null)
+
+  const [startTime, setStartTime, removeStartTime] = useLocalStorage(
+    `startTime: ${userId}.${currentContest.contestId}`,
+    0,
+  )
+
+  const enableTime = useMemo(() => parseInt(startTime, 10) + START_SIGNAL_CACHING_TIME, [startTime])
+
+  useMount(() => {
+    setTimer(
+      setInterval(() => {
+        const currentTime = Date.now()
+        if (!participating && !participated && currentTime < enableTime) {
+          setDisabledTime(parseInt((enableTime - currentTime) / 1000, 10))
+        } else {
+          clearInterval(timer)
+          removeStartTime()
+        }
+      }, 1000),
+    )
+  })
+
+  useUnmount(() => clearInterval(timer))
 
   useEffect(() => {
     setLoading(true)
@@ -60,6 +88,11 @@ const ContestContent = ({
     )
   }, [loading, currentContestValid, currentContest])
 
+  const onStart = useCallback(() => {
+    setStartTime(Date.now())
+    onStartMatching && onStartMatching()
+  }, [onStartMatching, setStartTime])
+
   const btnDom = useMemo(() => {
     if (loading || !currentContestValid) return null
 
@@ -76,9 +109,12 @@ const ContestContent = ({
     } else if (participated) {
       btnText = '您已参加过该比赛'
       btnAttrs.disabled = true
+    } else if (disabledTime > 0) {
+      btnText = `请等待${disabledTime}秒后重新匹配`
+      btnAttrs.disabled = true
     } else {
       btnText = '开始匹配'
-      btnAttrs.onClick = onStartMatching
+      btnAttrs.onClick = onStart
     }
 
     return (
@@ -86,7 +122,15 @@ const ContestContent = ({
         <Button {...btnAttrs}>{btnText}</Button>
       </div>
     )
-  }, [loading, currentContestValid, participated, participating, onStartMatching, onReconnect])
+  }, [
+    loading,
+    currentContestValid,
+    participated,
+    participating,
+    onStart,
+    onReconnect,
+    disabledTime,
+  ])
 
   const contentDom = useMemo(() => {
     if (status === MatchingStatus.ANSWERING) {
