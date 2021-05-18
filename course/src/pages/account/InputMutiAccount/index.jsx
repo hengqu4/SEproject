@@ -1,24 +1,45 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
-import { Upload, message, Card, Button } from 'antd';
+import { Upload, message, Card, Button, Form, notification } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
-import { useModel } from 'umi'
-import testState from '@/models/course'
+import { connect } from 'umi'
 
+
+const FormItem = Form.Item
 const { Dragger } = Upload
 
-const InputMutiAccount = () => {
+const InputMutiAccount = ({ dispatch = () => {} }) => {
 
-  
   const props = {
     name: 'file',
     multiple: false,
     action: (file, _) => onUpload(file),
     maxCount: 1,
-    width: 300,
+    // customRequest: (option) => {
+    //   dispatch({
+    //     type:'account/uploadAccount',
+    //     payload: {
+    //       "student-list-file":option.file,
+    //     },
+    //     onError:(err)=>{
+    //       notification.error({
+    //         message: '导入失败',
+    //         description: err.message,
+    //       })
+    //     },
+    //     onSuccess: ()=>{
+    //       notification.success({
+    //         message: '导入成功',
+    //       })
+    //     }
+    //   })
+    // },
     onChange(info){
       const {status} = info.file
+      if(status == 'removed'){
+        setFile(null)
+      }
       if (status !== 'uploading'){
         console.log(info.file)
       }
@@ -30,27 +51,56 @@ const InputMutiAccount = () => {
     }
   }
 
-  const uploadFile = (payload) =>{
+  const fileValidator = () =>{
+    const promise = Promise
+    if(file == null){
+      notification.error({
+        message: '请先上传文件',
+      })
+      return promise.reject()
+    }
+    return promise.resolve()
   }
 
-  const onClicked = () => {
-    //TODO: modify upload request
-    // console.log(file)
-    console.log(testState.state.currentCourseInfo.courseId)
-
+  const onUpload = (file) => {
+    setFile(file)
   }
-
-  const onUpload = (data) => {
-    setFile(data)
-  }
+  const [form] = Form.useForm()
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
-  const test = useModel("Course");
   useEffect(() => {
     setTimeout(() => {
       setLoading(false); 
     }, 3000);
   }, []);
+
+  //FIXME : FormData.append(key, value) is unavailable
+  const onFinish = (values) =>{
+    var fileList = values.student_list_file.fileList
+    // console.log("files:")
+    // console.log(values.student_list_file.file)
+    // console.log(fileList)
+    var fdata = new FormData()
+    fdata.set("student-list-file", fileList[0])
+    fdata.forEach(v => console.log(v))
+    console.log("wzj", fileList[0])
+    dispatch({
+      type:'account/uploadAccount',
+      payload: fdata,
+      onError:(err)=>{
+        notification.error({
+          message: '导入失败',
+          description: err.message,
+        })
+      },
+      onSuccess: ()=>{
+        notification.success({
+          message: '导入成功',
+        })
+      }
+    })
+  }
+
   return (
     <PageContainer content="导入多个学生数据" className={styles.main}>
       <div
@@ -60,26 +110,43 @@ const InputMutiAccount = () => {
         }}
       >
         <Card>
-        <Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined/>
-          </p>
-          <p className="ant-upload-text">
-            点击或拖动文件至此处以上传
-          </p>
-        </Dragger>
-      </Card>
-      <Card>
-      <Button
-          type = "primary"
-          onClick = {() => onClicked()}
-        >
-          确定上传
-        </Button>
-      </Card>
+          <Form
+            hideRequiredMark
+            form={form}
+            onFinish={onFinish}
+          >
+            <FormItem
+              name="student_list_file"
+              rules={[
+                {
+                  validator: fileValidator,
+                },
+              ]}
+            >
+              <Dragger
+                {...props}
+              >
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined/>
+                </p>
+                <p className="ant-upload-text">
+                  点击或拖动文件至此处以上传
+                </p>
+              </Dragger>
+            </FormItem>
+            <FormItem>
+              <Button
+                type = "primary"
+                htmlType="submit"
+              >
+                确定上传
+              </Button>
+            </FormItem>
+          </Form>
+        </Card>
       </div>
     </PageContainer>
   );
 };
 
-export default InputMutiAccount
+export default connect()(InputMutiAccount)

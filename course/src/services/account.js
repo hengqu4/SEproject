@@ -3,9 +3,12 @@ import { API_USER_PREFIX } from '@/url-prefixes'
 import safeUrlAssembler from 'safe-url-assembler'
 
 export const uploadAccount = (data) => {
-    return request('/fuckyou', {
+    return request('/upload-students/', {
+        headers:{
+            'Content-Type': 'multipart/form-data;boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW',
+        },
         method: 'POST',
-        prefix: 'FUCKYOU',
+        prefix: API_USER_PREFIX,
         data
     })
 }
