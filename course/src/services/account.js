@@ -5,7 +5,7 @@ import safeUrlAssembler from 'safe-url-assembler'
 export const uploadAccount = (data) => {
     return request('/upload-students/', {
         headers:{
-            'Content-Type': 'multipart/form-data;boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW',
+            "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>",
         },
         method: 'POST',
         prefix: API_USER_PREFIX,

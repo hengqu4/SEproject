@@ -4,6 +4,7 @@ import { Upload, message, Card, Button, Form, notification } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
 import { connect } from 'umi'
+import axios from 'axios';
 
 
 const FormItem = Form.Item
@@ -16,25 +17,9 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
     multiple: false,
     action: (file, _) => onUpload(file),
     maxCount: 1,
-    // customRequest: (option) => {
-    //   dispatch({
-    //     type:'account/uploadAccount',
-    //     payload: {
-    //       "student-list-file":option.file,
-    //     },
-    //     onError:(err)=>{
-    //       notification.error({
-    //         message: '导入失败',
-    //         description: err.message,
-    //       })
-    //     },
-    //     onSuccess: ()=>{
-    //       notification.success({
-    //         message: '导入成功',
-    //       })
-    //     }
-    //   })
-    // },
+    data:(file)=>{
+      setUploadedFile(file)
+    },
     onChange(info){
       const {status} = info.file
       if(status == 'removed'){
@@ -68,36 +53,35 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState()
   useEffect(() => {
     setTimeout(() => {
       setLoading(false); 
     }, 3000);
   }, []);
 
-  //FIXME : FormData.append(key, value) is unavailable
-  const onFinish = (values) =>{
-    var fileList = values.student_list_file.fileList
-    // console.log("files:")
-    // console.log(values.student_list_file.file)
-    // console.log(fileList)
+  const onFinish = () =>{
     var fdata = new FormData()
-    fdata.set("student-list-file", fileList[0])
-    fdata.forEach(v => console.log(v))
-    console.log("wzj", fileList[0])
-    dispatch({
-      type:'account/uploadAccount',
-      payload: fdata,
-      onError:(err)=>{
-        notification.error({
-          message: '导入失败',
-          description: err.message,
-        })
+    fdata.append('student-list-file', uploadedFile)
+    console.log(fdata.get('student-list-file'))
+    axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/v1/user/upload-students/',
+      data: fdata,
+      headers:{
+        "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>"
       },
-      onSuccess: ()=>{
-        notification.success({
-          message: '导入成功',
-        })
-      }
+    })
+    .then(() => {
+      notification.success({
+        message: '导入成功!',
+      })
+    })
+    .catch((err) => {
+      notification.error({
+        message: '导入失败',
+        description: err.toString(),
+      })
     })
   }
 
