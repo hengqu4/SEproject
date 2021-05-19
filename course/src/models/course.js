@@ -10,7 +10,7 @@ import moment from 'moment'
 
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
-  courseId: 1,
+  courseId: -1,
   courseName: null,
   courseCredit: null,
   courseStudyTimeNeeded: null,
@@ -42,35 +42,57 @@ const effects = {
     //     console.log('error boy')
     //   }),
 
-    console.log(res)
     // console.log(res.data)
     yield put({
       type: 'setCourseList',
       payload: res.data,
     })
     const courseList = yield select((state) => state.Course.courseList)
-    // console.log(courseList)
+    console.log(courseList)
     const currentCourse = courseList[0]
+
     
     if (currentCourse == undefined) {
       console.log(currentCourse)
     } else {
-      const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
-      yield put({
-        type: 'setCurrentCourse',
-        payload: res2.data,
-      })
+      const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
+      if(courseId == -1){
+        const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+        yield put({
+          type: 'setCurrentCourse',
+          payload: res2.data,
+        })
+      }
       // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
       // console.log(currentCourseInfo)
     }
   }),
 
+  //FIXME: can't get the courseList using students' account
   //获取当前课程信息
   getCurrentCourseInfo: generateEffect(function* ({ payload }, { call, put, select }) {
     // console.log(payload)
     const courseList = yield select((state) => state.Course.courseList)
     // console.log(courseList)
     const currentCourse = courseList[payload]
+    // console.log(currentCourse)
+    const res = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+
+    // console.log(res.data)
+    yield put({
+      type: 'setCurrentCourse',
+      payload: res.data,
+    })
+    // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
+    // console.log(currentCourseInfo)
+  }),
+
+
+  getCurrentCourseInfoStudent: generateEffect(function* ({ payload }, { call, put, select }) {
+    // console.log(payload)
+    const courseList = yield select((state) => state.Course.courseList)
+    // console.log(courseList)
+    const currentCourse = payload
     // console.log(currentCourse)
     const res = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
 

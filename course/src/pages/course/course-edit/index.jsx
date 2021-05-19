@@ -80,9 +80,9 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
           <FormItem {...formItemLayout} label='课程ID' name='courseID'>
             <span>{currentCourseId}</span>
           </FormItem>
-          <FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
+          {/*<FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
             <UploadAvatar />
-          </FormItem>
+          </FormItem>*/}
           <FormItem {...formItemLayout} label='课程名称' name='courseName'>
             <Input placeholder='请输入新的课程名称' />
           </FormItem>
@@ -117,6 +117,7 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
               placeholder={['开始时间', '结束时间']}
             />
           </FormItem>
+          {/*
           <FormItem {...formItemLayout} label='理论课次数' name='lectureCount'>
             <InputNumber
               style={{ width: '70%' }}
@@ -153,6 +154,7 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
               max={60}
             />
           </FormItem>
+          */}
           <FormItem {...formItemLayout} label='课程分数是否公开' name='courseIsScorePublic'>
             <Select
               placeholder='请选择课程分数是否公开'
