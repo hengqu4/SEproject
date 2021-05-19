@@ -20,3 +20,20 @@ export const uploadSingleAccount = (data) => {
         data
     })
 }
+
+export const sendEmailAddress = (data) =>{
+    const re = request('/password/reset/',{
+      method:'POST',
+      prefix:API_USER_PREFIX,
+      data
+    })
+    return re
+  }
+  
+  export const resetPassword = (payload) => {
+    return request('/password/verify/',{
+      method: 'POST',
+      prefix: API_USER_PREFIX,
+      payload
+    })
+  }

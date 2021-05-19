@@ -1,7 +1,9 @@
-import { Form, Input, Popover, Progress, Button } from 'antd'
+import { Form, Input, Popover, Progress, Button, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { Link } from 'umi'
 import styles from './style.less'
+import CountDown from 'ant-design-pro/lib/CountDown';
+import { connect, history } from 'umi'
 
 const FormItem = Form.Item
 const passwordStatusMap = {
@@ -14,13 +16,20 @@ const passwordProgressMap = {
   pass: 'normal',
   poor: 'exception',
 }
-export default () => {
+
+const ResetPassWord = ({dispatch = () => {}}) =>{
   const [status, setStatus] = useState('initial invalid sent reset')
 
   const [visible, setvisible] = useState(false)
   const [popover, setpopover] = useState(false)
   const [emailForm] = Form.useForm()
   const [passwordForm] = Form.useForm()
+  const [checkForm] = Form.useForm()
+  const [buttonDisable, setButtonDisable] = useState(false)
+  const [sendCheck, setSendCheck] = useState("发送验证码")
+  const [checkNumber, setCheckNumber] = useState()
+  const [email, setEmail] = useState()
+
   const getPasswordStatus = () => {
     const value = passwordForm.getFieldValue('password')
     if (value && value.length > 9) {
@@ -70,6 +79,36 @@ export default () => {
 
     return promise.resolve()
   }
+
+  const onEmailFinish = (values) =>{
+    setEmail(values.email)
+    setButtonDisable(true)
+    const targetTime = new Date().getTime() + 30000;
+    setSendCheck(<CountDown 
+                    style={{ fontSize: 20 }} 
+                    target={targetTime} 
+                    onEnd={() => {
+                      setButtonDisable(false)
+                      setSendCheck("发送验证码")
+                    }} 
+                  />)
+    dispatch({
+      type: 'account/sendEmailAddress',
+      payload: values,
+      onError: (err) => {
+        notification.error({
+          message: '验证码发送失败',
+          description: err.message
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '发送成功，请检查邮箱',
+        })
+      }
+    })
+  }
+
   const checkConfirm = (_, value) => {
     const promise = Promise
 
@@ -82,9 +121,37 @@ export default () => {
   const onMailValidate = () => {
     setStatus('sent')
   }
+
+  const onNewPasswordFinished = (values) => {
+    setStatus('sent')
+    const data = {
+      email,
+      new_password: values.password,
+      token: values.checkNumber
+    }    
+    console.log(data)
+    // history.goBack()
+    dispatch({
+      type: 'account/resetPassword',
+      payload: values,
+      onError: (err) => {
+        notification.error({
+          message: '修改失败，请检查验证码是否正确',
+          description: err.message
+        })
+      },
+      onSuccess: () => {
+        notification.success({
+          message: '修改成功',
+        })
+        history.goBack()
+      }
+    })
+  }
+
   return (
     <div className={styles.main}>
-      <Form form={emailForm} name='UserEmail' onFinish={() => {}}>
+      <Form form={emailForm} name='UserEmail' onFinish={(values) => {onEmailFinish(values)}}>
         <FormItem
           name='email'
           rules={[
@@ -101,23 +168,30 @@ export default () => {
           <Input size='large' placeholder='邮箱' />
         </FormItem>
         <FormItem>
-          <Button className={styles.send} type='primary' htmlType='submit'>
-            发送验证码
+          <Button className={styles.send} type='primary' htmlType='submit' disabled={buttonDisable}>
+            {sendCheck}
           </Button>
         </FormItem>
       </Form>
+      <Form form={passwordForm} name='NewPassword' onFinish={(values) => {onNewPasswordFinished(values)}}>
       <div className={styles.valiCode}>
-        <Input size='large' placeholder='请输入验证码' />
-        <Button
-          className={styles.submit}
-          onClick={() => {
-            setStatus('reset')
-          }}
-        >
-          提交
-        </Button>
-      </div>
-      <Form hidden={status !== 'reset'} form={passwordForm} name='NewPassword' onFinish={() => {}}>
+          <FormItem
+            name='checkNumber'
+            rules={[
+              {
+                required: true,
+                message: '请输入验证码',
+              },
+            ]}
+          >
+            <Input
+              style={{width:'150px'}}
+              size='large' 
+              placeholder='请输入验证码' 
+              onChange={(value)=>console.log(value)}
+            />
+          </FormItem>
+        </div>
         <Popover
           getPopupContainer={(node) => {
             if (node && node.parentNode) {
@@ -185,11 +259,11 @@ export default () => {
           <Button className={styles.reset} type='primary' htmlType='submit'>
             确认提交
           </Button>
-          <Link className={styles.login} to='/user/login'>
-            使用已有账户登录
-          </Link>
         </FormItem>
+
       </Form>
     </div>
   )
 }
+
+export default connect()(ResetPassWord)

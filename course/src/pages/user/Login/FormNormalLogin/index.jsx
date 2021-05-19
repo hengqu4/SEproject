@@ -86,6 +86,9 @@ const NormalLoginForm = (props) => {
           <Link className={styles.login} to='/user/register'>
             现在就去注册！
           </Link>
+          <Link className={styles.reset} to='/user/retrievepassword'>
+            忘记密码?
+          </Link>
         </Form.Item>
       </Form>
     </div>
