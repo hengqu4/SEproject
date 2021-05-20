@@ -3,9 +3,12 @@ import { API_USER_PREFIX } from '@/url-prefixes'
 import safeUrlAssembler from 'safe-url-assembler'
 
 export const uploadAccount = (data) => {
-    return request('/fuckyou', {
+    return request('/upload-students/', {
+        headers:{
+            "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>",
+        },
         method: 'POST',
-        prefix: 'FUCKYOU',
+        prefix: API_USER_PREFIX,
         data
     })
 }
@@ -17,3 +20,21 @@ export const uploadSingleAccount = (data) => {
         data
     })
 }
+
+export const sendEmailAddress = (data) =>{
+    const re = request('/password/reset/',{
+      method:'POST',
+      prefix:API_USER_PREFIX,
+      data
+    })
+    return re
+  }
+  
+  export const resetPassword = (payload) => {
+    const re = request('/password/verify/',{
+      method: 'POST',
+      prefix: API_USER_PREFIX,
+      data: payload
+    })
+    return re 
+  }

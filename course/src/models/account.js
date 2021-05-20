@@ -16,7 +16,13 @@ const effects = {
     }),
     uploadSingleAccount: generateEffect(function*({payload}, {call}){
         yield call(uploadFile.uploadSingleAccount, payload)
-    })
+    }),
+    sendEmailAddress: generateEffect(function*({payload}, {call}){
+        yield call(uploadFile.sendEmailAddress, payload)
+    }),
+    resetPassword: generateEffect(function* ({payload}, {call}){
+        yield call(uploadFile.resetPassword, payload)
+    }),
 }
 
 const reducers = {

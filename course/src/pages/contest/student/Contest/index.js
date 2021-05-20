@@ -49,6 +49,7 @@ const Contest = ({
   dispatch = () => {},
 }) => {
   const [isReconnect, setIsReconnect] = useStateRef(false)
+  const [timer, setTimer] = useStateRef(null)
 
   const socketUrl = useMemo(
     () => (channelId ? `ws://${IP}:${PORT}/api/v1/contest/sub?id=${channelId}` : null),
@@ -149,13 +150,26 @@ const Contest = ({
         studentId,
         channelId,
       },
+      onSuccess: () => {
+        setTimer(
+          setTimeout(() => {
+            clearMatchState()
+            notification.warn({
+              message: '匹配失败',
+              description: '十五秒内有人未准备，房间解散，请重新匹配',
+            })
+          }, WAITING_FOR_READY_TIME),
+        )
+      },
       onError: (err) => {
         onError(err)
         onCancelMatching()
       },
     })
-  }, [channelId, dispatch, onCancelMatching, studentId])
+  }, [channelId, dispatch, onCancelMatching, setTimer, studentId, clearMatchState])
 
+  useUnmount(() => clearTimeout(timer))
+  
   const onRoomDismiss = useCallback(() => {
     if (!readyArr[userIndex]) {
       notification.warn({
@@ -188,6 +202,7 @@ const Contest = ({
   )
 
   const onStartAnswering = useCallback(() => {
+    clearTimeout(timer)
     dispatch({
       type: 'Contest/connectToMatch',
       payload: {
@@ -195,7 +210,7 @@ const Contest = ({
         contestId: currentContest.contestId,
       },
     })
-  }, [dispatch, studentId, currentContest.contestId])
+  }, [dispatch, studentId, currentContest.contestId, timer])
 
   const onCompetitorSubmit = useCallback(
     ({ submitIndex: competitorIndex }) => {

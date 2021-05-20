@@ -8,7 +8,24 @@
     margin-bottom: 20px;
     font-size: 16px;
   }
+  .send {
+    float: right;    height: 39.8px;
+  }
+  .valiCode {
+    position: relative;
+    top: -64px;
+    width: 250px;
 
+    overflow: hidden;
+    .submit {
+      float: left;    height: 39.8px; 
+      width: 80px;
+    }
+    Input {
+      float: left;
+      width: 200px;
+    }
+  }
   .password {
     margin-bottom: 24px;
     :global {
@@ -23,17 +40,16 @@
     width: 100%;
   }
 
-  .submit {
-    width: 50%;
-  }
+  // .submit {
+  //   width: 50%;
+  // }
 
   .login {
     float: right;
     line-height: @btn-height-lg;
   }
   .reset{
-    float:inherit;
-    line-height: @btn-height-lg;
+    width: 50%;
   }
 }
 

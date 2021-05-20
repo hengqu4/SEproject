@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { connect } from 'dva'
-import { Link } from 'umi'
+import { Link, history } from 'umi'
 import styles from './index.less'
-
+import { userAccountLogin } from '@/services/login'
+import { getPageQuery } from '@/utils/utils'
+import { setAuthority, AUTHORITY_LIST } from "@/utils/authority";
 const namespace = 'login'
 
 const mapStateToProps = (state) => {
@@ -17,10 +19,54 @@ const mapDispatchToProps = (dispatch) => {
     onFinish: (values) => {
       // eslint-disable-next-line no-console
       console.log('Received values of form: ', values)
-      dispatch({
-        type: `${namespace}/login`,
-        payload: { ...values },
+      userAccountLogin(values).then(r => {
+        if (r.isSuccess) {
+          const urlParams = new URL(window.location.href)
+          const params = getPageQuery()
+          let { redirect } = params
+
+          if (redirect) {
+            const redirectUrlParams = new URL(redirect)
+
+            if (redirectUrlParams.origin === urlParams.origin) {
+              redirect = redirect.substr(urlParams.origin.length)
+
+              if (redirect.match(/^\/.*#/)) {
+                redirect = redirect.substr(redirect.indexOf('#') + 1)
+              }
+            } else {
+              window.location.href = '/'
+              return
+            }
+          }
+          console.log(redirect || '/')
+
+
+          console.log(r)
+          if (r.isSuccess) {
+            setAuthority(AUTHORITY_LIST[Number(r.data.character) - 1])
+            console.log(`current authority is :${AUTHORITY_LIST[Number(r.data.character) - 1]}`)
+          }
+
+          history.replace(redirect || '/')
+
+          // return { ...state, status: payload.status, type: payload.type }
+        }
+        else {
+          const errorText = r.error.message
+          notification.error({
+            message: `登录失败`,
+            description: errorText,
+          })
+        }
       })
+      // dispatch({
+      //   type: `${namespace}/login`,
+      //   payload: { ...values },
+      //   onError: (err) => {
+      //     console.log(err)
+      //   }
+      // })
     },
   }
 }
@@ -38,7 +84,7 @@ const NormalLoginForm = (props) => {
         onFinish={props.onFinish}
       >
         <Form.Item
-          name='user_id'
+          name='email'
           rules={[
             {
               required: true,
@@ -86,6 +132,9 @@ const NormalLoginForm = (props) => {
           <Link className={styles.login} to='/user/register'>
             现在就去注册！
           </Link>
+          <Link className={styles.reset} to='/user/retrievepassword'>
+            忘记密码?
+          </Link>
         </Form.Item>
       </Form>
     </div>
@@ -94,6 +143,9 @@ const NormalLoginForm = (props) => {
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginForm extends Component {
+  componentDidMount() {
+    console.log(this.props);
+  }
   render() {
     return (
       <div>

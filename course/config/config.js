@@ -61,6 +61,11 @@ export default defineConfig({
               component: './user/Login',
             },
             {
+              name: '找回密码',
+              path: '/user/retrievepassword',
+              component: './user/RetrievePassword',
+            },
+            {
               component: '404',
             },
           ],
