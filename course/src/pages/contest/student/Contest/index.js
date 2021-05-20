@@ -169,12 +169,19 @@ const Contest = ({
   }, [channelId, dispatch, onCancelMatching, setTimer, studentId, clearMatchState])
 
   useUnmount(() => clearTimeout(timer))
-
+  
   const onRoomDismiss = useCallback(() => {
-    clearTimeout(timer)
     if (!readyArr[userIndex]) {
+      notification.warn({
+        message: '超时未准备',
+        description: '请重新匹配',
+      })
       clearMatchState()
     } else {
+      notification.warn({
+        message: '房间内有人超时未准备',
+        description: '继续匹配',
+      })
       dispatch({
         type: 'Contest/setMatchingStatus',
         payload: MatchingStatus.MATCHING,
@@ -182,7 +189,7 @@ const Contest = ({
       dispatch({ type: 'Contest/setReadyArr' })
       dispatch({ type: 'Contest/setUserIndex' })
     }
-  }, [clearMatchState, timer, dispatch, readyArr, userIndex])
+  }, [clearMatchState, dispatch, readyArr, userIndex])
 
   const onCompetitorReady = useCallback(
     ({ readyArray }) => {
