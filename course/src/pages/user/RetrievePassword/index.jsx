@@ -1,6 +1,5 @@
 import { Form, Input, Popover, Progress, Button, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
-import { Link } from 'umi'
 import styles from './style.less'
 import CountDown from 'ant-design-pro/lib/CountDown';
 import { connect, history } from 'umi'
@@ -97,7 +96,7 @@ const ResetPassWord = ({dispatch = () => {}}) =>{
       payload: values,
       onError: (err) => {
         notification.error({
-          message: '验证码发送失败',
+          message: '验证码发送失败,请检查你的邮箱是否注册',
           description: err.message
         })
       },
@@ -128,12 +127,10 @@ const ResetPassWord = ({dispatch = () => {}}) =>{
       email,
       new_password: values.password,
       token: values.checkNumber
-    }    
-    console.log(data)
-    // history.goBack()
+    }
     dispatch({
       type: 'account/resetPassword',
-      payload: values,
+      payload: data,
       onError: (err) => {
         notification.error({
           message: '修改失败，请检查验证码是否正确',

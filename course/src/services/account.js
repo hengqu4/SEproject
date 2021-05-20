@@ -31,9 +31,10 @@ export const sendEmailAddress = (data) =>{
   }
   
   export const resetPassword = (payload) => {
-    return request('/password/verify/',{
+    const re = request('/password/verify/',{
       method: 'POST',
       prefix: API_USER_PREFIX,
-      payload
+      data: payload
     })
+    return re 
   }

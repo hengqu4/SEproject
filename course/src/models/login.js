@@ -42,7 +42,7 @@ const Model = {
         notification.error({
           message: `登录失败`,
           description: errorText,
-        })        
+        })
       }
 
       yield put({
