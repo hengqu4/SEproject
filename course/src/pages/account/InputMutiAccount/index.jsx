@@ -1,6 +1,6 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
-import { Upload, message, Card, Button, Form, notification } from 'antd';
+import { Upload, message, Card, Button, Form, notification, Row } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
 import { connect } from 'umi'
@@ -54,6 +54,9 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [uploadedFile, setUploadedFile] = useState()
+
+  const explainText = "数据录入格式为 realname, email, university_id, school_id, character, personal_id, password"
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false); 
@@ -87,9 +90,9 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
 
   return (
     <PageContainer content="导入多个学生数据" className={styles.main}>
+      <Card>{explainText}</Card>
       <div
         style={{
-          paddingTop: 100,
           textAlign: 'center',
         }}
       >

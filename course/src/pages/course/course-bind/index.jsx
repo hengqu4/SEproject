@@ -201,7 +201,7 @@ const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {
               handleModalVisible(false)
             }}
           >
-            <FormItem label='课程ID' name='courseID' rules={[{ required: true }]}>
+            <FormItem label='课程名' name='courseID' rules={[{ required: true }]}>
             <Select
               placeholder="请选择课程"
             >
