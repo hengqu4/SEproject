@@ -4,17 +4,20 @@ import ProCard from '@ant-design/pro-card'
 import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { Button, message, Form, DatePicker, Input } from 'antd'
+import { Button, message, Form, DatePicker, Input, Select } from 'antd'
 import CreateForm from './components/CreateForm'
 import FormItem from 'antd/lib/form/FormItem'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
+const { Option } = Select;
+
 const mapStateToProps = ({ Course }) => ({
   courseTeachList: Course.courseTeachList,
+  courseList: Course.courseList,
 })
 
-const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
+const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -73,7 +76,6 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
   ]
 
   useMount(() => {
-    console.log('准备接受数据')
     dispatch({
       type: 'Course/getAllCourseTeach',
       onError,
@@ -106,14 +108,13 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
    */
   const addCourseTeachInfo = useCallback(
     (values) => {
-      // console.log(values)
       dispatch({
         type: 'Course/createNewCourseTeach',
         payload: values,
         onError: () => {
           message.error('创建课程绑定失败')
         },
-        onFinish: () => {
+        onSuccess: () => {
           message.success('创建课程绑定成功')
           console.log(courseTeachList)
         },
@@ -201,7 +202,16 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
             }}
           >
             <FormItem label='课程ID' name='courseID' rules={[{ required: true }]}>
-              <Input placeholder='请输入课程ID' />
+            <Select
+              placeholder="请选择课程"
+            >
+                {
+                  courseList.map((i) => (
+                    <Option value={i.courseId} >{i.courseName}</Option>
+                  ))
+                }
+              </Select>
+              {/* <Input placeholder='请输入课程ID' /> */}
             </FormItem>
             <FormItem label='教师ID' name='teacherID' rules={[{ required: true }]}>
               <Input placeholder='请输入想要与之绑定的教师ID' />
