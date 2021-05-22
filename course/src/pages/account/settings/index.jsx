@@ -14,7 +14,7 @@ class Settings extends Component {
     super(props)
     const menuMap = {
       base: '基本设置',
-      // security: '安全设置',
+      security: '安全设置',
     }
     this.state = {
       mode: 'inline',
