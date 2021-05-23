@@ -7,7 +7,6 @@ import generateReducer, {
 import { cloneDeep } from 'lodash'
 import moment from 'moment'
 
-
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
   courseId: -1,
@@ -24,11 +23,18 @@ const defaultCourseInfo = {
 const defaultState = {
   currentCourseInfo: defaultCourseInfo,
   courseList: [],
-  courseTeachList: [], //course-teach的list
+  courseTeachList: [], // course-teach的list
 }
 
 const effects = {
-  //获取全部课程信息
+  getAllCourses: generateEffect(function* (_, { call, put, select }) {
+    const res = yield call(CourseServices.fetchAllCourseInfo)
+    yield put({
+      type: 'setCourseList',
+      payload: res.data,
+    })
+  }),
+  // 获取全部课程信息
   getAllCourse: generateEffect(function* (_, { call, put, select }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseInfo)
@@ -51,12 +57,11 @@ const effects = {
     console.log(courseList)
     const currentCourse = courseList[0]
 
-    
     if (currentCourse == undefined) {
       console.log(currentCourse)
     } else {
       const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
-      if(courseId == -1){
+      if (courseId == -1) {
         const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
         yield put({
           type: 'setCurrentCourse',
@@ -68,8 +73,8 @@ const effects = {
     }
   }),
 
-  //FIXME: can't get the courseList using students' account
-  //获取当前课程信息
+  // FIXME: can't get the courseList using students' account
+  // 获取当前课程信息
   getCurrentCourseInfo: generateEffect(function* ({ payload }, { call, put, select }) {
     // console.log(payload)
     const courseList = yield select((state) => state.Course.courseList)
@@ -86,7 +91,6 @@ const effects = {
     // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
     // console.log(currentCourseInfo)
   }),
-
 
   getCurrentCourseInfoStudent: generateEffect(function* ({ payload }, { call, put, select }) {
     // console.log(payload)
@@ -105,7 +109,7 @@ const effects = {
     // console.log(currentCourseInfo)
   }),
 
-  //创建新课程
+  // 创建新课程
   createNewCourse: generateEffect(function* ({ payload }, { call, put }) {
     const newCourseInfoCopy = cloneDeep(payload)
 
@@ -150,12 +154,12 @@ const effects = {
     })
   }),
 
-  //编辑课程信息
+  // 编辑课程信息
   updateSomeCourse: generateEffect(function* ({ payload }, { call }) {
     console.log('开始更新数据')
     const newValues = cloneDeep(payload)
 
-    for (var key in newValues) {
+    for (const key in newValues) {
       if (newValues[key] === undefined || newValues[key] === null) {
         delete newValues[key]
         continue
@@ -174,9 +178,15 @@ const effects = {
     }
     console.log(newValues)
     yield call(CourseServices.updateCourseInfo, newValues)
+    const res = yield call(CourseServices.fetchAllCourseInfo)
+
+    yield put({
+      type: 'setCourseList',
+      payload: res.data,
+    })
   }),
 
-  //删除课程信息
+  // 删除课程信息
   deleteCourseInfo: generateEffect(function* ({ payload }, { call, put }) {
     console.log(payload)
 
@@ -190,7 +200,7 @@ const effects = {
     })
   }),
 
-  //获取全部绑定关系列表
+  // 获取全部绑定关系列表
   getAllCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
     console.log('开始接受数据')
     const res = yield call(CourseServices.fetchAllCourseTeach)
@@ -203,7 +213,7 @@ const effects = {
     })
   }),
 
-  //新建一个课程绑定
+  // 新建一个课程绑定
   createNewCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
     const newCourseTeachCopy = cloneDeep(payload)
 
@@ -224,7 +234,7 @@ const effects = {
     })
   }),
 
-  //删除一个课程绑定
+  // 删除一个课程绑定
   deleteCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
     console.log(payload)
 
@@ -237,7 +247,6 @@ const effects = {
       payload: res.data,
     })
   }),
-
 }
 
 const reducers = {

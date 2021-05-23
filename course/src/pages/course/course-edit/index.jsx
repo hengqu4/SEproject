@@ -1,8 +1,9 @@
 import React from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { Button, Card, DatePicker, Input, Form, message, InputNumber, Select } from 'antd'
-import { connect } from 'umi'
+import { connect, history } from 'umi'
 import UploadAvatar from './UploadAvatar'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -53,6 +54,7 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
       payload: values,
       onFinish: () => {
         message.success('课程编辑成功')
+        history.push('/course/course-list')
       },
     })
   }
@@ -62,7 +64,8 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
   }
 
   const currentCourseId = currentCourseInfo.courseId
-
+  const curCourse = currentCourseInfo
+  console.log(curCourse)
   // console.log(currentCourseId)
 
   return (
@@ -73,16 +76,22 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
           style={{ marginTop: 8 }}
           form={form}
           name='editCourse'
-          initialValues={{ public: '1' }}
+          initialValues={{
+            ...currentCourseInfo,
+            courseTime: [
+              moment(currentCourseInfo.courseStartTime),
+              moment(currentCourseInfo.courseEndTime),
+            ],
+          }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
           <FormItem {...formItemLayout} label='课程ID' name='courseID'>
             <span>{currentCourseId}</span>
           </FormItem>
-          {/*<FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
+          {/* <FormItem {...formItemLayout} label='课程头像' name='courseAvatar'>
             <UploadAvatar />
-          </FormItem>*/}
+          </FormItem> */}
           <FormItem {...formItemLayout} label='课程名称' name='courseName'>
             <Input placeholder='请输入新的课程名称' />
           </FormItem>
@@ -168,7 +177,6 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
             <Button type='primary' htmlType='submit'>
               提交
             </Button>
-            <Button style={{ marginLeft: 16 }}>保存</Button>
           </FormItem>
         </Form>
       </Card>

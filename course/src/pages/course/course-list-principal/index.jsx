@@ -6,68 +6,65 @@ import { PlusOutlined } from '@ant-design/icons'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
-import { Button, Divider, Drawer, message, DatePicker, TimePicker } from 'antd'
+import { Button, Divider, Drawer, message, DatePicker } from 'antd'
 import FormItem from 'antd/lib/form/FormItem'
 import CreateForm from './components/CreateForm'
-import { connect } from 'umi'
+import { connect, history } from 'umi'
 import onError from '@/utils/onError'
-import { value } from 'numeral'
 
 const { RangePicker } = DatePicker
 
-const mapStateToProps = ({ Course }) => ({
-  currentCourseInfo: Course.currentCourseInfo,
-  courseList: Course.courseList,
-})
+const mapStateToProps = ({ Course }) => {
+  // eslint-disable-next-line no-console
+  console.log('in connect', Course.currentCourseInfo)
+  return {
+    currentCourseInfo: Course.currentCourseInfo,
+    courseList: Course.courseList,
+  }
+}
 
-const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
+const CourseList = ({ courseList = [], dispatch = () => {} }) => {
   /**
    * 设置当前课程
    * @param courseID
    */
   const setCurrentCourse = useCallback(
     (index) => {
-      console.log(index)
       dispatch({
         type: 'Course/getCurrentCourseInfo',
         payload: index,
+        onFinish: () => {
+          history.push('/course/course-edit')
+        },
         onError,
       })
     },
-    [currentCourseInfo, dispatch],
+    [dispatch],
   )
 
   useMount(() => {
-    console.log('准备接受数据')
+    // eslint-disable-next-line no-console
+    console.log('Mount')
     dispatch({
-      type: 'Course/getAllCourse',
+      type: 'Course/getAllCourses',
       onError,
-      // onFinish: setCurrentCourse(0),
     })
   })
 
   /**
    * 格式化课程数据
-   * @param courseList
+   * @param _courseList
    */
-  const FormatData = (courseList) => {
+  const FormatData = (_courseList) => {
     const formattedCourseList = []
-    for (let i = 0; i < courseList.length; i++) {
+    for (let i = 0; i < _courseList.length; i++) {
       formattedCourseList.push({
+        ..._courseList[i],
         key: i,
-        courseID: courseList[i].courseId,
-        courseName: courseList[i].courseName,
-        courseCredit: courseList[i].courseCredit,
-        courseStudyTimeNeeded: courseList[i].courseStudyTimeNeeded,
-        courseType: courseList[i].courseType,
-        courseDescription: courseList[i].courseDescription,
-        courseStartTime: courseList[i].courseStartTime,
-        courseEndTime: courseList[i].courseEndTime,
-        courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
-        courseIsScorePublic: courseList[i].courseIsScorePublic ? '公开' : '不公开',
+        courseID: _courseList[i].courseId,
+        courseIsScorePublic: _courseList[i].courseIsScorePublic ? '公开' : '不公开',
       })
     }
-    console.log(formattedCourseList)
     return formattedCourseList
   }
 
@@ -83,7 +80,6 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         onError,
         onFinish: () => {
           message.success('创建课程成功')
-          console.log(courseList)
         },
       })
     },
@@ -95,6 +91,9 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       dispatch({
         type: 'Course/deleteCourseInfo',
         payload: value,
+        onFinish: () => {
+          message.success('删除课程信息成功')
+        },
         onError,
       })
     },
@@ -126,7 +125,6 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         return (
           <a
             onClick={() => {
-              // console.log(entity)
               setRow(entity)
             }}
           >
@@ -211,18 +209,16 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       render: (_, record) => (
         <>
           <a
-            onClick={async () => {
-              await setCurrentCourse(record.key)
-              message.success('切换当前课程成功')
+            onClick={() => {
+              setCurrentCourse(record.key)
             }}
           >
-            切换
+            编辑
           </a>
           <Divider type='vertical' />
           <a
-            onClick={async () => {
-              await removeCourseInfo(record.courseID)
-              message.success('删除课程信息成功')
+            onClick={() => {
+              removeCourseInfo(record.courseID)
             }}
           >
             删除
@@ -231,78 +227,78 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       ),
     },
   ]
-  const columnsPlus = [
-    {
-      title: '课程ID',
-      dataIndex: 'courseID',
-    },
-    {
-      title: '课程名称',
-      dataIndex: 'courseName',
-    },
-    {
-      title: '开课学校',
-      dataIndex: 'courseCreatorSchoolId',
-    },
-    {
-      title: '课程学分',
-      dataIndex: 'courseCredit',
-    },
-    {
-      title: '课程学时',
-      dataIndex: 'courseStudyTimeNeeded',
-    },
-    {
-      title: '课程类型',
-      dataIndex: 'courseType',
-    },
-    {
-      title: '课程描述',
-      dataIndex: 'courseDescription',
-    },
-    {
-      title: '课程开始时间',
-      detaIndex: 'courseStartTime',
-    },
-    {
-      title: '课程结束时间',
-      detaIndex: 'courseEndTime',
-    },
-    {
-      title: '理论课次数',
-      dataIndex: 'lectureCount',
-    },
-    {
-      title: '实验课次数',
-      dataIndex: 'experimentCount',
-    },
-    {
-      title: '作业次数',
-      dataIndex: 'homeworkCount',
-    },
-    {
-      title: '对抗练习次数',
-      dataIndex: 'contestCount',
-    },
-    {
-      title: '课程分数是否公开',
-      dataIndex: 'courseIsScorePublic',
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a>作业管理</a>
-          <Divider type='vertical' />
-          <a>实验管理</a>
-          <Divider type='vertical' />
-          <a>对抗练习</a>
-        </>
-      ),
-    },
-  ]
+  // const columnsPlus = [
+  //   {
+  //     title: '课程ID',
+  //     dataIndex: 'courseID',
+  //   },
+  //   {
+  //     title: '课程名称',
+  //     dataIndex: 'courseName',
+  //   },
+  //   {
+  //     title: '开课学校',
+  //     dataIndex: 'courseCreatorSchoolId',
+  //   },
+  //   {
+  //     title: '课程学分',
+  //     dataIndex: 'courseCredit',
+  //   },
+  //   {
+  //     title: '课程学时',
+  //     dataIndex: 'courseStudyTimeNeeded',
+  //   },
+  //   {
+  //     title: '课程类型',
+  //     dataIndex: 'courseType',
+  //   },
+  //   {
+  //     title: '课程描述',
+  //     dataIndex: 'courseDescription',
+  //   },
+  //   {
+  //     title: '课程开始时间',
+  //     detaIndex: 'courseStartTime',
+  //   },
+  //   {
+  //     title: '课程结束时间',
+  //     detaIndex: 'courseEndTime',
+  //   },
+  //   {
+  //     title: '理论课次数',
+  //     dataIndex: 'lectureCount',
+  //   },
+  //   {
+  //     title: '实验课次数',
+  //     dataIndex: 'experimentCount',
+  //   },
+  //   {
+  //     title: '作业次数',
+  //     dataIndex: 'homeworkCount',
+  //   },
+  //   {
+  //     title: '对抗练习次数',
+  //     dataIndex: 'contestCount',
+  //   },
+  //   {
+  //     title: '课程分数是否公开',
+  //     dataIndex: 'courseIsScorePublic',
+  //   },
+  //   {
+  //     title: '操作',
+  //     dataIndex: 'option',
+  //     valueType: 'option',
+  //     render: (_, record) => (
+  //       <>
+  //         <a>作业管理</a>
+  //         <Divider type='vertical' />
+  //         <a>实验管理</a>
+  //         <Divider type='vertical' />
+  //         <a>对抗练习</a>
+  //       </>
+  //     ),
+  //   },
+  // ]
 
   return (
     <PageContainer>
@@ -343,8 +339,8 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
           }
         >
           <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState)
+            onClick={() => {
+              // handleRemove(selectedRowsState)
               setSelectedRows([])
               actionRef.current?.reloadAndRest?.()
             }}
@@ -450,4 +446,4 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
   )
 }
 
-export default connect(mapStateToProps)(course_list)
+export default connect(mapStateToProps)(CourseList)
