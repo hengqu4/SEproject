@@ -113,6 +113,7 @@ export default defineConfig({
                       name: '课程编辑',
                       icon: 'smile',
                       path: '/course/course-edit',
+                      hideInMenu: true,
                       component: './course/course-edit',
                       authority: ['principal'],
                     },
