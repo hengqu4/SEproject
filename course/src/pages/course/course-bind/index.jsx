@@ -4,7 +4,7 @@ import ProCard from '@ant-design/pro-card'
 import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { Button, message, Form, DatePicker, Input } from 'antd'
+import { Button, message, Form, DatePicker, Input, Popconfirm } from 'antd'
 import CreateForm from './components/CreateForm'
 import FormItem from 'antd/lib/form/FormItem'
 import { connect } from 'umi'
@@ -94,16 +94,17 @@ const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
-        <>
-          <a
-            onClick={() => {
-              removeCourseTeach(record.courseTeachId)
-            }}
-          >
-            {' '}
-            删除绑定{' '}
-          </a>
-        </>
+        <Popconfirm
+          title='确定删除课程？'
+          onConfirm={() => {
+            removeCourseTeach(record.courseTeachId)
+          }}
+          onCancel={() => {}}
+          okText='确定'
+          cancelText='取消'
+        >
+          <a href='#'>删除绑定</a>
+        </Popconfirm>
       ),
     },
   ]

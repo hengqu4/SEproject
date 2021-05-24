@@ -6,7 +6,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import { StepsForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form'
-import { Button, Divider, Drawer, message, DatePicker } from 'antd'
+import { Button, Divider, Drawer, message, DatePicker, Popconfirm } from 'antd'
 import FormItem from 'antd/lib/form/FormItem'
 import CreateForm from './components/CreateForm'
 import { connect, history } from 'umi'
@@ -26,7 +26,7 @@ const mapStateToProps = ({ Course }) => {
 const CourseList = ({ courseList = [], dispatch = () => {} }) => {
   /**
    * 设置当前课程
-   * @param courseID
+   * @param courseId
    */
   const setCurrentCourse = useCallback(
     (index) => {
@@ -50,23 +50,6 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
       onError,
     })
   })
-
-  /**
-   * 格式化课程数据
-   * @param _courseList
-   */
-  const FormatData = (_courseList) => {
-    const formattedCourseList = []
-    for (let i = 0; i < _courseList.length; i++) {
-      formattedCourseList.push({
-        ..._courseList[i],
-        key: i,
-        courseID: _courseList[i].courseId,
-        courseIsScorePublic: _courseList[i].courseIsScorePublic ? '公开' : '不公开',
-      })
-    }
-    return formattedCourseList
-  }
 
   /**
    * 添加课程信息
@@ -108,12 +91,12 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
   const columns = [
     {
       title: '课程ID',
-      dataIndex: 'courseID',
+      dataIndex: 'courseId',
       hideInForm: true,
       fixed: 'left',
       width: 100,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
-      sorter: (a, b) => a.courseID - b.courseID,
+      sorter: (a, b) => a.courseId - b.courseId,
       sortOrder: 'ascend',
     },
     {
@@ -217,13 +200,17 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
             编辑
           </a>
           <Divider type='vertical' />
-          <a
-            onClick={() => {
-              removeCourseInfo(record.courseID)
+          <Popconfirm
+            title='确定删除课程？'
+            onConfirm={() => {
+              removeCourseInfo(record.courseId)
             }}
+            onCancel={() => {}}
+            okText='确定'
+            cancelText='取消'
           >
-            删除
-          </a>
+            <a href='#'>删除</a>
+          </Popconfirm>
         </>
       ),
     },
@@ -231,7 +218,7 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
   // const columnsPlus = [
   //   {
   //     title: '课程ID',
-  //     dataIndex: 'courseID',
+  //     dataIndex: 'courseId',
   //   },
   //   {
   //     title: '课程名称',
@@ -316,7 +303,11 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        dataSource={FormatData(courseList)}
+        dataSource={courseList.map((c, i) => ({
+          ...c,
+          key: i,
+          courseIsScorePublic: c.courseIsScorePublic ? '公开' : '不公开',
+        }))}
         columns={columns}
         scroll={{ x: 1450 }}
         rowSelection={{
@@ -428,7 +419,7 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
         }}
         closable={false}
       >
-        {row?.courseID && (
+        {row?.courseId && (
           <ProDescriptions
             column={1}
             title={row?.courseName}
@@ -437,7 +428,7 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
             })}
             // dataSource={row}
             params={{
-              id: row?.courseID,
+              id: row?.courseId,
             }}
             columns={columns}
           />
