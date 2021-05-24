@@ -26,9 +26,7 @@ const codeMessage = {
  * 异常处理程序
  */
 
-const errorHandler = (error) => {
-  const { response } = error
-
+const errorHandler = ({ response }) => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText
     const { status, url } = response

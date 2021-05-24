@@ -35,58 +35,54 @@ const effects = {
     })
   }),
   // 获取全部课程信息
-  getAllCourse: generateEffect(function* (_, { call, put, select }) {
-    console.log('开始接受数据')
-    const res = yield call(CourseServices.fetchAllCourseInfo)
-    // CourseServices.fetchAllCourseInfo()
-    //   .then((response) => {
-    //     console.log('major333')
-    //     console.log(response)
-    //     console.log('major333')
-    //   })
-    //   .catch((error) => {
-    //     console.log('error boy')
-    //   }),
+  // getAllCourse: generateEffect(function* (_, { call, put, select }) {
+  //   console.log('开始接受数据')
+  //   const res = yield call(CourseServices.fetchAllCourseInfo)
+  //   // CourseServices.fetchAllCourseInfo()
+  //   //   .then((response) => {
+  //   //     console.log('major333')
+  //   //     console.log(response)
+  //   //     console.log('major333')
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     console.log('error boy')
+  //   //   }),
 
-    // console.log(res.data)
-    yield put({
-      type: 'setCourseList',
-      payload: res.data,
-    })
-    const courseList = yield select((state) => state.Course.courseList)
-    console.log(courseList)
-    const currentCourse = courseList[0]
+  //   // console.log(res.data)
+  //   yield put({
+  //     type: 'setCourseList',
+  //     payload: res.data,
+  //   })
+  //   const courseList = yield select((state) => state.Course.courseList)
+  //   console.log(courseList)
+  //   const currentCourse = courseList[0]
 
-    if (currentCourse == undefined) {
-      console.log(currentCourse)
-    } else {
-      const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
-      if (courseId == -1) {
-        const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
-        yield put({
-          type: 'setCurrentCourse',
-          payload: res2.data,
-        })
-      }
-      // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
-      // console.log(currentCourseInfo)
-    }
-  }),
+  //   if (currentCourse == undefined) {
+  //     console.log(currentCourse)
+  //   } else {
+  //     const courseId = yield select((state) => state.Course.currentCourseInfo.courseId)
+  //     if (courseId == -1) {
+  //       const res2 = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+  //       yield put({
+  //         type: 'setCurrentCourse',
+  //         payload: res2.data,
+  //       })
+  //     }
+  //     // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
+  //     // console.log(currentCourseInfo)
+  //   }
+  // }),
 
   // FIXME: can't get the courseList using students' account
   // 获取当前课程信息
-  getCurrentCourseInfo: generateEffect(function* ({ payload }, { call, put, select }) {
-    // console.log(payload)
+  getCurrentCourseInfo: generateEffect(function* ({ payload }, { put, select }) {
     const courseList = yield select((state) => state.Course.courseList)
-    // console.log(courseList)
     const currentCourse = courseList[payload]
-    // console.log(currentCourse)
-    const res = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
+    // const res = yield call(CourseServices.fetchOneCourseInfo, currentCourse)
 
-    // console.log(res.data)
     yield put({
       type: 'setCurrentCourse',
-      payload: res.data,
+      payload: currentCourse,
     })
     // const currentCourseInfo = yield select((state) => state.Course.currentCourseInfo)
     // console.log(currentCourseInfo)
@@ -123,9 +119,10 @@ const effects = {
     newCourseInfoCopy.course_start_time = moment(newCourseInfoCopy.course_time[0]).format()
     newCourseInfoCopy.course_end_time = moment(newCourseInfoCopy.course_time[1]).format()
     newCourseInfoCopy.course_avatar = 'fake'
-    newCourseInfoCopy.course_credit = parseInt(newCourseInfoCopy.course_credit)
+    newCourseInfoCopy.course_credit = parseInt(newCourseInfoCopy.course_credit, 10)
     newCourseInfoCopy.course_study_time_needed = parseInt(
       newCourseInfoCopy.course_study_time_needed,
+      10,
     )
     delete newCourseInfoCopy.course_time
 
@@ -155,29 +152,34 @@ const effects = {
   }),
 
   // 编辑课程信息
-  updateSomeCourse: generateEffect(function* ({ payload }, { call }) {
+  updateSomeCourse: generateEffect(function* ({ payload, successHandler }, { call, put }) {
     console.log('开始更新数据')
     const newValues = cloneDeep(payload)
-
-    for (const key in newValues) {
+    const oldKeys = Object.keys(payload)
+    for (let i = 0; i < oldKeys.length; i++) {
+      const key = oldKeys[i]
       if (newValues[key] === undefined || newValues[key] === null) {
         delete newValues[key]
-        continue
-      }
-      if (
-        key.toString() == 'courseID' ||
-        key.toString() == 'courseCredit' ||
-        key.toString() == 'courseStudyTimeNeeded'
+      } else if (
+        key.toString() === 'courseId' ||
+        key.toString() === 'courseCredit' ||
+        key.toString() === 'courseStudyTimeNeeded'
       ) {
-        newValues[key] = parseInt(newValues[key])
-      } else if (key.toString() == 'courseTime') {
+        newValues[key] = parseInt(newValues[key], 10)
+      } else if (key.toString() === 'courseTime') {
         newValues.courseStartTime = moment(newValues.courseTime[0]).format()
         newValues.courseEndTime = moment(newValues.courseTime[1]).format()
         delete newValues[key]
       }
     }
     console.log(newValues)
-    yield call(CourseServices.updateCourseInfo, newValues)
+    try {
+      yield call(CourseServices.updateCourseInfo, newValues)
+      successHandler()
+    } catch (error) {
+      console.log(error)
+    }
+
     const res = yield call(CourseServices.fetchAllCourseInfo)
 
     yield put({
@@ -214,18 +216,22 @@ const effects = {
   }),
 
   // 新建一个课程绑定
-  createNewCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
-    const newCourseTeachCopy = cloneDeep(payload)
+  createNewCourseTeach: generateEffect(function* (
+    { payload, errorHandler, successHandler },
+    { call, put },
+  ) {
+    const { courseId, teacherId } = payload
+    const newCourseTeachCopy = cloneDeep({
+      course_id: courseId,
+      teacher_id: teacherId,
+    })
 
-    newCourseTeachCopy.course_id = parseInt(newCourseTeachCopy.courseID)
-    delete newCourseTeachCopy.courseID
-    newCourseTeachCopy.teacher_id = parseInt(newCourseTeachCopy.teacherID)
-    delete newCourseTeachCopy.teacherID
-
-    // console.log(newCourseTeachCopy)
-
-    yield call(CourseServices.publishCourseTeach, newCourseTeachCopy)
-
+    try {
+      const resPublish = yield call(CourseServices.publishCourseTeach, newCourseTeachCopy)
+      successHandler(resPublish)
+    } catch (e) {
+      errorHandler(e)
+    }
     const res = yield call(CourseServices.fetchAllCourseTeach)
 
     yield put({
@@ -236,7 +242,7 @@ const effects = {
 
   // 删除一个课程绑定
   deleteCourseTeach: generateEffect(function* ({ payload }, { call, put }) {
-    console.log(payload)
+    console.log('effect', payload)
 
     yield call(CourseServices.deleteCourseTeach, payload)
 

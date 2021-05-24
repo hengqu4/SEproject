@@ -52,7 +52,7 @@ const CourseEdit = ({ currentCourseInfo = {}, dispatch = () => {} }) => {
     dispatch({
       type: 'Course/updateSomeCourse',
       payload: values,
-      onFinish: () => {
+      successHandler: () => {
         message.success('课程编辑成功')
         history.push('/course/course-list')
       },

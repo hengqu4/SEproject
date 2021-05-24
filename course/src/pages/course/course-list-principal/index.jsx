@@ -114,6 +114,7 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
       width: 100,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
       sorter: (a, b) => a.courseID - b.courseID,
+      sortOrder: 'ascend',
     },
     {
       title: '课程名称',

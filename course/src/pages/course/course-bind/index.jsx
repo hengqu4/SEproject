@@ -14,29 +14,66 @@ const mapStateToProps = ({ Course }) => ({
   courseTeachList: Course.courseTeachList,
 })
 
-const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
+const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
-
+  /**
+   * 添加课程绑定信息
+   * @param values
+   */
+  const addCourseTeachInfo = useCallback(
+    (values) => {
+      // console.log(values)
+      dispatch({
+        type: 'Course/createNewCourseTeach',
+        payload: values,
+        errorHandler: (e) => {
+          if (e.status === 400) {
+            message.error('创建课程绑定失败,重复绑定或不存在的课程id！')
+          } else if (e.status === 404) {
+            message.error('创建课程绑定失败,不存在的教师id')
+          }
+        },
+        successHandler: () => {
+          message.success('创建课程绑定成功')
+        },
+      })
+    },
+    [dispatch],
+  )
+  /**
+   * 删除课程绑定信息
+   * @param value
+   */
+  const removeCourseTeach = useCallback(
+    (value) => {
+      dispatch({
+        type: 'Course/deleteCourseTeach',
+        payload: value,
+        onError,
+      })
+    },
+    [dispatch],
+  )
   const columns = [
     {
       title: '绑定ID',
-      dataIndex: 'courseTeachID',
-      sorter: (a, b) => a.courseTeachID - b.courseTeachID,
+      dataIndex: 'courseTeachId',
+      sorter: (a, b) => a.courseTeachId - b.courseTeachId,
     },
     {
       title: '课程ID',
-      dataIndex: 'courseID',
+      dataIndex: 'courseId',
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
-      sorter: (a, b) => a.courseID - b.courseID,
+      sorter: (a, b) => a.courseId - b.courseId,
     },
     {
       title: '教师ID',
-      dataIndex: 'teacherID',
+      dataIndex: 'teacherId',
       formItemProps: { rules: [{ required: true, message: '教师ID是必须项' }] },
-      sorter: (a, b) => a.teacherID - b.teacherID,
+      sorter: (a, b) => a.teacherId - b.teacherId,
     },
     {
       title: '课程名称',
@@ -59,9 +96,8 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
       render: (_, record) => (
         <>
           <a
-            onClick={async() => {
-              await removeCourseTeach(record.courseTeachID)
-              message.success('删除课程绑定成功')
+            onClick={() => {
+              removeCourseTeach(record.courseTeachId)
             }}
           >
             {' '}
@@ -80,66 +116,12 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
     })
   })
 
-  /**
-   * 格式化课程绑定数据
-   * @param courseTeachList
-   */
-  const FormatData = (courseTeachList) => {
-    const formattedCourseTeachList = []
-    for (let i = 0; i < courseTeachList.length; i++) {
-      formattedCourseTeachList.push({
-        key: i,
-        courseTeachID: courseTeachList[i].courseTeachId,
-        courseID: courseTeachList[i].courseId,
-        teacherID: courseTeachList[i].teacherId,
-        courseName: courseTeachList[i].courseName,
-        courseCredit: courseTeachList[i].courseCredit,
-        courseDescription: courseTeachList[i].courseDescription,
-      })
-    }
-    return formattedCourseTeachList
-  }
-
-  /**
-   * 添加课程绑定信息
-   * @param values
-   */
-  const addCourseTeachInfo = useCallback(
-    (values) => {
-      // console.log(values)
-      dispatch({
-        type: 'Course/createNewCourseTeach',
-        payload: values,
-        onError: () => {
-          message.error('创建课程绑定失败')
-        },
-        onFinish: () => {
-          message.success('创建课程绑定成功')
-          console.log(courseTeachList)
-        },
-      })
-    },
-    [dispatch],
-  )
-
-  /**
-   * 删除课程绑定信息
-   * @param value
-   */
-  const removeCourseTeach = useCallback((value) => {
-    dispatch({
-      type: 'Course/deleteCourseTeach',
-      payload: value,
-      onError,
-    })
-  }, [dispatch])
-
   const handleRemove = (selectedRows) => {
     console.log(selectedRows)
-    for (let i = 0; i < selectedRows.length; i++){
+    for (let i = 0; i < selectedRows.length; i++) {
       dispatch({
         type: 'Course/deleteCourseTeach',
-        payload: selectedRows[i].courseTeachID,
+        payload: selectedRows[i].courseTeachId,
       })
     }
   }
@@ -156,7 +138,7 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        dataSource={FormatData(courseTeachList)}
+        dataSource={courseTeachList.map((t, i) => ({ ...t, key: i }))}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -179,8 +161,8 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
           }
         >
           <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState)
+            onClick={() => {
+              handleRemove(selectedRowsState)
               setSelectedRows([])
               actionRef.current?.reloadAndRest?.()
               message.success('批量删除成功')
@@ -194,16 +176,15 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProCard>
           <Form
-            onFinish={async (values) => {
-              // console.log(values)
+            onFinish={(values) => {
               addCourseTeachInfo(values)
               handleModalVisible(false)
             }}
           >
-            <FormItem label='课程ID' name='courseID' rules={[{ required: true }]}>
+            <FormItem label='课程ID' name='courseId' rules={[{ required: true }]}>
               <Input placeholder='请输入课程ID' />
             </FormItem>
-            <FormItem label='教师ID' name='teacherID' rules={[{ required: true }]}>
+            <FormItem label='教师ID' name='teacherId' rules={[{ required: true }]}>
               <Input placeholder='请输入想要与之绑定的教师ID' />
             </FormItem>
             <FormItem style={{ marginTop: 32 }}>
@@ -218,4 +199,4 @@ const course_list = ({ courseTeachList = [], dispatch = () => {} }) => {
   )
 }
 
-export default connect(mapStateToProps)(course_list)
+export default connect(mapStateToProps)(CourseBind)
