@@ -126,7 +126,7 @@ export function fetchStudentsOfAllCourses() {
 export function uploadStudentsOfCourseFile(fdata) {
   return axios({
     method: 'POST',
-    url: '/course/upload-take-course/',
+    url: '/api/v1/course/upload-take-course/',
     data: fdata,
     headers: {
       'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
