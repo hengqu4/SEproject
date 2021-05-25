@@ -125,7 +125,7 @@ export default defineConfig({
                       authority: ['principal'],
                     },
                     {
-                      name: '添加学生',
+                      name: '向课程添加学生',
                       icon: 'smile',
                       path: '/course/course-arrange',
                       component: './course/course-arrange',

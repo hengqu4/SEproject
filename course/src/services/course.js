@@ -1,6 +1,7 @@
 import { API_COURSE_PREFIX } from '@/url-prefixes'
 import request from '@/utils/request'
 import SafeUrlAssembler from 'safe-url-assembler'
+import axios from 'axios'
 import { get } from 'lodash'
 import { func } from 'prop-types'
 
@@ -119,5 +120,16 @@ export function fetchStudentsOfAllCourses() {
   return request('/take-list/', {
     method: 'GET',
     prefix: API_COURSE_PREFIX,
+  })
+}
+
+export function uploadStudentsOfCourseFile(fdata) {
+  return axios({
+    method: 'POST',
+    url: '/course/upload-take-course/',
+    data: fdata,
+    headers: {
+      'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
+    },
   })
 }

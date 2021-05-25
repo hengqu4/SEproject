@@ -24,23 +24,24 @@ const mapStateToProps = ({ Course }) => {
 }
 
 const CourseList = ({ courseList = [], dispatch = () => {} }) => {
-  /**
-   * 设置当前课程
-   * @param courseId
-   */
-  const setCurrentCourse = useCallback(
-    (index) => {
-      dispatch({
-        type: 'Course/getCurrentCourseInfo',
-        payload: index,
-        onFinish: () => {
-          history.push('/course/course-edit')
-        },
-        onError,
-      })
-    },
-    [dispatch],
-  )
+  const editCurrentCourse = (index) => {
+    dispatch({
+      type: 'Course/getCurrentCourseInfo',
+      payload: index,
+      onSuccess: () => {
+        history.push('/course/course-edit')
+      },
+    })
+  }
+  const addStudentsToCurrentCourse = (index) => {
+    dispatch({
+      type: 'Course/getCurrentCourseInfo',
+      payload: index,
+      onSuccess: () => {
+        history.push('/course/course-arrange')
+      },
+    })
+  }
 
   useMount(() => {
     // eslint-disable-next-line no-console
@@ -194,10 +195,18 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
         <>
           <a
             onClick={() => {
-              setCurrentCourse(record.key)
+              editCurrentCourse(record.key)
             }}
           >
             编辑
+          </a>
+          <Divider type='vertical' />
+          <a
+            onClick={() => {
+              addStudentsToCurrentCourse(record.key)
+            }}
+          >
+            管理学生
           </a>
           <Divider type='vertical' />
           <Popconfirm
