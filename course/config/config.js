@@ -125,6 +125,13 @@ export default defineConfig({
                       authority: ['principal'],
                     },
                     {
+                      name: '添加学生',
+                      icon: 'smile',
+                      path: '/course/course-arrange',
+                      component: './course/course-arrange',
+                      authority: ['principal'],
+                    },
+                    {
                       name: '课程信息',
                       icon: 'smile',
                       path: '/course/course-info',
