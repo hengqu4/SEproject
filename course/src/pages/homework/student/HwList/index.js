@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space } from 'antd'
+import { Input, Button, Table, Modal, Space, Select } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
@@ -9,9 +9,12 @@ import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
 
+const { Option } = Select
+
 const mapStateToProps = ({ homework, Course }) => ({
   hwList: homework.hwList,
   courseId: Course.currentCourseInfo.courseId,
+  courseList: Course.courseList
 })
 
 const FormatData = (hwList) => {
@@ -34,7 +37,8 @@ const FormatData = (hwList) => {
 const HwList = ({
   hwList = [],
   dispatch = () => { },
-  courseId = courseId
+  courseId = courseId,
+  courseList = []
 }) => {
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId ] = useState()
@@ -42,11 +46,11 @@ const HwList = ({
   const ref = useRef()
 
   //获得当前作业列表
-  const getHwList = () => {
+  const getHwList = (value) => {
     dispatch({
       type: 'homework/fetchHwList',
       payload: {
-        courseId,
+        courseId: value,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -65,10 +69,25 @@ const HwList = ({
     })
   }
 
-  useMount(() => {
-    getHwList()
-    console.log(hwList)
-  })
+  // useMount(() => {
+  //   getHwList()
+  //   console.log(hwList)
+  // })
+
+  const setCurrentCourse = (index) => (
+    dispatch({
+      type: 'Course/getCurrentCourseInfoStudent',
+      payload: {
+        courseId: index,
+      },
+      onError,
+    })
+  )
+
+  const handleSelectOnChange = (value) => {
+    setCurrentCourse(value)
+    getHwList(value)
+  }
 
   const data = {
     grade: 100
@@ -129,6 +148,19 @@ const HwList = ({
         search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
+        toolBarRender={() => [
+          <Select
+            placeholder="请选择课程"
+            onChange={(value) => handleSelectOnChange(value)}
+            defaultValue={courseId == -1 ? undefined: courseId}
+          >
+            {
+              courseList.map((i) => (
+                <Option value={i.courseId} >{i.courseName}</Option>
+              ))
+            }
+          </Select>
+        ]}
       />
     </PageContainer>
   )
