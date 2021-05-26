@@ -5,6 +5,7 @@ import { useMount } from 'react-use'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 import styles from './style.less'
+import ProTable from '@ant-design/pro-table'
 
 const mapStateToProps = ({ Course }) => ({
   currentCourseInfo: Course.currentCourseInfo,
@@ -37,7 +38,7 @@ const course_info = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       type: 'Course/getAllCourses',
       onError,
       onFinish: () => {
-        setCurrentCourse(0)
+        // setCurrentCourse(0)
         console.log(courseList)
       },
     })
@@ -59,44 +60,62 @@ const course_info = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     contestCount: '2',
   }
 
+  const columns = [
+    {
+      title: '课程ID',
+      dataIndex: 'courseId',
+      hideInForm: true,
+      fixed: 'left',
+      width: 100,
+    },
+    {
+      title: '课程名称',
+      dataIndex: 'courseName',
+      fixed: 'left',
+      width: 150,
+    },
+    {
+      title: '课程学分',
+      dataIndex: 'courseCredit',
+      width: 100,
+      formItemProps: { rules: [{ required: true }] },
+    },
+    {
+      title: '课程学时',
+      dataIndex: 'courseStudyTimeNeeded',
+      width: 100,
+      formItemProps: { rules: [{ required: true }] },
+    },
+    {
+      title: '课程类型',
+      dataIndex: 'courseType',
+      width: 100,
+      formItemProps: { rules: [{ required: true }] },
+    },
+    {
+      title: '课程描述',
+      dataIndex: 'courseDescription',
+      valueType: 'textarea',
+      ellipsis: true,
+      width: 250,
+      formItemProps: { rules: [{ required: true, max: 50 }] },
+    },
+    {
+      title: '开课学校',
+      width: 150,
+      dataIndex: 'courseCreatorSchoolId',
+    },
+  ]
+
   return (
     <PageContainer>
       <div className={styles.main}>
-        <Card>
-          <Descriptions bordered>
-            <Descriptions.Item label='课程ID'>{currentCourseInfo.courseId}</Descriptions.Item>
-            <Descriptions.Item label='课程名称'>{currentCourseInfo.courseName}</Descriptions.Item>
-            <Descriptions.Item label='开课学校'>
-              {currentCourseInfo.courseCreatorSchoolId}
-            </Descriptions.Item>
-            <Descriptions.Item label='课程学分'>{currentCourseInfo.courseCredit}</Descriptions.Item>
-            <Descriptions.Item label='课程学时'>
-              {currentCourseInfo.courseStudyTimeNeeded}
-            </Descriptions.Item>
-            <Descriptions.Item label='课程类型'>{currentCourseInfo.courseType}</Descriptions.Item>
-            <Descriptions.Item label='课程开始时间'>
-              {currentCourseInfo.courseStartTime}
-            </Descriptions.Item>
-            <Descriptions.Item label='课程结束时间'>
-              {currentCourseInfo.courseEndTime}
-            </Descriptions.Item>
-            <Descriptions.Item label='理论课次数'>
-              {currentCourseInfo.lectureCount}
-            </Descriptions.Item>
-            <Descriptions.Item label='实验课次数'>
-              {currentCourseInfo.experimentCount}
-            </Descriptions.Item>
-            <Descriptions.Item label='作业次数'>
-              {currentCourseInfo.homeworkCount}
-            </Descriptions.Item>
-            <Descriptions.Item label='对抗练习次数'>
-              {currentCourseInfo.contestCount}
-            </Descriptions.Item>
-            <Descriptions.Item label='课程描述'>
-              {currentCourseInfo.courseDescription}
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
+        <ProTable
+          columns={columns}
+          dataSource={courseList}
+          search={false}
+        >
+        </ProTable>
       </div>
     </PageContainer>
   )
