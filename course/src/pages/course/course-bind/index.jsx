@@ -4,17 +4,20 @@ import ProCard from '@ant-design/pro-card'
 import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { Button, message, Form, DatePicker, Input, Popconfirm } from 'antd'
+import { Button, message, Form, DatePicker, Input, Popconfirm, Select } from 'antd'
 import CreateForm from './components/CreateForm'
 import FormItem from 'antd/lib/form/FormItem'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
+const { Option } = Select;
+
 const mapStateToProps = ({ Course }) => ({
   courseTeachList: Course.courseTeachList,
+  courseList: Course.courseList,
 })
 
-const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
+const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {} }) => {
   const [createModalVisible, handleModalVisible] = useState(false)
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -110,7 +113,6 @@ const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
   ]
 
   useMount(() => {
-    console.log('准备接受数据')
     dispatch({
       type: 'Course/getAllCourseTeach',
       onError,
@@ -182,8 +184,17 @@ const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
               handleModalVisible(false)
             }}
           >
-            <FormItem label='课程ID' name='courseId' rules={[{ required: true }]}>
-              <Input placeholder='请输入课程ID' />
+            <FormItem label='课程名' name='courseId' rules={[{ required: true }]}>
+            <Select
+              placeholder="请选择课程"
+            >
+                {
+                  courseList.map((i) => (
+                    <Option value={i.courseId} >{i.courseName}</Option>
+                  ))
+                }
+              </Select>
+              {/* <Input placeholder='请输入课程ID' /> */}
             </FormItem>
             <FormItem label='教师ID' name='teacherId' rules={[{ required: true }]}>
               <Input placeholder='请输入想要与之绑定的教师ID' />
@@ -200,4 +211,4 @@ const CourseBind = ({ courseTeachList = [], dispatch = () => {} }) => {
   )
 }
 
-export default connect(mapStateToProps)(CourseBind)
+export default connect(mapStateToProps)(course_list)

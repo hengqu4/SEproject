@@ -52,6 +52,9 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
   const [loading, setLoading] = useState(true)
   const [file, setFile] = useState(null)
   const [uploadedFile, setUploadedFile] = useState()
+
+  const explainText = "数据录入格式为 realname, email, university_id, school_id, character, personal_id, password"
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
@@ -87,7 +90,6 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
     <PageContainer content='导入多个学生数据' className={styles.main}>
       <div
         style={{
-          paddingTop: 100,
           textAlign: 'center',
         }}
       >

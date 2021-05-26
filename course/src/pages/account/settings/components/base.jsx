@@ -1,10 +1,11 @@
 import { UploadOutlined } from '@ant-design/icons'
-import { Button, Input, Select, Upload, Form, message } from 'antd'
+import { Button, Input, Select, Upload, Form, message, InputNumber } from 'antd'
 import { connect, FormattedMessage, formatMessage } from 'umi'
 import React, { Component } from 'react'
 import GeographicView from './GeographicView'
 import PhoneView from './PhoneView'
 import styles from './BaseView.less'
+import FormItem from 'antd/lib/form/FormItem'
 
 const checkPassword = (_, value, callback) => {
   if (value.length < 6) {
@@ -70,7 +71,13 @@ class BaseView extends Component {
             initialValues={currentUser}
             hideRequiredMark
           >
-            <Form.Item
+            <FormItem
+              name="id"
+              label="用户ID"
+            >
+              <Input readOnly={true} />
+            </FormItem>
+            {/* <Form.Item
               name='email'
               label='邮箱'
               rules={[
@@ -81,7 +88,7 @@ class BaseView extends Component {
               ]}
             >
               <Input />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name='name'
               label='真实姓名'
@@ -112,9 +119,9 @@ class BaseView extends Component {
             </Form.Item>
           </Form>
         </div>
-        <div className={styles.right}>
+        {/* <div className={styles.right}>
           <AvatarView avatar={this.getAvatarURL()} />
-        </div>
+        </div> */}
       </div>
     )
   }
