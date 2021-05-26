@@ -130,6 +130,32 @@ export default defineConfig({
                       component: './course/course-info',
                       authority: ['student'],
                     },
+                    {
+                      name: '章节列表',
+                      path: '/course/chap-list',
+                      component: './course/teacher/ChapList',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
+                    },
+                    {
+                      name: '章节列表',
+                      path: '/course/chap-ls',
+                      component: './course/student/ChapList',
+                      authority: ['student'],
+                    },
+                    {
+                      name: '添加章节信息',
+                      path: '/course/chap-add',
+                      hideInMenu: true,
+                      component: './course/teacher/AddChap',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
+                    },
+                    {
+                      name: '编辑章节信息',
+                      path: '/course/chap-edit/:courseChapterId',
+                      hideInMenu: true,
+                      component: './course/teacher/EditChap',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
+                    },
                   ],
                 },
                 {
