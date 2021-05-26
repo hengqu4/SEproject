@@ -36,10 +36,10 @@ const course_info = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
     dispatch({
       type: 'Course/getAllCourse',
       onError,
-      onFinish:() => {
-        setCurrentCourse(0)
-        console.log(courseList)
-      },
+      // onFinish:() => {
+      //   setCurrentCourse(0)
+      //   console.log(courseList)
+      // },
     })
   })
 
