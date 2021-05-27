@@ -51,3 +51,17 @@ export const fetchHwInfo = (params) => {
     prefix: API_HOMEWORK_PREFIX,
   })
 }
+
+export const fetchGrade = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file/:homeworkFileId/score').param(params).toString(), {
+    method: 'GET',
+    prefix: API_HOMEWORK_PREFIX,
+  })  
+}
+
+export const fetchHwFileList = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file').param(params).toString(), {
+    method: 'GET',
+    prefix: API_HOMEWORK_PREFIX,
+  })
+}

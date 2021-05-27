@@ -15,6 +15,8 @@ const defaultHwInfo = {
 const defaultState = {
   hwList: [],
   hwInfo: {},
+  grade: 0,
+  hwFileList: [],
 }
 
 const effects = {
@@ -60,6 +62,22 @@ const effects = {
       type: 'setHwInfo',
       payload: res,
     })
+  }),
+  fetchGrade: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(HwServices.fetchGrade, payload)
+
+    yield put({
+      type: 'setGrade',
+      payload: res,
+    })
+  }),
+  fetchHwFileList: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(HwServices.fetchHwFileList, payload)
+
+    yield put({
+      type: 'setHwFileList',
+      payload: res,
+    })
   })
 }
 
@@ -74,6 +92,17 @@ const reducers = {
     transformer: (payload) => payload || defaultHwInfo,
     defaultState,
   }),
+  setGrade: generateReducer({
+    attributeName: 'grade',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  }),
+  setHwFileList: generateReducer({
+    attributeName: 'hwFileList',
+    transformer: defaultArrayTransformer,
+    defaultState,
+  })
+
 }
 
 export default {

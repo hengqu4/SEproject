@@ -228,6 +228,13 @@ export default defineConfig({
                       component: './homework/teacher/HwEdit',
                       authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
+                    {
+                      name: '批改作业',
+                      path: '/homework/:homeworkId/grade',
+                      hideInMenu: true,
+                      component: './homework/teacher/HwGrade',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
+                    },
                   ],
                 },
                 {

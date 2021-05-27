@@ -94,7 +94,7 @@ const FileList = ({
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.post(`http://${host}:8000/api/v1/course-database/course-file-database/course/${courseId}`, {
+    axios.post(`http://localhost/api/v1/course-database/course-file-database/course/${courseId}`, {
         fileDisplayName: fileName,
         fileComment: "no comment",
         fileUploader: currentUser,
@@ -127,7 +127,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://' + host + ':8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr='http://localhost/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
         return <a href={addr}
         >{record.name}</a>
       },

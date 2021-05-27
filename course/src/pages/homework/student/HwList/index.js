@@ -104,12 +104,6 @@ const HwList = ({
       width: '15%',
     },
     {
-      title: '分数',
-      dataIndex: 'grade',
-      width: '5%',
-      data: {data},
-    },
-    {
       title: '操作',
       dataIndex: 'opr',
       width: '15%',

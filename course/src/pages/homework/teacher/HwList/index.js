@@ -79,12 +79,12 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId }) => {
     {
       title: '作业内容',
       dataIndex: 'des',
-      width: '30%',
+      width: '27%',
     },
     {
       title: '发布者',
       dataIndex: 'creator',
-      width: '10%',
+      width: '8%',
     },
     {
       title: '创建日期',
@@ -99,11 +99,12 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId }) => {
     {
       title: '操作',
       dataIndex: 'opr',
-      width: '15%',
+      width: '20%',
       render: (_, record) => (
         <>
           <Link to={`/homework/hw-list/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
-          <Link to={`/homework/hw-list/hw-edit/${record.key}`}>编辑</Link>
+          <Link to={`/homework/hw-list/hw-edit/${record.key}`}>编辑&nbsp;&nbsp;&nbsp;&nbsp;</Link>
+          <Link to={`/homework/${record.key}/grade`}>批改</Link>
           <Button
             type='link'
             onClick={() => {
