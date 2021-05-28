@@ -78,6 +78,9 @@ const effects = {
       type: 'setHwFileList',
       payload: res,
     })
+  }),
+  addGrade: generateEffect(function* ({ payload }, { call }) {
+    yield call(HwServices.addGrade, payload)
   })
 }
 

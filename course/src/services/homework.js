@@ -65,3 +65,16 @@ export const fetchHwFileList = (params) => {
     prefix: API_HOMEWORK_PREFIX,
   })
 }
+
+export const addGrade = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file/:homeworkFileId/score').param({courseId: params.courseId, homeworkId: params.homeworkId, homeworkFileId: params.homeworkFileId}).toString(), {
+    method: 'PUT',
+    prefix: API_HOMEWORK_PREFIX,
+    //把数组转化为json字符串
+    body: JSON.stringify({
+      courseId: params.data.courseId,
+      homeworkId: params.data.homeworkId,
+      homeworkScore: params.data.homeworkScore,
+    })
+  })
+}

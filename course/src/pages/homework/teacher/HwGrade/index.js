@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { Input, Button, Table, Modal, Space } from 'antd'
+import { InputNumber, Button, Table, Modal, Space } from 'antd'
 import formatTime from '@/utils/formatTime'
 import { connect, useParams } from 'umi'
 import { Link } from 'react-router-dom'
@@ -29,7 +29,8 @@ const FormatData = (hwFileList) => {
 const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId }) => {
   const params = useParams()
   const [loading, setLoading] = useState(true)
-  const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
+  const [homeworkId, setHomeworkId] = useState(params.homeworkId)
+  const [grade, setGrade] = useState()
   const ref = useRef()
 
   // 获得当前作业列表
@@ -38,6 +39,32 @@ const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId })
       type: 'homework/fetchHwFileList',
       payload: {
         courseId, homeworkId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
+    })
+  }
+
+  const getGrade = (homeworkFileId) => {
+    dispatch({
+      type: 'homework/fetchGrade',
+      payload: {
+        courseId, homeworkId, homeworkFileId,
+      }
+    })
+  }
+
+  const onChange = (value, key) => {
+    const data = {
+      courseId: courseId.toString(),
+      homeworkId: homeworkId,
+      homeworkScore: value,
+    }
+    var homeworkFileId = key
+    dispatch({
+      type: 'homework/addGrade',
+      payload: {
+        courseId, homeworkId, homeworkFileId, data,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -60,25 +87,29 @@ const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId })
     {
       title: '作业文件',
       dataIndex: 'title',
-      width: '60%',
+      width: '55%',
+      render: (_, record) => {
+        var addr='http://localhost/api/v1/lecture/course-homework/' + courseId + '/homework/' + homeworkId + '/file/' + record.key
+        return <a href={addr}
+        >{record.title}</a>
+      },
     },
     {
-      title: '操作',
+      title: '分数',
+      dataIndex: 'grade',
+      width: '15%',
+      render: (_, record) => {
+        return <p>{getGrade(record.key)}</p>
+      },
+    },
+    {
+      title: '评分',
       dataIndex: 'opr',
-      width: '25%',
+      width: '15%',
       render: (_, record) => (
         <>
-          <Link to={`/homework/hw-list/hw-info/${record.key}`}>详情&nbsp;&nbsp;&nbsp;&nbsp;</Link>
-          <Link to={`/homework/hw-list/hw-edit/${record.key}`}>编辑</Link>
-          <Button
-            type='link'
-            onClick={() => {
-              setModalVisible(true)
-              setHomeworkId(record.key)
-            }}
-          >
-            删除
-          </Button>
+          <InputNumber
+            min={0} defaultValue={0} onChange={value => onChange(value, record.key)} />
         </>
       ),
     },
