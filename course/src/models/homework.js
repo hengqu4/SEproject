@@ -17,6 +17,7 @@ const defaultState = {
   hwInfo: {},
   grade: 0,
   hwFileList: [],
+  hwFile: {},
 }
 
 const effects = {
@@ -68,7 +69,7 @@ const effects = {
 
     yield put({
       type: 'setGrade',
-      payload: res,
+      payload: res.homeworkScore,
     })
   }),
   fetchHwFileList: generateEffect(function* ({ payload }, { call, put }) {
@@ -81,6 +82,14 @@ const effects = {
   }),
   addGrade: generateEffect(function* ({ payload }, { call }) {
     yield call(HwServices.addGrade, payload)
+  }),
+  fetchHwFile: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(HwServices.fetchHwFile, payload)
+
+    yield put({
+      type: 'setHwFile',
+      payload: res,
+    })
   })
 }
 
@@ -104,8 +113,12 @@ const reducers = {
     attributeName: 'hwFileList',
     transformer: defaultArrayTransformer,
     defaultState,
+  }),
+  setHwFile: generateReducer({
+    attributeName: 'hwFile',
+    transformer: defaultArrayTransformer,
+    defaultState,
   })
-
 }
 
 export default {

@@ -13,8 +13,9 @@ const mapStateToProps = ({ homework, Course, user, file }) => ({
   hwList: homework.hwList,
   info: homework.hwInfo,
   grade: homework.grade,
+  hwFile: homework.hwFile,
   courseId: Course.currentCourseInfo.courseId,
-  currentUser: user.currentUser.name,
+  studentId: user.currentUser.id,
 })
 
 const FormatDataInfo = (info) => {
@@ -31,26 +32,14 @@ const FormatDataInfo = (info) => {
   return formattedHwInfo
 }
 
-const HwInfo = ({ info = {}, hwList = [], grade = '', dispatch = () => {}, courseId = courseId, url='', currentUser = currentUser }) => {
+const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = () => {}, courseId = courseId, url='', studentId = studentId }) => {
   const params = useParams()
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
   var fileName
   var binary
 
-  const host = 'localhost'
-
-  //获得当前作业列表
-  const getHwList = () => {
-    dispatch({
-      type: 'homework/fetchHwList',
-      payload: {
-        courseId,
-      },
-      onError,
-      onFinish: setLoading.bind(this, false),
-    })
-  }
+  var addr='http://localhost/api/v1/lecture/course-homework/' + courseId + '/homework/' + homeworkId + '/file/' + hwFile.fileHomeworkId
 
   //获得某作业信息
   const getHwInfo = () => {
@@ -62,19 +51,29 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', dispatch = () => {}, cours
     })
   }
 
-  //还少个参数
   const getGrade = () => {
     dispatch({
       type: 'homework/fetchGrade',
       payload: {
-        courseId, homeworkId,
+        courseId, homeworkId, studentId,
+      }
+    })
+  }
+
+  const getFile = () => {
+    var fileUploader = studentId
+    dispatch({
+      type: 'homework/fetchHwFile',
+      payload: {
+        courseId, homeworkId, fileUploader,
       }
     })
   }
   
   useMount(() => {
     getHwInfo()
-    // getGrade()
+    getGrade()
+    getFile()
   }) 
   
   const data = {
@@ -153,6 +152,9 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', dispatch = () => {}, cours
             <input type="file" name="name" id="inputbox" onChange={handleChange} />
             <input type="submit"/>
           </form>
+          <div style={{ marginTop: '20px' }}>
+            <a href={addr}>{hwFile.fileDisplayName}</a>
+          </div>
         </div>
         
       </div>

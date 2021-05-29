@@ -53,7 +53,7 @@ export const fetchHwInfo = (params) => {
 }
 
 export const fetchGrade = (params) => {
-  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file/:homeworkFileId/score').param(params).toString(), {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/score/:studentId').param(params).toString(), {
     method: 'GET',
     prefix: API_HOMEWORK_PREFIX,
   })  
@@ -67,14 +67,21 @@ export const fetchHwFileList = (params) => {
 }
 
 export const addGrade = (params) => {
-  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file/:homeworkFileId/score').param({courseId: params.courseId, homeworkId: params.homeworkId, homeworkFileId: params.homeworkFileId}).toString(), {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/score/:studentId').param({courseId: params.courseId, homeworkId: params.homeworkId, studentId: params.studentId}).toString(), {
     method: 'PUT',
     prefix: API_HOMEWORK_PREFIX,
     //把数组转化为json字符串
     body: JSON.stringify({
-      courseId: params.data.courseId,
-      homeworkId: params.data.homeworkId,
+      homeworkTeachersComment: params.data.homeworkTeachersComment,
+      homeworkIsGradeAvailable: params.data.homeworkIsGradeAvailable,
       homeworkScore: params.data.homeworkScore,
     })
+  })
+}
+
+export const fetchHwFile = (params) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file/uploader/:fileUploader').param(params).toString(), {
+    method: 'GET',
+    prefix: API_HOMEWORK_PREFIX,
   })
 }

@@ -9,9 +9,10 @@ import onError from '@/utils/onError'
 import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
 
-const mapStateToProps = ({ homework, Course }) => ({
+const mapStateToProps = ({ homework, Course, user }) => ({
   hwFileList: homework.hwFileList,
   courseId: Course.currentCourseInfo.courseId,
+  grade: homework.grade,
 })
 
 const FormatData = (hwFileList) => {
@@ -26,11 +27,10 @@ const FormatData = (hwFileList) => {
   return formattedHwFileList
 }
 
-const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId }) => {
+const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseId = courseId }) => {
   const params = useParams()
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId] = useState(params.homeworkId)
-  const [grade, setGrade] = useState()
   const ref = useRef()
 
   // 获得当前作业列表
@@ -45,26 +45,28 @@ const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId })
     })
   }
 
-  const getGrade = (homeworkFileId) => {
+  const getGrade = (studentId) => {
     dispatch({
       type: 'homework/fetchGrade',
       payload: {
-        courseId, homeworkId, homeworkFileId,
-      }
+        courseId, homeworkId, studentId,
+      },
+      onError,
+      onFinish: setLoading.bind(this, false),
     })
+    return grade
   }
 
-  const onChange = (value, key) => {
+  const onChange = (value, studentId) => {
     const data = {
-      courseId: courseId.toString(),
-      homeworkId: homeworkId,
       homeworkScore: value,
+      homeworkIsGradeAvailable: true,
+      homeworkTeachersComment: "", 
     }
-    var homeworkFileId = key
     dispatch({
       type: 'homework/addGrade',
       payload: {
-        courseId, homeworkId, homeworkFileId, data,
+        courseId, homeworkId, studentId, data,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -99,7 +101,7 @@ const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId })
       dataIndex: 'grade',
       width: '15%',
       render: (_, record) => {
-        return <p>{getGrade(record.key)}</p>
+        return <p style={{margin: 'auto'}}>{getGrade(record.name)}</p>
       },
     },
     {
@@ -109,7 +111,7 @@ const HwGrade = ({ hwFileList = [], dispatch = () => { }, courseId = courseId })
       render: (_, record) => (
         <>
           <InputNumber
-            min={0} defaultValue={0} onChange={value => onChange(value, record.key)} />
+            min={0} onChange={value => onChange(value, record.name)} />
         </>
       ),
     },
