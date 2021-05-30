@@ -24,7 +24,7 @@ const course_info = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       dispatch({
         type: 'Course/getCurrentCourseInfoStudent',
         payload: {
-          courseId: 1,
+          courseId: index,
         },
         onError,
       })
