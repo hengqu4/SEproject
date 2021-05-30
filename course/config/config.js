@@ -130,6 +130,7 @@ export default defineConfig({
                       path: '/course/course-arrange',
                       component: './course/course-arrange',
                       authority: ['principal'],
+                      hideInMenu: true,
                     },
                     {
                       name: '课程信息',

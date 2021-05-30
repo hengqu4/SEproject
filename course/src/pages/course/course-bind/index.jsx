@@ -65,6 +65,7 @@ const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {
       title: '绑定ID',
       dataIndex: 'courseTeachId',
       sorter: (a, b) => a.courseTeachId - b.courseTeachId,
+      hideInTable: true
     },
     {
       title: '课程ID',

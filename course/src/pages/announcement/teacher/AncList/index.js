@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space } from 'antd'
+import { Input, Button, Table, Modal, Space, Select } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
@@ -9,9 +9,12 @@ import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
 
+const { Option } = Select
+
 const mapStateToProps = ({ announcement, Course }) => ({
   ancList: announcement.ancList,
   courseId: Course.currentCourseInfo.courseId,
+  courseList: Course.courseList
 })
 
 const FormatData = (ancList) => {
@@ -33,7 +36,8 @@ const FormatData = (ancList) => {
 const AncList = ({
   ancList = [],
   dispatch = () => { },
-  courseId = courseId
+  courseId = courseId,
+  courseList = []
 }) => {
   const [loading, setLoading] = useState(true)
   const [announcementId, setAnnouncementId ] = useState()
@@ -41,11 +45,11 @@ const AncList = ({
   const ref = useRef()
 
   //获得当前公告列表
-  const getAncList = () => {
+  const getAncList = (value) => {
     dispatch({
       type: 'announcement/fetchAncList',
       payload: {
-        courseId,
+        courseId: value,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -65,8 +69,11 @@ const AncList = ({
   }
 
   useMount(() => {
-    getAncList()
-    //console.log(hwList)
+    if(courseId != -1){
+      getAncList(courseId)
+    }
+
+  //   //console.log(hwList)
   })
   
   const columns = [
@@ -113,11 +120,39 @@ const AncList = ({
     }
   ]
 
+  const setCurrentCourse = (index) => (
+    dispatch({
+      type: 'Course/getCurrentCourseInfoStudent',
+      payload: {
+        courseId: index,
+      },
+      onError,
+    })
+  )
+
+  const handleSelectOnChange = (value) => {
+    setCurrentCourse(value)
+    getAncList(value)
+  }
+
+
   return (
     <PageContainer>
       <ProTable
         headerTitle='公告列表'
         toolBarRender={() => [
+          <Select
+            placeholder="请选择课程"
+            onChange={(value) => handleSelectOnChange(value)}
+            defaultValue={courseId == -1 ? undefined: courseId}
+          >
+            {
+              courseList.map((i) => (
+                <Option value={i.courseId} >{i.courseName}</Option>
+              ))
+            }
+          </Select>
+          ,
           <Button type='primary'>
             <Link to='/announcement/anc-list/anc-add'>
               <PlusOutlined />添加

@@ -101,7 +101,7 @@ class BaseView extends Component {
             >
               <Input />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               name='password'
               label='新密码'
               rules={[
@@ -116,7 +116,7 @@ class BaseView extends Component {
               <Button htmlType='submit' type='primary'>
                 更新基本信息
               </Button>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
         {/* <div className={styles.right}>
