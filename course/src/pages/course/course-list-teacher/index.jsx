@@ -3,7 +3,7 @@ import { useMount } from 'react-use'
 import ProTable from '@ant-design/pro-table'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
-import { Button, Divider, Drawer, message, DatePicker } from 'antd'
+import { Button, Divider, Drawer, message } from 'antd'
 import { connect } from 'umi'
 import onError from '@/utils/onError'
 
@@ -12,10 +12,10 @@ const mapStateToProps = ({ Course }) => ({
   courseList: Course.courseList,
 })
 
-const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () => {} }) => {
+const CourseListTeacher = ({ courseList = [], dispatch = () => {} }) => {
   /**
    * 设置当前课程
-   * @param courseID
+   * @param courseId
    */
   const setCurrentCourse = useCallback(
     (index) => {
@@ -26,40 +26,17 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         onError,
       })
     },
-    [currentCourseInfo, dispatch],
+    [dispatch],
   )
 
   useMount(() => {
     console.log('准备接受数据')
     dispatch({
-      type: 'Course/getAllCourse',
+      type: 'Course/getAllCourses',
       onError,
       // onFinish: setCurrentCourse(0),
     })
   })
-
-  /**
-   * 格式化课程数据
-   * @param courseList
-   */
-  const FormatData = (courseList) => {
-    const formattedCourseList = []
-    for (let i = 0; i < courseList.length; i++) {
-      formattedCourseList.push({
-        key: i,
-        courseID: courseList[i].courseId,
-        courseName: courseList[i].courseName,
-        courseCredit: courseList[i].courseCredit,
-        courseStudyTimeNeeded: courseList[i].courseStudyTimeNeeded,
-        courseType: courseList[i].courseType,
-        courseDescription: courseList[i].courseDescription,
-        courseStartTime: courseList[i].courseStartTime,
-        courseEndTime: courseList[i].courseEndTime,
-        courseCreatorSchoolId: courseList[i].courseCreatorSchoolId,
-      })
-    }
-    return formattedCourseList
-  }
 
   const actionRef = useRef()
   const [row, setRow] = useState()
@@ -68,7 +45,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
   const columns = [
     {
       title: '课程ID',
-      dataIndex: 'courseID',
+      dataIndex: 'courseId',
       hideInForm: true,
       formItemProps: { rules: [{ required: true, message: '课程ID是必须项' }] },
     },
@@ -118,9 +95,8 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
       render: (_, record) => (
         <>
           <a
-            onClick={async () => {
-              await setCurrentCourse(record.key)
-              message.success('切换当前课程成功')
+            onClick={() => {
+              setCurrentCourse(record.key)
             }}
           >
             切换
@@ -132,7 +108,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
   const columnsPlus = [
     {
       title: '课程ID',
-      dataIndex: 'courseID',
+      dataIndex: 'courseId',
     },
     {
       title: '课程名称',
@@ -208,7 +184,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         //   labelWidth: 120,
         // }}
         search={false}
-        dataSource={FormatData(courseList)}
+        dataSource={courseList.map((c, i) => ({ key: i, ...c }))}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -231,8 +207,8 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
           }
         >
           <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState)
+            onClick={() => {
+              handleRemove(selectedRowsState)
               setSelectedRows([])
               actionRef.current?.reloadAndRest?.()
             }}
@@ -250,7 +226,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
         }}
         closable={false}
       >
-        {row?.courseID && (
+        {row?.courseId && (
           <ProDescriptions
             column={1}
             title={row?.courseName}
@@ -259,7 +235,7 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
             })}
             // dataSource={row}
             params={{
-              id: row?.courseID,
+              id: row?.courseId,
             }}
             columns={columnsPlus}
           />
@@ -269,4 +245,4 @@ const course_list = ({ currentCourseInfo = {}, courseList = [], dispatch = () =>
   )
 }
 
-export default connect(mapStateToProps)(course_list)
+export default connect(mapStateToProps)(CourseListTeacher)

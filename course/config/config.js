@@ -113,6 +113,7 @@ export default defineConfig({
                       name: '课程编辑',
                       icon: 'smile',
                       path: '/course/course-edit',
+                      hideInMenu: true,
                       component: './course/course-edit',
                       authority: ['principal'],
                     },
@@ -121,6 +122,13 @@ export default defineConfig({
                       icon: 'smile',
                       path: '/course/course-bind',
                       component: './course/course-bind',
+                      authority: ['principal'],
+                    },
+                    {
+                      name: '向课程添加学生',
+                      icon: 'smile',
+                      path: '/course/course-arrange',
+                      component: './course/course-arrange',
                       authority: ['principal'],
                     },
                     {

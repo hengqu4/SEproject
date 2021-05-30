@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Form, Modal, Space } from 'antd'
+import { Input, Button, Form, Modal, Space, notification } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect, useParams} from 'umi'
 import {Link} from 'react-router-dom'
@@ -64,8 +64,18 @@ const AncInfo = ({
       payload: {
         courseId, announcementId, ancInfo,
       },
-      onError,
+      onError: (err) => {
+        notification.error({
+          message: "修改公告信息失败",
+          description: err.message,
+        })
+      },
       onFinish: setLoading.bind(this, false),
+      onSuccess: () => {
+        notification.success({
+          message: "修改公告信息成功!"
+        })
+      }
     })
   }
 
@@ -122,7 +132,7 @@ const AncInfo = ({
             style={{width: '80%'}}
             rules={[{ required: true, message: '请输入名称！' }]}
           >
-              <Input />
+              <Input defaultValue={info.announcementTitle} />
           </Form.Item>
           <Form.Item
             label="公告内容"

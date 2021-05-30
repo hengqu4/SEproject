@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space, Upload, message } from 'antd'
+import { Input, Button, Table, Modal, Space, Upload, message, notification } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import { useMount } from 'react-use';
@@ -112,7 +112,13 @@ const FileList = ({
           headers: { "Content-Type": `application/octet-stream`, }
         })
           .then(
-            getFileList()
+            ()=>{
+              notification.success({
+                message: "文件上传成功"
+              })
+              return getFileList()
+            }
+
           )
       })
   }

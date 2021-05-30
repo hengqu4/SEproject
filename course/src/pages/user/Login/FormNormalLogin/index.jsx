@@ -6,7 +6,8 @@ import { Link, history } from 'umi'
 import styles from './index.less'
 import { userAccountLogin } from '@/services/login'
 import { getPageQuery } from '@/utils/utils'
-import { setAuthority, AUTHORITY_LIST } from "@/utils/authority";
+import { setAuthority, AUTHORITY_LIST } from '@/utils/authority'
+
 const namespace = 'login'
 
 const mapStateToProps = (state) => {
@@ -19,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
     onFinish: (values) => {
       // eslint-disable-next-line no-console
       console.log('Received values of form: ', values)
-      userAccountLogin(values).then(r => {
+      userAccountLogin(values).then((r) => {
         if (r.isSuccess) {
           const urlParams = new URL(window.location.href)
           const params = getPageQuery()
@@ -41,7 +42,6 @@ const mapDispatchToProps = (dispatch) => {
           }
           console.log(redirect || '/')
 
-
           console.log(r)
           if (r.isSuccess) {
             setAuthority(AUTHORITY_LIST[Number(r.data.character) - 1])
@@ -51,8 +51,7 @@ const mapDispatchToProps = (dispatch) => {
           history.replace(redirect || '/')
 
           // return { ...state, status: payload.status, type: payload.type }
-        }
-        else {
+        } else {
           const errorText = r.error.message
           notification.error({
             message: `登录失败`,
@@ -114,15 +113,6 @@ const NormalLoginForm = (props) => {
             type='password'
           />
         </Form.Item>
-        <Form.Item>
-          <Form.Item name='remember' valuePropName='checked' noStyle>
-            <Checkbox>记住我</Checkbox>
-          </Form.Item>
-
-          {/* <a className='login-form-forgot' href=''>
-          Forgot password
-        </a> */}
-        </Form.Item>
 
         <Form.Item>
           <Button size='large' type='primary' htmlType='submit' className={styles.submit}>
@@ -144,8 +134,9 @@ const NormalLoginForm = (props) => {
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginForm extends Component {
   componentDidMount() {
-    console.log(this.props);
+    console.log(this.props)
   }
+
   render() {
     return (
       <div>
