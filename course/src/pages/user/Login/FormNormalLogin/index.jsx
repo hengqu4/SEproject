@@ -6,7 +6,8 @@ import { Link, history } from 'umi'
 import styles from './index.less'
 import { userAccountLogin } from '@/services/login'
 import { getPageQuery } from '@/utils/utils'
-import { setAuthority, AUTHORITY_LIST } from '@/utils/authority'
+import { setAuthority, AUTHORITY_LIST, getAuthority } from '@/utils/authority'
+import onError from '@/utils/onError'
 
 const namespace = 'login'
 
@@ -16,6 +17,24 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
+  const authorityRedirect = () => {
+    const currentUserAuthority = getAuthority()[0]
+    switch (currentUserAuthority) {
+      case 'student':
+        history.replace("/course/course-info")
+        break;
+      case 'principal':
+        history.replace("/course/course-list")
+        break;
+      case 'teacher':
+      case 'teachingAssistant':
+        history.replace("/course/course-list-teacher")
+        break;
+      default:
+        break;
+    }
+  }
+
   return {
     onFinish: (values) => {
       // eslint-disable-next-line no-console
@@ -46,10 +65,15 @@ const mapDispatchToProps = (dispatch) => {
           if (r.isSuccess) {
             setAuthority(AUTHORITY_LIST[Number(r.data.character) - 1])
             console.log(`current authority is :${AUTHORITY_LIST[Number(r.data.character) - 1]}`)
+            dispatch({
+              type: 'Course/getAllCourses',
+              onError,
+            })
+
           }
 
           history.replace(redirect || '/')
-
+          authorityRedirect()
           // return { ...state, status: payload.status, type: payload.type }
         } else {
           const errorText = r.error.message
