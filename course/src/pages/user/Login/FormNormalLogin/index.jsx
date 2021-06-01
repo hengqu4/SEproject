@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
   return {}
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = () => {
   const authorityRedirect = () => {
     const currentUserAuthority = getAuthority()[0]
     switch (currentUserAuthority) {

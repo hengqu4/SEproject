@@ -85,3 +85,22 @@ export const fetchHwFile = (params) => {
     prefix: API_HOMEWORK_PREFIX,
   })
 }
+
+export const putHomeworkName = (payload) => {
+  return request(safeUrlAssembler('/:courseId/homework/:homeworkId/file').param(payload.params).toString(),{
+    method: 'PUT',
+    data: payload.data,
+    prefix: API_HOMEWORK_PREFIX
+  })
+}
+
+export const uploadHomeworkFile = (payload) => {
+  console.log(payload)
+  const res = request(payload.url, {
+    method: 'PUT',
+    data: payload.data,
+    headers: { "Content-Type": `application/octet-stream`, }
+  })
+  console.log(res)
+  return res
+}

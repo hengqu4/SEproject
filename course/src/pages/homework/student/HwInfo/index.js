@@ -1,21 +1,17 @@
 import React, {useState} from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Upload, Tag, Button, Divider, Col } from 'antd';
+import { Upload, Tag, Button, Divider, Form, Input, notification } from 'antd';
 import { connect, useParams } from 'umi'
 import { useMount } from 'react-use';
-import {Link} from 'react-router-dom'
 import onError from '@/utils/onError';
-import { values } from 'lodash';
 import formatTime from '@/utils/formatTime'
 import axios from 'axios';
+import { UploadOutlined } from '@ant-design/icons';
 
 const PORT = 8000
 
 const mapStateToProps = ({ homework, Course, user, file }) => ({
-  hwList: homework.hwList,
-  info: homework.hwInfo,
-  grade: homework.grade,
-  hwFile: homework.hwFile,
+  homeworkInfo: homework,
   courseId: Course.currentCourseInfo.courseId,
   studentId: user.currentUser.id,
 })
@@ -34,14 +30,13 @@ const FormatDataInfo = (info) => {
   return formattedHwInfo
 }
 
-const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = () => {}, courseId = courseId, url='', studentId = studentId }) => {
+const HwInfo = ({ dispatch = () => {}, courseId = courseId, studentId = studentId, homeworkInfo = homeworkInfo }) => {
   const params = useParams()
-  const [loading, setLoading] = useState(true)
-  const [homeworkId, setHomeworkId ] = useState(params.homeworkId)
-  var fileName
-  var binary
+  const [ homeworkId, setHomeworkId ] = useState(params.homeworkId)
+  const [ uploadDisable, setUploadDisable ] = useState(false)
+  const [ uploadFile, setUploadFile ] = useState()
 
-  var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${hwFile.fileHomeworkId}`
+  var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${homeworkInfo.hwFile.fileHomeworkId}`
 
   //获得某作业信息
   const getHwInfo = () => {
@@ -51,8 +46,6 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
         courseId, homeworkId,
       }
     })
-    console.log(info.homeworkStartTimestamp)
-    console.log(formatTime(info.homeworkStartTimestamp))
   }
 
   const getGrade = () => {
@@ -60,6 +53,15 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
       type: 'homework/fetchGrade',
       payload: {
         courseId, homeworkId, studentId,
+      },
+      onSuccess: () => {
+        setUploadDisable(true)
+      },
+      onError: () => {
+        setUploadDisable(false)
+        dispatch({
+          type:'homework/setGradeToDefault'
+        })
       }
     })
   }
@@ -70,7 +72,7 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
       type: 'homework/fetchHwFile',
       payload: {
         courseId, homeworkId, fileUploader,
-      }
+      },
     })
   }
   
@@ -81,52 +83,37 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
   }) 
   
   const data = {
-    title: FormatDataInfo(info).homeworkTitle,
-    des: FormatDataInfo(info).homeworkDescription,
-    endTime: formatTime(FormatDataInfo(info).endTime),
-    startTime: formatTime(FormatDataInfo(info).startTime),
-    owner: FormatDataInfo(info).homeworkDescription,
+    title: FormatDataInfo(homeworkInfo.hwInfo).homeworkTitle,
+    des: FormatDataInfo(homeworkInfo.hwInfo).homeworkDescription,
+    endTime: formatTime(FormatDataInfo(homeworkInfo.hwInfo).endTime),
+    startTime: formatTime(FormatDataInfo(homeworkInfo.hwInfo).startTime),
+    owner: FormatDataInfo(homeworkInfo.hwInfo).homeworkDescription,
   }
 
-  const handleChange = event => {
-    fileName = event.target.value
-    // 因为这样获取到的 fileName 包含路径，所以要对fileName进行切割
-    // "/" 和 "\" 都有可能
-    var tempFileNameList = fileName.split("\\")
-    var tempFileName = tempFileNameList.pop()
-    tempFileNameList = tempFileName.split("/")
-    tempFileName = tempFileNameList.pop()
-    fileName = tempFileName
-
-    const reader = new FileReader();
-    var inputBox = document.getElementById("inputbox");
-    reader.readAsArrayBuffer(inputBox.files[0]);
-    reader.onload = function(){
-      // 读取完成后，数据保存在对象的result属性中
-      // console.log(this.result)
-      binary = this.result
-    }
-  }
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    var firstResponse
-    var putUrl
+  const onFormFinish = (val) => {
     axios.put(`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file`, {
-        homeworkFileDisplayName: fileName,
+        homeworkFileDisplayName: val,
         homeworkFileComment: "no comment",
     })
       .then(res => {
-        console.log(res);
-        console.log(res.data);
-        firstResponse = res.data
-        putUrl = firstResponse.FILE_PUT_URL
+        const firstResponse = res.data
+        const putUrl = firstResponse.FILE_PUT_URL
         console.log(putUrl);
         axios({
           method: "put",
           url: putUrl,
-          data: binary,
+          data: uploadFile,
           headers: { "Content-Type": `application/octet-stream`, }
+        })
+          .then(res => {
+            notification.success({
+              message: '作业上传成功!'
+            })
+          })
+      })
+      .catch(res =>{
+        notification.error({
+          message: res,
         })
       })
   }
@@ -151,16 +138,53 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
         </div>
         <div style={{ paddingLeft: '60px', paddingTop: '100px' }}>
           <Divider />
-          <p>分数：{grade}</p>
-          <form onSubmit={handleSubmit}>
-            <input type="file" name="name" id="inputbox" onChange={handleChange} />
-            <input type="submit"/>
-          </form>
-          <div style={{ marginTop: '20px' }}>
-            <a href={addr}>{hwFile.fileDisplayName}</a>
-          </div>
+          <Form>
+            <Form.Item
+              label="您的分数："
+            >
+              <Input
+                style={{
+                  width: '60px'
+                }}
+                value={homeworkInfo.hwGradeInfo.homeworkScore}
+                readOnly={true}
+              />
+            </Form.Item>
+          </Form>
+          <Form
+            layout = "horizontal"
+            onFinish={(val) => {onFormFinish(val.homework.file.name)}}
+          >
+            <Form.Item
+              name="homework"
+            >
+              <Upload
+                multiple={false}
+                maxCount={1}
+                showUploadList={{
+                  showDownloadIcon:true,
+                }}
+                disabled = {uploadDisable || data.endTime <= formatTime(new Date())}
+                action={(v) => setUploadFile(v)}
+              >
+                <Button 
+                  disabled={uploadDisable || data.endTime <= formatTime(new Date())}
+                  icon={<UploadOutlined />}
+                >
+                  Click to Upload
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                htmlType="submit"
+                disabled = {uploadDisable || data.endTime <= formatTime(new Date())}
+              >
+                提交
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
-        
       </div>
     </PageContainer>
   )

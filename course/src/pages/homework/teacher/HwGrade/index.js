@@ -1,13 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { InputNumber, Button, Divider, Form, Row, Col, notification } from 'antd'
-import formatTime from '@/utils/formatTime'
 import { connect, useParams } from 'umi'
-import { Link } from 'react-router-dom'
 import { useMount } from 'react-use'
 import onError from '@/utils/onError'
 import ProTable from '@ant-design/pro-table'
-import { PlusOutlined } from '@ant-design/icons'
 
 const PORT = 8000
 
@@ -24,6 +21,7 @@ const FormatData = (hwFileList) => {
       key: hwFileList[i].fileHomeworkId,
       title: hwFileList[i].fileDisplayName,
       name: hwFileList[i].fileUploader,
+      grade: hwFileList[i].homeworkScore,
     })
   }
   return formattedHwFileList
@@ -46,18 +44,6 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
     })
   }
 
-  const getGrade = (studentId) => {
-    dispatch({
-      type: 'homework/fetchGrade',
-      payload: {
-        courseId, homeworkId, studentId,
-      },
-      onError: () => {},
-      onFinish: setLoading.bind(this, false),
-    })
-    return grade
-  }
-
   const handleScoreChange = (value, studentId) => {
     const data = {
       homeworkScore: value,
@@ -74,6 +60,7 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
         notification.success({
           message: '修改学生成绩成功'
         })
+        getHwFileList()
       },
       onFinish: setLoading.bind(this, false),
     })
@@ -97,7 +84,7 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       dataIndex: 'title',
       width: '55%',
       render: (_, record) => {
-        var addr=`http://localhost${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${record.key}`
+        var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${record.key}`
         return <a href={addr}
         >{record.title}</a>
       },
@@ -106,8 +93,8 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       title: '分数',
       dataIndex: 'grade',
       width: '15%',
-      render: (_, record) => {
-        return <p style={{margin: 'auto'}}>{getGrade(record.name)}</p>
+      render: (val) => {
+        return <div>{val}</div>
       },
     },
     {
@@ -132,7 +119,6 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
                 }]}
               >
               <InputNumber
-              // min={0} onChange={value => onChange(value, record.name)} />
                 min={0} 
                 max={100}
               />
