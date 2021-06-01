@@ -5,6 +5,7 @@ import styles from './index.less'
 import { InboxOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import axios from 'axios'
+import onError from '@/utils/onError'
 
 const FormItem = Form.Item
 const { Dragger } = Upload
@@ -65,25 +66,16 @@ const InputMutiAccount = ({ dispatch = () => {} }) => {
     const fdata = new FormData()
     fdata.append('student-list-file', uploadedFile)
     console.log(fdata.get('student-list-file'))
-    axios({
-      method: 'POST',
-      url: 'http://localhost:8000/api/v1/user/upload-students/',
-      data: fdata,
-      headers: {
-        'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
-      },
-    })
-      .then(() => {
+    dispatch({
+      type:'account/uploadAccount',
+      payload: fdata,
+      onSuccess:()=>{
         notification.success({
           message: '导入成功!',
         })
-      })
-      .catch((err) => {
-        notification.error({
-          message: '导入失败',
-          description: err.toString(),
-        })
-      })
+      },
+      onError,
+    })
   }
 
   return (
