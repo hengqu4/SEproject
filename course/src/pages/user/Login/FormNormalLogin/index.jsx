@@ -65,11 +65,6 @@ const mapDispatchToProps = (dispatch) => {
           if (r.isSuccess) {
             setAuthority(AUTHORITY_LIST[Number(r.data.character) - 1])
             console.log(`current authority is :${AUTHORITY_LIST[Number(r.data.character) - 1]}`)
-            dispatch({
-              type: 'Course/getAllCourses',
-              onError,
-            })
-
           }
 
           history.replace(redirect || '/')
