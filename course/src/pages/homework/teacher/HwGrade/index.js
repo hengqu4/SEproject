@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { InputNumber, Button, Table, Modal, Space } from 'antd'
+import { InputNumber, Button, Divider, Form, Row, Col, notification } from 'antd'
 import formatTime from '@/utils/formatTime'
 import { connect, useParams } from 'umi'
 import { Link } from 'react-router-dom'
@@ -8,6 +8,8 @@ import { useMount } from 'react-use'
 import onError from '@/utils/onError'
 import ProTable from '@ant-design/pro-table'
 import { PlusOutlined } from '@ant-design/icons'
+
+const PORT = 8000
 
 const mapStateToProps = ({ homework, Course, user }) => ({
   hwFileList: homework.hwFileList,
@@ -31,7 +33,6 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
   const params = useParams()
   const [loading, setLoading] = useState(true)
   const [homeworkId, setHomeworkId] = useState(params.homeworkId)
-  const ref = useRef()
 
   // 获得当前作业列表
   const getHwFileList = () => {
@@ -51,13 +52,13 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       payload: {
         courseId, homeworkId, studentId,
       },
-      onError,
+      onError: () => {},
       onFinish: setLoading.bind(this, false),
     })
     return grade
   }
 
-  const onChange = (value, studentId) => {
+  const handleScoreChange = (value, studentId) => {
     const data = {
       homeworkScore: value,
       homeworkIsGradeAvailable: true,
@@ -69,6 +70,11 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
         courseId, homeworkId, studentId, data,
       },
       onError,
+      onSuccess: () => {
+        notification.success({
+          message: '修改学生成绩成功'
+        })
+      },
       onFinish: setLoading.bind(this, false),
     })
   }
@@ -83,7 +89,7 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       dataIndex: 'name',
       width: '15%',
       render: (text, index) => {
-        return <a>{text}</a>
+        return <div>{text}</div>
       },
     },
     {
@@ -91,7 +97,7 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       dataIndex: 'title',
       width: '55%',
       render: (_, record) => {
-        var addr='http://localhost/api/v1/lecture/course-homework/' + courseId + '/homework/' + homeworkId + '/file/' + record.key
+        var addr=`http://localhost${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${record.key}`
         return <a href={addr}
         >{record.title}</a>
       },
@@ -109,10 +115,44 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       dataIndex: 'opr',
       width: '15%',
       render: (_, record) => (
-        <>
-          <InputNumber
-            min={0} onChange={value => onChange(value, record.name)} />
-        </>
+        <Form
+          onFinish={(val) => handleScoreChange(val.grade, record.name)}
+        >
+          <Row
+            style={{
+              marginTop: '35px'
+            }}
+          >
+            <Col>
+              <Form.Item
+                name="grade"
+                rules={[{
+                  required: true,
+                  message: '请输入成绩'
+                }]}
+              >
+              <InputNumber
+              // min={0} onChange={value => onChange(value, record.name)} />
+                min={0} 
+                max={100}
+              />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Divider type="vertical" />
+            </Col>
+            <Col>
+              <Form.Item>
+                <Button
+                  type="link"
+                  htmlType="submit"
+                >
+                  提交
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
       ),
     },
   ]

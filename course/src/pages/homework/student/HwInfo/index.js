@@ -9,6 +9,8 @@ import { values } from 'lodash';
 import formatTime from '@/utils/formatTime'
 import axios from 'axios';
 
+const PORT = 8000
+
 const mapStateToProps = ({ homework, Course, user, file }) => ({
   hwList: homework.hwList,
   info: homework.hwInfo,
@@ -39,7 +41,7 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
   var fileName
   var binary
 
-  var addr='http://localhost/api/v1/lecture/course-homework/' + courseId + '/homework/' + homeworkId + '/file/' + hwFile.fileHomeworkId
+  var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${hwFile.fileHomeworkId}`
 
   //获得某作业信息
   const getHwInfo = () => {
@@ -49,6 +51,8 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
         courseId, homeworkId,
       }
     })
+    console.log(info.homeworkStartTimestamp)
+    console.log(formatTime(info.homeworkStartTimestamp))
   }
 
   const getGrade = () => {
@@ -79,8 +83,8 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
   const data = {
     title: FormatDataInfo(info).homeworkTitle,
     des: FormatDataInfo(info).homeworkDescription,
-    endTime: formatTime(FormatDataInfo(info).homeworkEndTime),
-    startTime: formatTime(FormatDataInfo(info).homeworkStartTime),
+    endTime: formatTime(FormatDataInfo(info).endTime),
+    startTime: formatTime(FormatDataInfo(info).startTime),
     owner: FormatDataInfo(info).homeworkDescription,
   }
 
@@ -108,7 +112,7 @@ const HwInfo = ({ info = {}, hwList = [], grade = '', hwFile = {}, dispatch = ()
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.put(`http://localhost/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file`, {
+    axios.put(`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file`, {
         homeworkFileDisplayName: fileName,
         homeworkFileComment: "no comment",
     })
