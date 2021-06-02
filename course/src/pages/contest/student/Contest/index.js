@@ -5,18 +5,16 @@ import ProCard from '@ant-design/pro-card'
 import { connect } from 'umi'
 import ModalMatching from '@/pages/contest/student/Contest/components/ModalMatching'
 import onError from '@/utils/onError'
-import MatchingStatus from './matchingStatus'
 import ContestContent from '@/pages/contest/student/Contest/components/ContestContent'
 import useStateRef from './hooks/useStateRef'
 import {
   fakeUserInfoArr,
   IP,
   PORT,
-  WAITING_FOR_READY_TIME,
   START_SIGNAL_CACHING_TIME,
-} from './constant'
+  MatchingStatus,
+} from '@/utils/constant'
 import useWebSocket from 'react-use-websocket'
-import { useUnmount } from 'react-use'
 import store from 'store2'
 
 const SocketMessageType = {
@@ -250,7 +248,6 @@ const Contest = ({
   const onSocketMessage = useCallback(
     ({ data }) => {
       const socketMessage = JSON.parse(data)
-      console.log('socketMessage: ', socketMessage)
 
       const { type } = socketMessage
       const defaultAction = () => {}

@@ -15,3 +15,18 @@ export const fakeUserInfoArr = new Array(nicknames.length).fill(null).map((_, in
   nickname: nicknames[index],
   avatar: Mock.mock('@image'),
 }))
+
+export const Roles = {
+  PRINCIPAL: 1,
+  TEACHER: 2,
+  TEACHING_ASSISTANT: 3,
+  STUDENT: 4,
+}
+
+export const MatchingStatus = {
+  IDLE: 'IDLE',
+  SEARCHING_ROOM: 'SEARCHING_ROOM',
+  MATCHING: 'MATCHING',
+  WAITING_FOR_READY: 'WAITING_FOR_READY',
+  ANSWERING: 'ANSWERING',
+}

@@ -4,14 +4,14 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout'
-import React, { useEffect } from 'react'
-import { Link, useIntl, connect, history } from 'umi'
-import { GithubOutlined } from '@ant-design/icons'
-import { Result, Button } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Link, connect, history } from 'umi'
+import { Result, Button, Spin } from 'antd'
 import Authorized from '@/utils/Authorized'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import { getAuthorityFromRouter } from '@/utils/utils'
 import logo from '../assets/logo.svg'
+import onError from '@/utils/onError'
 
 const noMatch = (
   <Result
@@ -69,13 +69,18 @@ const BasicLayout = (props) => {
     dispatch,
     children,
     settings,
+    currentUser: { id: userId = -1 },
+    currentCourse: { courseId = -1 },
     location = {
       pathname: '/',
     },
+    route,
   } = props
   /**
    * constructor
    */
+
+  const [contentLoading, setContentLoading] = useState(false)
 
   useEffect(() => {
     if (dispatch) {
@@ -83,10 +88,21 @@ const BasicLayout = (props) => {
         type: 'user/fetchCurrent',
       })
     }
-  }, [])
+  }, [dispatch])
   /**
    * init variables
    */
+
+  useEffect(() => {
+    if (userId >= 0) {
+      setContentLoading(true)
+      dispatch({
+        type: 'Course/getAllCourses',
+        onError,
+        onFinish: () => setContentLoading(false),
+      })
+    }
+  }, [userId, dispatch])
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -97,10 +113,28 @@ const BasicLayout = (props) => {
     }
   } // get children authority
 
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  }
+  const authorized = useMemo(
+    () =>
+      getAuthorityFromRouter(route.routes, location.pathname || '/') || {
+        authority: undefined,
+      },
+    [route, location],
+  )
   // const {} = useIntl();
+
+  const contentDom = useMemo(() => {
+    if (contentLoading) return <Spin />
+    if (courseId < 0) {
+      return <Result status='warning' title='你还没有课程' />
+    }
+
+    return (
+      <Authorized authority={authorized.authority} noMatch={noMatch}>
+        {children}
+      </Authorized>
+    )
+  }, [contentLoading, courseId, authorized, children])
+
   return (
     <>
       <ProLayout
@@ -136,9 +170,7 @@ const BasicLayout = (props) => {
         {...props}
         {...settings}
       >
-        <Authorized authority={authorized.authority} noMatch={noMatch}>
-          {children}
-        </Authorized>
+        {contentDom}
       </ProLayout>
       <SettingDrawer
         settings={settings}
@@ -153,7 +185,9 @@ const BasicLayout = (props) => {
   )
 }
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, Course, user }) => ({
   collapsed: global.collapsed,
   settings,
+  currentUser: user.currentUser,
+  currentCourse: Course.currentCourseInfo,
 }))(BasicLayout)

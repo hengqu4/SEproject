@@ -1,10 +1,9 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
-import MatchingStatus from '../matchingStatus'
+import React, { useState, useMemo, useEffect } from 'react'
 import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/MatchQuestionsWrapper'
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { Button, Spin, notification } from 'antd'
 import { connect } from 'umi'
-import { START_SIGNAL_CACHING_TIME } from '@/pages/contest/student/Contest/constant'
+import { START_SIGNAL_CACHING_TIME, MatchingStatus } from '@/utils/constant'
 import store from 'store2'
 
 const mapStateToProps = ({ Contest, user, Course }) => ({

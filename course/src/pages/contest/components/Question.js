@@ -48,12 +48,6 @@ const Question = ({
             正确答案：{answerArr.sort().join(', ')}&nbsp;&nbsp;&nbsp;你的答案：
             {(userAnswerArr.length && userAnswerArr.join(', ')) || ''}
           </span>
-          {/* <span>
-            得分：
-            {answer.split('').sort().join('') === userAnswer.split('').sort().join('')
-              ? '2 / 2'
-              : '0 / 2'}
-          </span> */}
         </div>
       </React.Fragment>
     )
