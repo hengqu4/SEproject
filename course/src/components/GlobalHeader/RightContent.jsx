@@ -63,13 +63,11 @@ const GlobalHeaderRight = (props) => {
 
   return (
     <div className={className}>
-      <Form>
+      <Form style={{paddingTop: '7.5px'}}>
         <Form.Item
           name="course"
           label="当前课程"
-          style={{
-            borderTop: '50px'
-          }}
+          style={{marginRight:'10px'}}
         >
           <Select
             // defaultValue = { courseName }
