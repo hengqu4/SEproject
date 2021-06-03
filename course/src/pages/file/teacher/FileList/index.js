@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Upload, message, notification } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -94,7 +94,7 @@ const FileList = ({
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.post(`http://localhost/api/v1/course-database/course-file-database/course/${courseId}`, {
+    axios.post(`http://localhost:8000/api/v1/course-database/course-file-database/course/${courseId}`, {
         fileDisplayName: fileName,
         fileComment: "no comment",
         fileUploader: currentUser,
@@ -124,16 +124,22 @@ const FileList = ({
   }
 
   useMount(() => {
-    getFileList()
+    if(courseId != -1){
+      getFileList()
+    }
   })
   
+  useEffect(() => {
+    getFileList()
+  }, [courseId])
+
   const columns = [
     {
       title: '文件名称',
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr='http://localhost:8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
         return <a href={addr}
         >{record.name}</a>
       },

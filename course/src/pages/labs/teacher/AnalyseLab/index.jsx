@@ -1,5 +1,5 @@
 import { Button, Tabs, Card, Radio, notification } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { ArrowRightOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -189,6 +189,22 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
       },
     })
   })
+
+  useEffect(() => {
+    dispatch({
+      type: 'lab/fetchAllLabCase',
+      payload: courseId,
+      onError: (err) => {
+        notification.error({
+          message: '获取统计信息失败',
+          description: err.message,
+        })
+      },
+      onSuccess: () => {
+        modifyStatistics(labStatistics, analyseType)
+      },
+    })
+  }, [courseId])
 
   return (
     <GridContent>

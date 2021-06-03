@@ -1,12 +1,14 @@
 import { Tooltip, Tag, Select, Form, Divider } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect, SelectLang } from 'umi'
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
 import styles from './index.less'
 import { useMount } from 'react-use'
 import { getAuthority } from '@/utils/authority'
+import onError from '@/utils/onError'
+
 
 const { Option } = Select
 
@@ -19,11 +21,20 @@ const ENVTagColor = {
 const GlobalHeaderRight = (props) => {
   const { theme, layout } = props
   const { courseList } = props
+  const { courseId } = props
   let className = styles.right
 
   if (theme === 'dark' && layout === 'top') {
     className = `${styles.right}  ${styles.dark}`
   }
+
+  useMount(() => {
+    const { dispatch } = props 
+    dispatch({
+      type: 'Course/getCourseListAndSetFirstCourseInfo',
+      onError,
+    })
+  })
 
   const handleSelectChange = (v) => {
     const { dispatch } = props
@@ -53,7 +64,7 @@ const GlobalHeaderRight = (props) => {
 
   return (
     <div className={className}>
-      {/* <Form>
+      <Form>
         <Form.Item
           name="course"
           label="当前课程"
@@ -62,6 +73,7 @@ const GlobalHeaderRight = (props) => {
           }}
         >
           <Select
+            // defaultValue = { courseName }
             onChange = {(v) => handleSelectChange(v)}
           >
           {
@@ -72,7 +84,7 @@ const GlobalHeaderRight = (props) => {
           </Select>
         </Form.Item>
       </Form>
-       */}
+      
       <span> 您的身份为: {getUserAuthority()} </span>
       <Divider type="vertical" />
       <Avatar menu />
@@ -88,5 +100,6 @@ const GlobalHeaderRight = (props) => {
 export default connect(({ settings, Course }) => ({
   theme: settings.navTheme,
   layout: settings.layout,
-  courseList: Course.courseList
+  courseList: Course.courseList,
+  courseId: Course.currentCourseInfo.courseId,
 }))(GlobalHeaderRight)

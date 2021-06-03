@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Select } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -57,22 +57,16 @@ const HwList = ({
     })
   }
 
-  //删除某作业
-  const deleteHwInfo = () => {
-    dispatch({
-      type: 'homework/deleteHwInfo',
-      payload: {
-        courseId, homeworkId,
-      },
-      onError,
-      onFinish: setLoading.bind(this, false),
-    })
-  }
+  useMount(() => {
+    if(courseId != -1){
+      getHwList(courseId)
+    }
+    console.log(hwList)
+  })
 
-  // useMount(() => {
-  //   getHwList()
-  //   console.log(hwList)
-  // })
+  useEffect(() => {
+    getHwList(courseId)
+  }, [courseId])
 
   const setCurrentCourse = (index) => (
     dispatch({
@@ -142,19 +136,6 @@ const HwList = ({
         search={false}
         dataSource={FormatData(hwList)}
         columns={columns}
-        toolBarRender={() => [
-          <Select
-            placeholder="请选择课程"
-            onChange={(value) => handleSelectOnChange(value)}
-            defaultValue={courseId == -1 ? undefined: courseId}
-          >
-            {
-              courseList.map((i) => (
-                <Option value={i.courseId} >{i.courseName}</Option>
-              ))
-            }
-          </Select>
-        ]}
       />
     </PageContainer>
   )

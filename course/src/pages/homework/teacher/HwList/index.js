@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { Input, Button, Table, Modal, Space, Divider, Select } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -65,6 +65,10 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId, courseL
       onFinish: setLoading.bind(this, false),
     })
   }
+
+  useEffect(() => {
+    getHwList(courseId)
+  }, [courseId])
 
   useMount(() => {
     if(courseId != -1){
@@ -146,18 +150,6 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId, courseL
       <ProTable
         headerTitle='作业列表'
         toolBarRender={() => [
-          <Select
-            placeholder="请选择课程"
-            onChange={(value) => handleSelectOnChange(value)}
-            defaultValue={courseId == -1 ? undefined: courseId}
-          >
-            {
-              courseList.map((i) => (
-                <Option value={i.courseId} >{i.courseName}</Option>
-              ))
-            }
-          </Select>
-          ,
           <Button type='primary'>
             <Link to='/homework/hw-list/hw-add'>
               <PlusOutlined />
@@ -165,7 +157,6 @@ const HwList = ({ hwList = [], dispatch = () => {}, courseId = courseId, courseL
             </Link>
           </Button>,
         ]}
-        // actionRef={ref}
         search={false}
         dataSource={FormatData(hwList)}
         columns={columns}

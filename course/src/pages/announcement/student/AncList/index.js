@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space, Select } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
@@ -8,8 +7,6 @@ import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
-
-const { Option } = Select
 
 const mapStateToProps = ({ announcement, Course }) => ({
   ancList: announcement.ancList,
@@ -35,7 +32,7 @@ const FormatData = (ancList) => {
 
 const AncList = ({
   ancList = [],
-  dispatch = () => { },
+  dispatch = () => {},
   courseId = courseId,
   courseList = []
 }) => {
@@ -72,8 +69,11 @@ const AncList = ({
     if(courseId != -1){
       getAncList(courseId)
     }
-    //console.log(hwList)
   })
+
+  useEffect(() => {
+    getAncList(courseId)
+  }, [courseId])
 
   const setCurrentCourse = (index) => (
     dispatch({
@@ -84,11 +84,6 @@ const AncList = ({
       onError,
     })
   )
-  
-  const handleSelectOnChange = (value) => {
-    setCurrentCourse(value)
-    getAncList(value)
-  }
   
   const columns = [
     {
@@ -134,19 +129,6 @@ const AncList = ({
         search={false}
         dataSource={FormatData(ancList)}
         columns={columns}
-        toolBarRender={() => [
-          <Select
-            placeholder="请选择课程"
-            onChange={(value) => handleSelectOnChange(value)}
-            defaultValue={courseId == -1 ? undefined: courseId}
-          >
-            {
-              courseList.map((i) => (
-                <Option value={i.courseId} >{i.courseName}</Option>
-              ))
-            }
-          </Select>
-        ]}
       />
     </PageContainer>
   )

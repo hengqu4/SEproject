@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space, Select } from 'antd'
+import { Input, Button, Table, Modal } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
@@ -8,8 +8,6 @@ import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons'
-
-const { Option } = Select
 
 const mapStateToProps = ({ announcement, Course }) => ({
   ancList: announcement.ancList,
@@ -72,9 +70,11 @@ const AncList = ({
     if(courseId != -1){
       getAncList(courseId)
     }
-
-  //   //console.log(hwList)
   })
+
+  useEffect(() => {
+    getAncList(courseId)
+  }, [courseId])
   
   const columns = [
     {
@@ -130,29 +130,12 @@ const AncList = ({
     })
   )
 
-  const handleSelectOnChange = (value) => {
-    setCurrentCourse(value)
-    getAncList(value)
-  }
-
 
   return (
     <PageContainer>
       <ProTable
         headerTitle='公告列表'
         toolBarRender={() => [
-          <Select
-            placeholder="请选择课程"
-            onChange={(value) => handleSelectOnChange(value)}
-            defaultValue={courseId == -1 ? undefined: courseId}
-          >
-            {
-              courseList.map((i) => (
-                <Option value={i.courseId} >{i.courseName}</Option>
-              ))
-            }
-          </Select>
-          ,
           <Button type='primary'>
             <Link to='/announcement/anc-list/anc-add'>
               <PlusOutlined />添加

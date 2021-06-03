@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Upload, message } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -60,8 +60,14 @@ const FileList = ({
   }
 
   useMount(() => {
-    getFileList()
+    if(courseId != -1){
+      getFileList()
+    }
   })
+
+  useEffect(() => {
+    getFileList()
+  }, [courseId])
   
   const columns = [
     {
