@@ -11,6 +11,7 @@ import onError from '@/utils/onError'
 import isInt from 'validator/es/lib/isInt'
 
 const isPosIntValidator = (value) => {
+  // eslint-disable-next-line
   return isInt(`${value}`, { min: 0 }) ? Promise.resolve() : Promise.reject('需为大于等于0的整数')
 }
 

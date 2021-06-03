@@ -6,7 +6,7 @@ import generateReducer, {
 } from '@/utils/generateReducer'
 import pick from 'lodash/pick'
 import cloneDeep from 'lodash/cloneDeep'
-import MatchingStatus from '@/pages/contest/student/Contest/matchingStatus'
+import { MatchingStatus } from '@/utils/constant'
 import storage from 'store2'
 
 const pageOverflow = ({ total, pageNum, pageSize }) => {
@@ -55,7 +55,7 @@ const defaultState = {
   matchingStatus: MatchingStatus.IDLE,
   readyArr: [],
   channelId: null,
-  userIndex: 0,
+  userIndex: -1,
   matchTimeStamp: null,
   matchQuestions: [],
   matchQuestionAnswers: [],
@@ -80,8 +80,6 @@ const effects = {
   }),
   fetchCurrentContest: generateEffect(function* ({ isTeacher, payload }, { call, put }) {
     const res = yield call(ContestServices.fetchCurrentContest, payload)
-
-    console.log('fetchCurrentContest: ', res)
 
     const { contest, bIsParticipated, bIsParticipating } = res
 

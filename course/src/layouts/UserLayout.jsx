@@ -41,7 +41,7 @@ const UserLayout = (props) => {
             <div className={styles.header}>
               <Link to='/'>
                 <img alt='logo' className={styles.logo} src={logo} />
-                <span className={styles.title}>虚拟仿真实验平台</span>
+                <span className={styles.title}>软件工程经济学虚拟仿真实验平台</span>
               </Link>
             </div>
             <div className={styles.desc}>软件项目与过程管理</div>

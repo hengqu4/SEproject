@@ -2,7 +2,7 @@ import { notification } from 'antd'
 
 const onError = (err) => {
   notification.error({
-    description: err.message,
+    description: err?.error?.message || '未知错误',
   })
 }
 

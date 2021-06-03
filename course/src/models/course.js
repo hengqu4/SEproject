@@ -1,4 +1,5 @@
 import * as CourseServices from '@/services/course'
+import { Roles } from '@/utils/constant'
 import generateEffect from '@/utils/generateEffect'
 import generateReducer, { defaultArrayTransformer } from '@/utils/generateReducer'
 import { cloneDeep } from 'lodash'
@@ -26,11 +27,22 @@ const defaultState = {
 
 const courseEffects = {
   getAllCourses: generateEffect(function* (_, { call, put, select }) {
-    const res = yield call(CourseServices.fetchAllCourseInfo)
+    const { data: courseList } = yield call(CourseServices.fetchAllCourseInfo)
     yield put({
       type: 'setCourseList',
-      payload: res.data,
+      payload: courseList,
     })
+
+    const userCharacter = yield select((state) => state.user.currentUser.character)
+    console.log('userCharacter: ', userCharacter)
+    if (courseList?.length) {
+      const [{ courseId }] = courseList
+      yield put({
+        type:
+          userCharacter === Roles.STUDENT ? 'getCurrentCourseInfoStudent' : 'getCurrentCourseInfo',
+        payload: userCharacter === Roles.STUDENT ? { courseId } : 0,
+      })
+    }
   }),
 
   // FIXME: can't get the courseList using students' account

@@ -3,12 +3,10 @@ import { QuestionCircleOutlined } from '@ant-design/icons'
 import React, { useEffect } from 'react'
 import { connect, SelectLang } from 'umi'
 import Avatar from './AvatarDropdown'
-import HeaderSearch from '../HeaderSearch'
 import styles from './index.less'
 import { useMount } from 'react-use'
 import { getAuthority } from '@/utils/authority'
 import onError from '@/utils/onError'
-
 
 const { Option } = Select
 
@@ -17,6 +15,7 @@ const ENVTagColor = {
   test: 'green',
   pre: '#87d068',
 }
+
 
 const GlobalHeaderRight = (props) => {
   const { theme, layout } = props
