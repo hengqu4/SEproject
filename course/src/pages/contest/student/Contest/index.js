@@ -7,15 +7,8 @@ import ModalMatching from '@/pages/contest/student/Contest/components/ModalMatch
 import onError from '@/utils/onError'
 import ContestContent from '@/pages/contest/student/Contest/components/ContestContent'
 import useStateRef from './hooks/useStateRef'
-import {
-  fakeUserInfoArr,
-  IP,
-  PORT,
-  START_SIGNAL_CACHING_TIME,
-  MatchingStatus,
-} from '@/utils/constant'
+import { fakeUserInfoArr, IP, PORT, MatchingStatus } from '@/utils/constant'
 import useWebSocket from 'react-use-websocket'
-import store from 'store2'
 
 const SocketMessageType = {
   MATCHING_COMPLETE: 'MATCHING_COMPLETE',
@@ -53,11 +46,6 @@ const Contest = ({
     [channelId],
   )
 
-  const storageString = useMemo(() => `startTime:${studentId}.${currentContest.contestId}`, [
-    studentId,
-    currentContest.contestId,
-  ])
-
   const clearMatchState = useCallback(() => {
     dispatch({
       type: 'Contest/setMatchingStatus',
@@ -70,21 +58,17 @@ const Contest = ({
 
   const onCancelMatching = useCallback(() => {
     if (channelId) {
-      const enableTime = (store(storageString) || 0) + START_SIGNAL_CACHING_TIME
-      if (enableTime > Date.now()) {
-        dispatch({
-          type: 'Contest/cancelMatching',
-          payload: {
-            channelId,
-            studentId,
-          },
-          onSuccess: () => store.remove(storageString),
-          onError,
-        })
-      }
+      dispatch({
+        type: 'Contest/cancelMatching',
+        payload: {
+          channelId,
+          studentId,
+        },
+        onError,
+      })
     }
     clearMatchState()
-  }, [clearMatchState, dispatch, channelId, studentId, storageString])
+  }, [clearMatchState, dispatch, channelId, studentId])
 
   const onStartMatching = useCallback(() => {
     dispatch({
@@ -99,7 +83,6 @@ const Contest = ({
         studentId,
         contestId,
       },
-      onSuccess: () => store(storageString, Date.now()),
       onError: (err) => {
         onError(err)
         dispatch({
@@ -108,7 +91,7 @@ const Contest = ({
         })
       },
     })
-  }, [dispatch, currentContest, studentId, storageString])
+  }, [dispatch, currentContest, studentId])
 
   const onReconnect = useCallback(() => {
     setIsReconnect(true)
@@ -155,7 +138,9 @@ const Contest = ({
   }, [channelId, dispatch, onCancelMatching, studentId])
 
   const onRoomDismiss = useCallback(() => {
-    if (!readyArr[userIndex]) {
+    if (userIndex < 0) {
+      onStartMatching()
+    } else if (!readyArr[userIndex]) {
       notification.warn({
         message: '超时未准备',
         description: '请重新匹配',
@@ -173,7 +158,7 @@ const Contest = ({
       dispatch({ type: 'Contest/setReadyArr' })
       dispatch({ type: 'Contest/setUserIndex' })
     }
-  }, [clearMatchState, dispatch, readyArr, userIndex])
+  }, [clearMatchState, dispatch, readyArr, userIndex, onStartMatching])
 
   const onCompetitorReady = useCallback(
     ({ readyArray }) => {
@@ -248,6 +233,8 @@ const Contest = ({
   const onSocketMessage = useCallback(
     ({ data }) => {
       const socketMessage = JSON.parse(data)
+
+      console.log('socketMessage: ', socketMessage)
 
       const { type } = socketMessage
       const defaultAction = () => {}

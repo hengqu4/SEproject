@@ -3,8 +3,7 @@ import MatchQuestionsWrapper from '@/pages/contest/student/Contest/components/Ma
 import ContestDescription from '@/pages/contest/components/ContestDescrption'
 import { Button, Spin, notification } from 'antd'
 import { connect } from 'umi'
-import { START_SIGNAL_CACHING_TIME, MatchingStatus } from '@/utils/constant'
-import store from 'store2'
+import { MatchingStatus } from '@/utils/constant'
 
 const mapStateToProps = ({ Contest, user, Course }) => ({
   courseId: Course.currentCourseInfo.courseId,
@@ -27,31 +26,6 @@ const ContestContent = ({
   onReconnect = () => {},
 }) => {
   const [loading, setLoading] = useState(false)
-  const [disabledTime, setDisabledTime] = useState(-1)
-
-  const storageString = useMemo(() => `startTime:${userId}.${currentContest.contestId}`, [
-    userId,
-    currentContest.contestId,
-  ])
-  const startTime = store(storageString) || 0
-
-  const enableTime = useMemo(() => (startTime ?? 0) + START_SIGNAL_CACHING_TIME, [startTime])
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const currentTime = Date.now()
-      if (!participating && !participated && currentTime < enableTime) {
-        setDisabledTime(parseInt((enableTime - currentTime) / 1000, 10))
-      } else {
-        clearInterval(timer)
-        store.remove(storageString)
-        // forceUpdate
-        setDisabledTime(-1)
-      }
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [enableTime, participated, participating, storageString])
 
   useEffect(() => {
     setLoading(true)
@@ -68,7 +42,7 @@ const ContestContent = ({
           description: err.message,
         })
       },
-      onFinish: setLoading.bind(this, false),
+      onFinish: () => setLoading(false),
     })
   }, [dispatch, courseId, userId])
 
@@ -92,7 +66,6 @@ const ContestContent = ({
     const btnAttrs = {
       block: true,
       type: 'primary',
-      disabled: true,
     }
 
     let btnText = ''
@@ -100,16 +73,11 @@ const ContestContent = ({
     if (participating) {
       btnText = '您正在参加一场对抗，点击继续'
       btnAttrs.onClick = onReconnect
-      btnAttrs.disabled = false
     } else if (participated) {
       btnText = '您已参加过该比赛'
-    } else if (disabledTime > 0) {
-      btnText = `请等待${disabledTime}秒后重新匹配`
-    } else if (Date.now() < enableTime) {
-      btnText = '请等待'
+      btnAttrs.disabled = true
     } else {
       btnText = '开始匹配'
-      btnAttrs.disabled = false
       btnAttrs.onClick = onStartMatching
     }
 
@@ -118,16 +86,7 @@ const ContestContent = ({
         <Button {...btnAttrs}>{btnText}</Button>
       </div>
     )
-  }, [
-    loading,
-    currentContestValid,
-    participated,
-    participating,
-    onStartMatching,
-    onReconnect,
-    enableTime,
-    disabledTime,
-  ])
+  }, [loading, currentContestValid, participated, participating, onStartMatching, onReconnect])
 
   const contentDom = useMemo(() => {
     if (status === MatchingStatus.ANSWERING) {

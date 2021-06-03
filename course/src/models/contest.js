@@ -55,7 +55,7 @@ const defaultState = {
   matchingStatus: MatchingStatus.IDLE,
   readyArr: [],
   channelId: null,
-  userIndex: 0,
+  userIndex: -1,
   matchTimeStamp: null,
   matchQuestions: [],
   matchQuestionAnswers: [],
