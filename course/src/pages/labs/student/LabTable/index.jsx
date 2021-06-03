@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, message, Input, notification } from 'antd'
-import React, { useState, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import { useMount } from 'react-use'
@@ -224,6 +224,33 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], cours
       console.log("不是学生账号")
     }
   })
+
+  useEffect(() => {
+    dispatch({
+      type: 'lab/fetchAllLabCase',
+      payload: courseId,
+      onError: (err) => {
+        notification.error({
+          message: '获取实验列表失败',
+          description: err.message,
+        })
+      },
+    })
+
+    if(currentUser.character == 4){
+      dispatch({
+        type: 'lab/fetchMySubmissionList',
+        onError: (err) => {
+          notification.error({
+            message: '获取我的提交记录失败',
+            description: err.message,
+          })
+        },
+      }).then(
+        console.log("mySubmission")
+      )
+    }
+  }, [courseId])
 
   return (
     <PageContainer title={false}>

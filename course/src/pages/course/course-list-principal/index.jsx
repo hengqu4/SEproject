@@ -341,7 +341,6 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
         >
           <Button
             onClick={() => {
-              // handleRemove(selectedRowsState)
               setSelectedRows([])
               actionRef.current?.reloadAndRest?.()
             }}
@@ -354,7 +353,6 @@ const CourseList = ({ courseList = [], dispatch = () => {} }) => {
         <ProCard>
           <StepsForm
             onFinish={async (values) => {
-              // console.log(values)
               addCourseInfo(values)
               handleModalVisible(false)
             }}

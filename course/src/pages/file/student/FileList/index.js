@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Upload, message } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -7,6 +7,8 @@ import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
+
+const port = SERVER_PORT
 
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
@@ -60,8 +62,14 @@ const FileList = ({
   }
 
   useMount(() => {
-    getFileList()
+    if(courseId != -1){
+      getFileList()
+    }
   })
+
+  useEffect(() => {
+    getFileList()
+  }, [courseId])
   
   const columns = [
     {
@@ -69,7 +77,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost:8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file'`
         return <a href={addr}
         >{record.name}</a>
       },

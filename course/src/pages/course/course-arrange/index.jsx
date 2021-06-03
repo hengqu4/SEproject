@@ -41,27 +41,6 @@ export default connect(({ Course }) => ({
       key: 'email',
       dataIndex: 'email',
     },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      fixed: 'right',
-      render: (_, record) => (
-        <>
-          <Popconfirm
-            title='确定从课程中移除学生？'
-            onConfirm={() => {
-              // removeCourseInfo(record.courseId)
-            }}
-            onCancel={() => {}}
-            okText='确定'
-            cancelText='取消'
-          >
-            <a href='#'>移除</a>
-          </Popconfirm>
-        </>
-      ),
-    },
   ]
   const fileValidator = () => {
     const promise = Promise

@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
-import { Input, Button, Table, Modal, Space } from 'antd'
 import formatTime from '@/utils/formatTime'
 import {connect} from 'umi'
 import {Link} from 'react-router-dom'
@@ -12,6 +11,7 @@ import { PlusOutlined } from '@ant-design/icons'
 const mapStateToProps = ({ announcement, Course }) => ({
   ancList: announcement.ancList,
   courseId: Course.currentCourseInfo.courseId,
+  courseList: Course.courseList
 })
 
 const FormatData = (ancList) => {
@@ -32,8 +32,9 @@ const FormatData = (ancList) => {
 
 const AncList = ({
   ancList = [],
-  dispatch = () => { },
-  courseId = courseId
+  dispatch = () => {},
+  courseId = courseId,
+  courseList = []
 }) => {
   const [loading, setLoading] = useState(true)
   const [announcementId, setAnnouncementId ] = useState()
@@ -41,11 +42,11 @@ const AncList = ({
   const ref = useRef()
 
   //获得当前公告列表
-  const getAncList = () => {
+  const getAncList = (value) => {
     dispatch({
       type: 'announcement/fetchAncList',
       payload: {
-        courseId,
+        courseId: value,
       },
       onError,
       onFinish: setLoading.bind(this, false),
@@ -65,9 +66,24 @@ const AncList = ({
   }
 
   useMount(() => {
-    getAncList()
-    //console.log(hwList)
+    if(courseId != -1){
+      getAncList(courseId)
+    }
   })
+
+  useEffect(() => {
+    getAncList(courseId)
+  }, [courseId])
+
+  const setCurrentCourse = (index) => (
+    dispatch({
+      type: 'Course/getCurrentCourseInfoStudent',
+      payload: {
+        courseId: index,
+      },
+      onError,
+    })
+  )
   
   const columns = [
     {

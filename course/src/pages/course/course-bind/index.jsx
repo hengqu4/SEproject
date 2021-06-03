@@ -65,6 +65,7 @@ const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {
       title: '绑定ID',
       dataIndex: 'courseTeachId',
       sorter: (a, b) => a.courseTeachId - b.courseTeachId,
+      hideInTable: true
     },
     {
       title: '课程ID',
@@ -194,7 +195,6 @@ const course_list = ({ courseTeachList = [], courseList = [], dispatch = () => {
                   ))
                 }
               </Select>
-              {/* <Input placeholder='请输入课程ID' /> */}
             </FormItem>
             <FormItem label='教师ID' name='teacherId' rules={[{ required: true }]}>
               <Input placeholder='请输入想要与之绑定的教师ID' />

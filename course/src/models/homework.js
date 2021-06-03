@@ -12,12 +12,19 @@ const defaultHwInfo = {
   endTime: "",
 }
 
+const defaultHwGradeInfo = {
+  homeworkIsGradeAvailableToStudents: false,
+  homeworkScore: 0,
+  homeworkTeachersComments: ""
+}
+
 const defaultState = {
   hwList: [],
   hwInfo: {},
-  grade: 0,
+  hwGradeInfo: {},
   hwFileList: [],
   hwFile: {},
+  fileUrl: ''
 }
 
 const effects = {
@@ -69,7 +76,7 @@ const effects = {
 
     yield put({
       type: 'setGrade',
-      payload: res.homeworkScore,
+      payload: res,
     })
   }),
   fetchHwFileList: generateEffect(function* ({ payload }, { call, put }) {
@@ -90,6 +97,21 @@ const effects = {
       type: 'setHwFile',
       payload: res,
     })
+  }),
+  setGradeToDefault: generateEffect(function* ({ _ }, { call, put }){
+    put({
+      type: 'setGradeToDefault',
+    })
+  }),
+  putHomeworkName: generateEffect(function* ({ payload }, { call, put }){
+    const res = yield call(HwServices.putHomeworkName, payload)
+    yield put({
+      type: 'setFileUrl',
+      payload: res.FILE_PUT_URL
+    })
+  }),
+  uploadHomeworkFile: generateEffect(function* ({ payload }, { call }){
+    const res = yield call(HwServices.uploadHomeworkFile, payload)
   })
 }
 
@@ -105,8 +127,8 @@ const reducers = {
     defaultState,
   }),
   setGrade: generateReducer({
-    attributeName: 'grade',
-    transformer: defaultArrayTransformer,
+    attributeName: 'hwGradeInfo',
+    transformer: (payload) => payload || defaultHwGradeInfo,
     defaultState,
   }),
   setHwFileList: generateReducer({
@@ -118,6 +140,16 @@ const reducers = {
     attributeName: 'hwFile',
     transformer: defaultArrayTransformer,
     defaultState,
+  }),
+  setGradeToDefault: generateReducer({
+    attributeName: 'hwGradeInfo',
+    transformer: () => defaultHwGradeInfo,
+    defaultState
+  }),
+  setFileUrl: generateReducer({
+    attributeName: 'fileUrl',
+    transformer: defaultObjectTransformer,
+    defaultState
   })
 }
 

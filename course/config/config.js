@@ -130,6 +130,7 @@ export default defineConfig({
                       path: '/course/course-arrange',
                       component: './course/course-arrange',
                       authority: ['principal'],
+                      hideInMenu: true,
                     },
                     {
                       name: '课程信息',
@@ -480,5 +481,6 @@ export default defineConfig({
   define: {
     SERVER_IP: ip,
     WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
+    SERVER_PORT: port
   },
 })

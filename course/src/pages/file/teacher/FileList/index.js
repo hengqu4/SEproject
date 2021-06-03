@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout';
 import { Input, Button, Table, Modal, Space, Upload, message, notification } from 'antd'
 import formatTime from '@/utils/formatTime'
@@ -7,6 +7,8 @@ import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import axios from 'axios';
+
+const port = SERVER_PORT
 
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
@@ -94,7 +96,7 @@ const FileList = ({
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.post(`http://localhost/api/v1/course-database/course-file-database/course/${courseId}`, {
+    axios.post(`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}`, {
         fileDisplayName: fileName,
         fileComment: "no comment",
         fileUploader: currentUser,
@@ -124,16 +126,22 @@ const FileList = ({
   }
 
   useMount(() => {
-    getFileList()
+    if(courseId != -1){
+      getFileList()
+    }
   })
   
+  useEffect(() => {
+    getFileList()
+  }, [courseId])
+
   const columns = [
     {
       title: '文件名称',
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file`
         return <a href={addr}
         >{record.name}</a>
       },

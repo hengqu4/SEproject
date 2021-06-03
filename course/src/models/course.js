@@ -136,6 +136,22 @@ const courseEffects = {
       payload: res.data,
     })
   }),
+
+  getCourseListAndSetFirstCourseInfo: generateEffect(function* (_, { call, put, select }){
+    const res = yield call(CourseServices.fetchAllCourseInfo)
+    yield put({
+      type: 'setCourseList',
+      payload: res.data
+    })
+
+    const courseList = yield select((state) => state.Course.courseList)
+    const currentCourse = courseList[0]
+    yield put({
+      type: 'setCurrentCourse',
+      payload: currentCourse,
+    })
+  })
+
 }
 
 const courseTeachEffects = {
