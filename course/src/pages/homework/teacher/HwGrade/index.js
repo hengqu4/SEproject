@@ -6,7 +6,7 @@ import { useMount } from 'react-use'
 import onError from '@/utils/onError'
 import ProTable from '@ant-design/pro-table'
 
-const PORT = 8000
+const PORT = SERVER_PORT
 
 const mapStateToProps = ({ homework, Course, user }) => ({
   hwFileList: homework.hwFileList,

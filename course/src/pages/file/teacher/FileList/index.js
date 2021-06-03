@@ -8,6 +8,8 @@ import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import axios from 'axios';
 
+const port = SERVER_PORT
+
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
   courseId: Course.currentCourseInfo.courseId,
@@ -94,7 +96,7 @@ const FileList = ({
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.post(`http://localhost:8000/api/v1/course-database/course-file-database/course/${courseId}`, {
+    axios.post(`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}`, {
         fileDisplayName: fileName,
         fileComment: "no comment",
         fileUploader: currentUser,
@@ -139,7 +141,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost:8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file`
         return <a href={addr}
         >{record.name}</a>
       },

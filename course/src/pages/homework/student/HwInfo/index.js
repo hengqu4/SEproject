@@ -8,7 +8,7 @@ import formatTime from '@/utils/formatTime'
 import axios from 'axios';
 import { UploadOutlined } from '@ant-design/icons';
 
-const PORT = 8000
+const PORT = SERVER_PORT
 
 const mapStateToProps = ({ homework, Course, user, file }) => ({
   homeworkInfo: homework,

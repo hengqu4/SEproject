@@ -8,6 +8,8 @@ import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 
+const port = SERVER_PORT
+
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
   url: file.url,
@@ -75,7 +77,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr='http://localhost:8000/api/v1/course-database/course-file-database/course/' + courseId + '/' + record.key + '/file'
+        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file'`
         return <a href={addr}
         >{record.name}</a>
       },

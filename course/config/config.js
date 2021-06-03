@@ -481,5 +481,6 @@ export default defineConfig({
   define: {
     SERVER_IP: ip,
     WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
+    SERVER_PORT: port
   },
 })
