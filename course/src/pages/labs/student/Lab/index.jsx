@@ -16,40 +16,44 @@ import {
   PageHeader,
   Typography,
   notification,
-  message
+  message,
 } from 'antd'
-import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined} from '@ant-design/icons'
+import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
 import { useMount } from 'react-use'
 import { connect, useParams, useRouteMatch, useLocation, Link, history } from 'umi'
 import styles from './style.less'
+import axios from 'axios'
 
 const FormItem = Form.Item
 const { TextArea } = Input
 const { Paragraph } = Typography
-const { Countdown } = Statistic;
+const { Countdown } = Statistic
+const PORT = SERVER_PORT
 
-const FormatData = (courseCaseId,fileUpload, courseId) => {
+const FormatData = (courseCaseId, fileUpload, courseId) => {
   const formattedLab = {
-    courseCaseId: courseCaseId,
-    submissionFileName: "student submit fake token",
-    courseId
+    courseCaseId,
+    submissionFileName: 'student submit fake token',
+    courseId,
   }
   return formattedLab
 }
 
-const LabCase = ({ lab,user, Course }) => ({
+const LabCase = ({ lab, user, Course }) => ({
   isSuccess: lab.isSuccess,
   labData: lab.labCaseList,
   currentUser: user.currentUser,
-  courseId: Course.currentCourseInfo.courseId
+  courseId: Course.currentCourseInfo.courseId,
 })
 
 const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () => {} }) => {
   const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
+  const [uploadFile, setUploadFile] = useState()
+
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -112,24 +116,55 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
     },
   ]
 
-  const onFinish = (form) => {
-    console.log(params.courseCaseId,currentUser.id,form.fileUpload)
-    const submitData = FormatData(params.courseCaseId,currentUser.id,form.fileUpload, courseId)
-    console.log("FSS")
-    console.log(submitData)
-    dispatch({
-      type: 'lab/submitLabCase',
-      payload: submitData,
-      onError: (err) => {
-        notification.error({
-          message: '学生提交实验案例失败',
-          description: err.message,
+  const uploadReport = (val) => {
+    return axios.post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+      courseId,
+      courseCaseId: params.courseCaseId,
+      submissionUploader: currentUser.id,
+      submissionFileName: val.fileUpload.file.name,
+    })
+  }
+
+  const modifyReport = (val) => {
+    return axios.put(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+      courseId,
+      courseCaseId: params.courseCaseId,
+      submissionUploader: currentUser.id,
+      submissionFileName: val.fileUpload.file.name,
+    })
+  }
+
+  const onFinish = (val) => {
+    console.log(courseId)
+    console.log(params.courseCaseId)
+    console.log(uploadFile)
+    axios
+      .post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+        courseId,
+        courseCaseId: params.courseCaseId,
+        submissionFileName: uploadFile.name,
+      })
+      .then((res) => {
+        const firstResponse = res.headers
+        const putUrl = firstResponse.submission_upload_url
+        console.log(putUrl)
+        axios({
+          method: 'put',
+          url: putUrl,
+          data: uploadFile,
+          headers: { 'Content-Type': `application/octet-stream` },
+        }).then((res) => {
+          notification.success({
+            message: '上传成功!',
+          })
+          history.push('/labs/all')
         })
-      },
-    }).then(
-      message.success('提交成功'),
-      history.push('/labs/list')
-    )
+      })
+      .catch((res) => {
+        notification.error({
+          message: res,
+        })
+      })
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -155,34 +190,34 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           description: err.message,
         })
       },
-    }).then(
-      console.log(`labData`),
-      console.log(labData)
-    )
+    }).then(console.log(`labData`), console.log(labData))
   })
-  
+
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
-        <Countdown 
-          title="倒计时" 
-          style={{position:'flxed',float:'right'}}
+        <Countdown
+          title='倒计时'
+          style={{ position: 'flxed', float: 'right' }}
           value={Date.parse(labData.caseEndTimestamp)}
-          onFinish={onFinish} 
+          onFinish={onFinish}
         />
-        <div style={{textAlign:'center', width:'80%', paddingLeft:'12%',margin:'20px'}}>
+        <div style={{ textAlign: 'center', width: '80%', paddingLeft: '12%', margin: '20px' }}>
           <h2>{labData.experimentName}</h2>
           <h3>{labData.experimentCaseName}</h3>
           <Paragraph>{labData.experimentCaseDescription}</Paragraph>
           <div>
-            <Tag icon={<ClockCircleOutlined />}>
-              截止时间：{labData.endTime}
-            </Tag>
-          
+            <Tag icon={<ClockCircleOutlined />}>截止时间：{labData.endTime}</Tag>
+
             <Button key='edit' type='link' icon={<EditTwoTone />}>
               编辑
             </Button>
-            <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()}>
+            <Button
+              key='back'
+              type='link'
+              icon={<RollbackOutlined />}
+              onClick={() => window.history.back()}
+            >
               返回
             </Button>
           </div>
@@ -206,27 +241,38 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
             <Table pagination={false} columns={columns} dataSource={data} />
           </FormItem>
           <FormItem>
-            <ProFormUploadDragger {...formItemLayout} max={4} label='提交报告' name='fileUpload' disabled={Date.now()<Date.parse(labData.caseStartTimestamp)||Date.now()>Date.parse(labData.caseEndTimestamp) || labData.isSubmit}/>
-          </FormItem>
-
-          {labData.isPublicScore?(
-          <FormItem {...formItemLayout} label='实验得分' name='labScore'>
-            <Statistic value={5} suffix='/ 100' />
-          </FormItem>
-          ):null}
-          
-          {labData.isPublicScore?(
-          <FormItem {...formItemLayout} label='教师评语' name='submissionComments'>
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              rows={4}
-              readOnly="readOnly"
-              defaultValue={"comment"}
+            <ProFormUploadDragger
+              {...formItemLayout}
+              max={4}
+              label='提交报告'
+              name='fileUpload'
+              disabled={
+                Date.now() < Date.parse(labData.caseStartTimestamp) ||
+                Date.now() > Date.parse(labData.caseEndTimestamp) ||
+                labData.isSubmit
+              }
+              action={(v) => setUploadFile(v)}
             />
           </FormItem>
-          ):null}
+
+          {labData.isPublicScore ? (
+            <FormItem {...formItemLayout} label='实验得分' name='labScore'>
+              <Statistic value={5} suffix='/ 100' />
+            </FormItem>
+          ) : null}
+
+          {labData.isPublicScore ? (
+            <FormItem {...formItemLayout} label='教师评语' name='submissionComments'>
+              <TextArea
+                style={{
+                  minHeight: 32,
+                }}
+                rows={4}
+                readOnly='readOnly'
+                defaultValue={'comment'}
+              />
+            </FormItem>
+          ) : null}
 
           {/*
           <FormItem
@@ -234,8 +280,10 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
             style={{
               marginTop: 48,
             }}
-          >*/}
-          {Date.now()>Date.parse(labData.caseStartTimestamp)&&Date.now()<Date.parse(labData.caseEndTimestamp) && !labData.isSubmit?(
+          > */}
+          {Date.now() > Date.parse(labData.caseStartTimestamp) &&
+          Date.now() < Date.parse(labData.caseEndTimestamp) &&
+          !labData.isSubmit ? (
             <Button
               style={{
                 marginLeft: 16,
@@ -246,10 +294,11 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
             >
               提交作业
             </Button>
-          ):<p>本实验尚未开始进行或您已提交过实验报告</p>
-          }
-          
-          {/*</FormIm>*/}
+          ) : (
+            <p>本实验尚未开始进行或您已提交过实验报告</p>
+          )}
+
+          {/* </FormIm> */}
         </Form>
       </Card>
     </PageContainer>
