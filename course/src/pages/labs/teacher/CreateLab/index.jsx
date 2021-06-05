@@ -12,7 +12,7 @@ import { UploadOutlined } from '@ant-design/icons';
 // import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
-const port = SERVER_PORT
+const PORT = SERVER_PORT
 const FormItem = Form.Item
 const { Option } = Select
 const { RangePicker } = DatePicker
