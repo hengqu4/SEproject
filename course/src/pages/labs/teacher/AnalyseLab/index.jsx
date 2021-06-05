@@ -19,7 +19,7 @@ const AllLabCase = ({ lab, Course }) => ({
 
 const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispatch = () => {} }) => {
   const [analyseType, setAnalyseType] = useState(0)
-  const [currentLab, setCurrentLab] = useState()
+  const [currentLab, setCurrentLab] = useState(0)
   const [labAnalyseDataSum, setLabAnalyseDataSum] = useState(0)
   const [labAnalyseDataArray, setAnalyseDataArray] = useState([])
   const [submitVisible, setSubmitVisible] = useState(false)
@@ -117,10 +117,103 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
     }
   }
 
+  const statisticsData = () =>{
+    const result = {
+      array:[],
+      title: '提交总数',
+      sum: 0,
+    }
+    if(analyseType == 0){
+      if(labStatistics.scoreDistributed == null){
+        result.array = [
+          {
+            x: '90+',
+            y: 0,
+          },
+          {
+            x: '80~90',
+            y: 0,
+          },
+          {
+            x: '70~80',
+            y: 0,
+          },
+          {
+            x: '60~70',
+            y: 0,
+          },
+          {
+            x: '60-',
+            y: 0,
+          },
+          {
+            x: '未批改',
+            y: 0,
+          },
+        ]
+      }else{
+        result.array = [
+          {
+          x: '90+',
+          y: labStatistics.scoreDistributed[4],
+        },
+        {
+          x: '80~90',
+          y: labStatistics.scoreDistributed[3],
+        },
+        {
+          x: '70~80',
+          y: labStatistics.scoreDistributed[2],
+        },
+        {
+          x: '60~70',
+          y: labStatistics.scoreDistributed[1],
+        },
+        {
+          x: '60-',
+          y: labStatistics.scoreDistributed[0],
+        },
+        {
+          x: '未批改',
+          y: labStatistics.unremarkedNum,
+        },
+      ]
+        result.sum = labStatistics.remarkedNum + labStatistics.unremarkedNum
+      }
+    }else{
+      if(labStatistics.submittedNum == null){
+        result.array = [
+          {
+            x: '已提交',
+            y: 0,
+          },
+          {
+            x: '未提交',
+            y: 0,
+          },
+        ]
+      }else{
+        result.array = [
+          {
+            x: '已提交',
+            y: labStatistics.submittedNum,
+          },
+          {
+            x: '未提交',
+            y: labStatistics.unsubmittedNum,
+          },
+        ]
+        result.title = '总学生数'
+        result.sum = labStatistics.submittedNum + labStatistics.unsubmittedNum
+      }
+    }
+    return result
+  }
+
   const fetchLabStatistics = () => {
     dispatch({
       type: 'lab/fetchLabStatistics',
-      payload: currentLab == null ? allLabsData[0].courseCaseId : currentLab,
+      payload: currentLab,
       onError: (err) => {
         notification.error({
           message: '获取统计信息失败',
@@ -133,6 +226,12 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
     })
   }
 
+  useEffect(() => {
+    if(currentLab != 0){
+      fetchLabStatistics()
+    }
+  }, [currentLab])
+
   const handleAnalyseChange = (e) => {
     modifyStatistics(labStatistics, e.target.value)
     setAnalyseType(e.target.value)
@@ -140,7 +239,6 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
 
   const onLabTabChange = (key) => {
     setCurrentLab(key)
-    fetchLabStatistics()
   }
 
   const onLinkClicked = () => {
@@ -186,6 +284,7 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
       },
       onSuccess: () => {
         modifyStatistics(labStatistics, analyseType)
+        setCurrentLab(allLabsData[0].courseCaseId)
       },
     })
   })
@@ -269,9 +368,9 @@ const AnalyseLabCase = ({ allLabsData = [], labStatistics = {}, courseId, dispat
                   <div style={{ marginTop: 40 }}>
                     <Pie
                       hasLegend
-                      subTitle={labAnaylyseDataTitle}
-                      total={() => <p>{labAnalyseDataSum}</p>}
-                      data={labAnalyseDataArray}
+                      subTitle={statisticsData().title}
+                      total={() => <p>{statisticsData().sum}</p>}
+                      data={statisticsData().array}
                       valueFormat={(value) => <p>{value}</p>}
                       height={248}
                       lineWidth={4}

@@ -37,7 +37,7 @@ const FormatData = (params, labData, form) => {
     submissionFileToken: labData.submissionFileToken,
     submissionTimestamp: labData.submissionTimestamp,
     submissionScore: form.score,
-    submissionComments: form.Comments,
+    submissionComments: form.comments,
     submissionIsPublic: false,
     submissionCaseId: Number(params.submissionCaseId)
   }
@@ -108,9 +108,7 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
   ]
 
   const onFinish = (form) => {
-    console.log(form)
     const data = FormatData(params, labData, form)
-    console.log(data)
     dispatch({
       type: 'lab/markSubmission',
       payload: data,
@@ -120,11 +118,12 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
           description: err.message,
         })
       },
-    }).then(
-      history.push({
-        pathname: `/labs/pending-list/${params.courseCaseId}`
-      })
-    )
+      onSuccess: () =>{
+        history.push({
+          pathname: `/labs/pending-list/${params.courseCaseId}`
+        })
+      }
+    })
   } 
   const onFinishFailed = (errorInfo) => {
     // eslint-disable-next-line no-console
@@ -147,9 +146,8 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
           description: err.message,
         })
       },
-    }).then(
-      console.log(labData)
-    )
+    })
+    
   })  
 
   const data = [
@@ -195,6 +193,10 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           onValuesChange={onValuesChange}
+          initialValues={{
+            score: '0',
+            comments: ''
+          }}
         >
           <FormItem {...formItemLayout} label='下载实验报告' name='labSubmitFile'>
             <Table pagination={false} columns={columns} dataSource={data} />
