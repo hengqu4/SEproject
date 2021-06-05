@@ -57,8 +57,8 @@ const CreateLab = (props) => {
   const submitFormLayout = {
     wrapperCol: {
       xs: {
-        span: 0,
-        offset: 10,
+        span: 6,
+        offset:11
       },
     },
   }
@@ -242,25 +242,21 @@ function showPromiseConfirm() {
             </Upload>
           </Form.Item>
 
-          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >*/}
+          >
           
             <Button
-              style={{
-                marginLeft: 16,
-              }}
               type='primary'
               htmlType='submit'
             >
               创建实验
             </Button>
             
-          {/*</FormItem>*/}
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>

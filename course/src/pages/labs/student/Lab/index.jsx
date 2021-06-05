@@ -18,6 +18,7 @@ import {
   notification,
   message,
 } from 'antd'
+import ProTable from '@ant-design/pro-table'
 import { ClockCircleOutlined, UserOutlined, EditTwoTone, RollbackOutlined } from '@ant-design/icons'
 import ProForm, { ProFormUploadDragger } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
@@ -48,12 +49,66 @@ const LabCase = ({ lab, user, Course }) => ({
   courseId: Course.currentCourseInfo.courseId,
 })
 
+const FormatTime = (endTime) => {
+  // let time = endTime.slice(0,-6)
+  // labData.enendTime.substring(0,9)+"-"+endTime.substring(11,-6)
+  // const time = endTime[0,9]+" "+ endTime[11,19]
+  console.log(typeof(endTime))
+  // let time = endTime.slice(0,-6)
+  let time = endTime
+  return time
+}
+
+const FormatDownload = (LabData) => {
+  console.log("FormatDownload")
+  console.log(LabData)
+  // console.log(LabData.CASE_FILE_DOWNLOAD_URL)
+  const download = []
+  download.push({
+    key:1,
+    fileName:'实验手册',
+    fileUrl:LabData.CASE_FILE_DOWNLOAD_URL
+  })
+  download.push({
+    key:2,
+    fileName:'参考答案',
+    fileUrl:LabData.ANSWER_FILE_DOWNLOAD_URL
+  })
+  console.log(download)
+  return download
+}
+
+
 const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () => {} }) => {
+  const actionRef = useRef();
   const params = useParams()
   const [form] = Form.useForm()
   const [showPublicUsers, setShowPublicUsers] = React.useState(false)
   const [uploadFile, setUploadFile] = useState()
 
+  const columns  = [
+    {
+      title: '名称',
+      dataIndex: 'fileName',
+      key: 'fileName',
+      render: (text,record,index) => 
+        <a href={record.fileUrl}  target="_blank" rel="noopener noreferrer" >{text}</a>
+    },
+    // {
+    //   title: '下载地址',
+    //   dataIndex: 'fileUrl',
+    //   key: 'fileUrl',
+    //   // ellipsis: true,
+    //   render: (text) =><span >{text}</span>
+    // },
+    {
+      title: '操作',
+      key: 'fileAction',
+      render: (text,record,index) => <span>
+      <a href={record.fileUrl}  target="_blank" rel="noopener noreferrer" >下载</a>
+      </span>
+    },
+  ]
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -69,53 +124,11 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
   const submitFormLayout = {
     wrapperCol: {
       xs: {
-        span: 0,
-        offset: 10,
+        span: 6,
+        offset:11
       },
     },
   }
-  const columns = [
-    {
-      title: '名称',
-      dataIndex: 'fileName',
-      key: 'fileName',
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: '日期',
-      dataIndex: 'fileDate',
-      key: 'fileDate',
-    },
-    {
-      title: '大小',
-      dataIndex: 'fileSize',
-      key: 'fileSize',
-    },
-    {
-      title: '操作',
-      key: 'fileAction',
-      render: (text, record) => (
-        <span>
-          <a
-            style={{
-              marginRight: 16,
-            }}
-          >
-            下载
-          </a>
-        </span>
-      ),
-    },
-  ]
-  const data = [
-    {
-      key: '1',
-      fileName: '实验说明书.jpg',
-      fileDate: '2020-5-7',
-      fileSize: '167 KB',
-    },
-  ]
-
   const uploadReport = (val) => {
     return axios.post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
       courseId,
@@ -142,7 +155,9 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
       .post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
         courseId,
         courseCaseId: params.courseCaseId,
-        submissionFileName: uploadFile.name,
+        // submissionFileName: uploadFile.name,
+        
+        submissionFileName: "uploadFile.name",
       })
       .then((res) => {
         const firstResponse = res.headers
@@ -190,15 +205,17 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           description: err.message,
         })
       },
-    }).then(console.log(`labData`), console.log(labData))
+    }).then(
+      console.log(`labData`),
+      console.log(labData)
+    )
   })
+  
 
   return (
     <PageContainer title={false}>
       <Card bordered={false}>
-        <Countdown
-          title='倒计时'
-          style={{ position: 'flxed', float: 'right' }}
+        <Countdown title='倒计时' style={{ position: 'flxed', float: 'right' }}
           value={Date.parse(labData.caseEndTimestamp)}
           onFinish={onFinish}
         />
@@ -207,17 +224,11 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           <h3>{labData.experimentCaseName}</h3>
           <Paragraph>{labData.experimentCaseDescription}</Paragraph>
           <div>
-            <Tag icon={<ClockCircleOutlined />}>截止时间：{labData.endTime}</Tag>
+            {/*<Tag icon={<ClockCircleOutlined />}>截止时间：{FormatTime(labData.caseEndTimestamp)}</Tag>
+            <Tag icon={<ClockCircleOutlined />}>截止时间：{labData.caseEndTimestamp}</Tag>*/}
 
-            <Button key='edit' type='link' icon={<EditTwoTone />}>
-              编辑
-            </Button>
-            <Button
-              key='back'
-              type='link'
-              icon={<RollbackOutlined />}
-              onClick={() => window.history.back()}
-            >
+            <Button key='edit' type='link' icon={<EditTwoTone />}>编辑</Button>
+            <Button key='back' type='link' icon={<RollbackOutlined />} onClick={() => window.history.back()} >
               返回
             </Button>
           </div>
@@ -238,7 +249,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           onValuesChange={onValuesChange}
         >
           <FormItem {...formItemLayout} label='下载附件' name='fileUpload'>
-            <Table pagination={false} columns={columns} dataSource={data} />
+            <Table pagination={false} columns={columns} dataSource={FormatDownload(labData)} />
           </FormItem>
           <FormItem>
             <ProFormUploadDragger
@@ -274,20 +285,16 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
             </FormItem>
           ) : null}
 
-          {/*
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          > */}
+          >
           {Date.now() > Date.parse(labData.caseStartTimestamp) &&
           Date.now() < Date.parse(labData.caseEndTimestamp) &&
           !labData.isSubmit ? (
             <Button
-              style={{
-                marginLeft: 16,
-              }}
               type='primary'
               htmlType='submit'
               // loading={submitting}
@@ -297,8 +304,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           ) : (
             <p>本实验尚未开始进行或您已提交过实验报告</p>
           )}
-
-          {/* </FormIm> */}
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>
