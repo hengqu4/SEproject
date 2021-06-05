@@ -140,6 +140,14 @@ const effects = {
       payload: res.isSuccess,
     })
   }),
+  markSubmission: generateEffect(function* ({ payload }, { call, put }) {
+    const res = yield call(LabServices.markSubmission, payload)
+    
+    yield put({
+      type: 'setIsSuccess',
+      payload: res.isSuccess,
+    })
+  }),
   fetchLabStatistics: generateEffect(function* ({ payload }, { call, put }) {
     const res = yield call(LabServices.fetchLabStatistics, payload)
     yield put({
