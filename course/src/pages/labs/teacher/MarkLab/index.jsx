@@ -68,8 +68,8 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
   const submitFormLayout = {
     wrapperCol: {
       xs: {
-        span: 0,
-        offset: 10,
+        span: 6,
+        offset:11
       },
     },
   }
@@ -229,13 +229,13 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
               rows={4}
             />
           </FormItem>
-          {/*
+          
           <FormItem
             {...submitFormLayout}
             style={{
               marginTop: 48,
             }}
-          >*/}
+          >
             <Button
               type='primary'
               htmlType='submit'
@@ -249,9 +249,9 @@ const MarkLab = ({ props, labData = [], dispatch = () => {} }) => {
               }}
             >
               下一份
-            </Button>
+            </Button>*/}
           
-          </FormItem>*/}
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>

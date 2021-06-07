@@ -45,24 +45,31 @@ const CreateLab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 4,
+        span: 7,
       },
     },
     wrapperCol: {
       xs: {
-        span: 16,
+        span: 10,
       },
     },
   }
   const submitFormLayout = {
     wrapperCol: {
       xs: {
-        span: 0,
-        offset: 10,
+        span: 6,
+        offset:11
       },
     },
   }
-
+  const buttonLayout = {
+    wrapperCol: {
+      xs: {
+        span: 8,
+        offset:10
+      },
+    },
+  }
   const doUploadAnswerFile = (putUrl) => {
     return axios({
       method: "put",
@@ -204,9 +211,7 @@ function showPromiseConfirm() {
             />
           </FormItem>
 
-          <Form.Item
-              name="caseFile"
-          >
+          <Form.Item {...buttonLayout} name="caseFile">
             <Upload
               multiple={false}
               maxCount={1}
@@ -223,9 +228,7 @@ function showPromiseConfirm() {
             </Upload>
           </Form.Item>
 
-          <Form.Item
-              name="answerFile"
-          >
+          <Form.Item {...buttonLayout}  name="answerFile">
             <Upload
               multiple={false}
               maxCount={1}
@@ -242,25 +245,15 @@ function showPromiseConfirm() {
             </Upload>
           </Form.Item>
 
-          {/*
-          <FormItem
-            {...submitFormLayout}
-            style={{
-              marginTop: 48,
-            }}
-          >*/}
-          
+          <FormItem {...submitFormLayout}style={{ marginTop: 48,}}>
             <Button
-              style={{
-                marginLeft: 16,
-              }}
               type='primary'
               htmlType='submit'
             >
               创建实验
             </Button>
             
-          {/*</FormItem>*/}
+          </FormItem>
         </Form>
       </Card>
     </PageContainer>
