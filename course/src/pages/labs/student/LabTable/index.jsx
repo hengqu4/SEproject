@@ -13,23 +13,23 @@ import Authorized from '@/components/Authorized/Authorized';
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
+// const handleRemove = async (selectedRows) => {
+//   const hide = message.loading('正在删除')
+//   if (!selectedRows) return true
 
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    })
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  } catch (error) {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  }
-}
+//   try {
+//     await removeRule({
+//       key: selectedRows.map((row) => row.key),
+//     })
+//     hide()
+//     message.success('删除成功，即将刷新')
+//     return true
+//   } catch (error) {
+//     hide()
+//     message.error('删除失败，请重试')
+//     return false
+//   }
+// }
 
 const noMatch = <div />;
 
@@ -254,33 +254,30 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], cours
 
   return (
     <PageContainer title={false}>
-      <Authorized authority={['student']} noMatch={noMatch}>
       <ProTable
         actionRef={actionRef}
         rowKey='key'
+        search={false}
         dataSource={FormatData(allLabsData,mySubmission,currentUser)}
         columns={columns}
       />
-      </Authorized>
 
+      {/*
       <Authorized authority={['teacher','teachingAssistant','principal']} noMatch={noMatch}>
       <ProTable
         actionRef={actionRef}
+        search={false}
         rowKey='key'
-        // pagination={false}
         toolBarRender={() => [
-          <Button key="publish"
-            // onClick={() => handleJumpLab(true)}
-          >
+          <Button key="publish">
             <Link to="/labs/all">发布实验</Link>
           </Button>
         ]}
         dataSource={FormatData(allLabsData, mySubmission,currentUser)}
         columns={columns}
         // 删除选中实验
-        rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
+        // rowSelection={{onChange: (_, selectedRows) => setSelectedRows(selectedRows),}}
       />
-
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -309,7 +306,7 @@ const TableList = ({ allLabsData = [], currentUser = [],mySubmission = [], cours
           </Button>
         </FooterToolbar>
       )}
-      </Authorized>
+      </Authorized>*/}
     </PageContainer>
   )
 }

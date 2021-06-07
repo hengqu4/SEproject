@@ -26,6 +26,7 @@ import { useMount } from 'react-use'
 import { connect, useParams, useRouteMatch, useLocation, Link, history } from 'umi'
 import styles from './style.less'
 import axios from 'axios'
+import Authorized from '@/components/Authorized/Authorized';
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -77,6 +78,7 @@ const FormatDownload = (LabData) => {
   return download
 }
 
+const noMatch = <div />;
 
 const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () => {} }) => {
   const actionRef = useRef();
@@ -111,12 +113,12 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 4,
+        span: 7,
       },
     },
     wrapperCol: {
       xs: {
-        span: 16,
+        span: 10,
       },
     },
   }
@@ -250,6 +252,8 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
           <FormItem {...formItemLayout} label='下载附件' name='fileUpload'>
             <Table pagination={false} columns={columns} dataSource={FormatDownload(labData)} />
           </FormItem>
+
+          <Authorized authority={['student']} noMatch={noMatch}>
           <FormItem>
             <ProFormUploadDragger
               {...formItemLayout}
@@ -264,14 +268,13 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
               action={(v) => setUploadFile(v)}
             />
           </FormItem>
+          </Authorized>
 
           {labData.isPublicScore ? (
             <FormItem {...formItemLayout} label='实验得分' name='labScore'>
               <Statistic value={5} suffix='/ 100' />
             </FormItem>
-          ) : null}
-
-          {labData.isPublicScore ? (
+          ) : null}{labData.isPublicScore ? (
             <FormItem {...formItemLayout} label='教师评语' name='submissionComments'>
               <TextArea
                 style={{
@@ -284,6 +287,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
             </FormItem>
           ) : null}
 
+          <Authorized authority={['student']} noMatch={noMatch}>
           <FormItem
             {...submitFormLayout}
             style={{
@@ -301,9 +305,12 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
               提交作业
             </Button>
           ) : (
-            <p>本实验尚未开始进行或您已提交过实验报告</p>
+            // <h1>未在实验进行期间</h1>
+            <div/>
           )}
           </FormItem>
+          </Authorized>
+
         </Form>
       </Card>
     </PageContainer>

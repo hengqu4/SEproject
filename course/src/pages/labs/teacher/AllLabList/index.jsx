@@ -102,15 +102,15 @@ const TableList = ({ allLabList = [], dispatch = () => {}, courseId }) => {
     {
       title: '实验名称',
       dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '规则名称为必填项',
-          },
-        ],
-      },
+      // tip: '规则名称是唯一的 key',
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '规则名称为必填项',
+      //     },
+      //   ],
+      // },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>
       },
@@ -229,10 +229,11 @@ const TableList = ({ allLabList = [], dispatch = () => {}, courseId }) => {
         ]}
         dataSource={FormatData(allLabList)}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+        // rowSelection={{
+        //   onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        // }}
       />
+      {/*
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -251,7 +252,7 @@ const TableList = ({ allLabList = [], dispatch = () => {}, courseId }) => {
         >
           <Button>批量删除</Button>
         </FooterToolbar>
-      )}
+      )}*/}
       <Drawer
         width={600}
         visible={!!row}

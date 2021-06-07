@@ -45,12 +45,12 @@ const CreateLab = (props) => {
   const formItemLayout = {
     labelCol: {
       xs: {
-        span: 4,
+        span: 7,
       },
     },
     wrapperCol: {
       xs: {
-        span: 16,
+        span: 10,
       },
     },
   }
@@ -65,8 +65,8 @@ const CreateLab = (props) => {
   const buttonLayout = {
     wrapperCol: {
       xs: {
-        span: 6,
-        offset:9
+        span: 8,
+        offset:10
       },
     },
   }
