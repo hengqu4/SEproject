@@ -33,14 +33,14 @@ const { Paragraph } = Typography
 const { Countdown } = Statistic
 const PORT = SERVER_PORT
 
-const FormatData = (courseCaseId, fileUpload, courseId) => {
-  const formattedLab = {
-    courseCaseId,
-    submissionFileName: 'student submit fake token',
-    courseId,
-  }
-  return formattedLab
-}
+// const FormatData = (courseCaseId, fileUpload, courseId) => {
+//   const formattedLab = {
+//     courseCaseId,
+//     submissionFileName: 'student submit fake token',
+//     courseId,
+//   }
+//   return formattedLab
+// }
 
 const LabCase = ({ lab, user, Course }) => ({
   isSuccess: lab.isSuccess,
@@ -51,7 +51,6 @@ const LabCase = ({ lab, user, Course }) => ({
 
 const FormatTime = (endTime) => {
   // let time = endTime.slice(0,-6)
-  // labData.enendTime.substring(0,9)+"-"+endTime.substring(11,-6)
   // const time = endTime[0,9]+" "+ endTime[11,19]
   console.log(typeof(endTime))
   // let time = endTime.slice(0,-6)

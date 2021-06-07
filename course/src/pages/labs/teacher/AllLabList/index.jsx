@@ -222,7 +222,7 @@ const TableList = ({ allLabList = [], dispatch = () => {}, courseId }) => {
         search={false}
         toolBarRender={() => [
           <Button key='create' type='primary' onClick={() => handleModalVisible(true)}>
-            <Link to='/labs/create' target='_blank'>
+            <Link to='/labs/create'>
               <PlusOutlined /> 新建
             </Link>
           </Button>,

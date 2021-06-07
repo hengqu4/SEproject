@@ -62,7 +62,14 @@ const CreateLab = (props) => {
       },
     },
   }
-
+  const buttonLayout = {
+    wrapperCol: {
+      xs: {
+        span: 6,
+        offset:9
+      },
+    },
+  }
   const doUploadAnswerFile = (putUrl) => {
     return axios({
       method: "put",
@@ -204,9 +211,7 @@ function showPromiseConfirm() {
             />
           </FormItem>
 
-          <Form.Item
-              name="caseFile"
-          >
+          <Form.Item {...buttonLayout} name="caseFile">
             <Upload
               multiple={false}
               maxCount={1}
@@ -223,9 +228,7 @@ function showPromiseConfirm() {
             </Upload>
           </Form.Item>
 
-          <Form.Item
-              name="answerFile"
-          >
+          <Form.Item {...buttonLayout}  name="answerFile">
             <Upload
               multiple={false}
               maxCount={1}
@@ -242,13 +245,7 @@ function showPromiseConfirm() {
             </Upload>
           </Form.Item>
 
-          <FormItem
-            {...submitFormLayout}
-            style={{
-              marginTop: 48,
-            }}
-          >
-          
+          <FormItem {...submitFormLayout}style={{ marginTop: 48,}}>
             <Button
               type='primary'
               htmlType='submit'
