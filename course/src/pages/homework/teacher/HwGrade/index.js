@@ -5,6 +5,7 @@ import { connect, useParams } from 'umi'
 import { useMount } from 'react-use'
 import onError from '@/utils/onError'
 import ProTable from '@ant-design/pro-table'
+import fileUrl from '@/utils/fileUrl';
 
 const PORT = SERVER_PORT
 
@@ -84,7 +85,7 @@ const HwGrade = ({ hwFileList = [], grade = grade, dispatch = () => { }, courseI
       dataIndex: 'title',
       width: '55%',
       render: (_, record) => {
-        var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${record.key}`
+        var addr=`http://${fileUrl()}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${record.key}`
         return <a href={addr}
         >{record.title}</a>
       },

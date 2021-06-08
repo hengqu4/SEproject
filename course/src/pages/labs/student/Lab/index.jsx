@@ -27,6 +27,7 @@ import { connect, useParams, useRouteMatch, useLocation, Link, history } from 'u
 import styles from './style.less'
 import axios from 'axios'
 import Authorized from '@/components/Authorized/Authorized';
+import fileUrl from '@/utils/fileUrl';
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -131,7 +132,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
     },
   }
   const uploadReport = (val) => {
-    return axios.post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+    return axios.post(`http://${fileUrl()}/api/v1/experiment/assignments/student/list/`, {
       courseId,
       courseCaseId: params.courseCaseId,
       submissionUploader: currentUser.id,
@@ -140,7 +141,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
   }
 
   const modifyReport = (val) => {
-    return axios.put(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+    return axios.put(`http://${fileUrl()}}/api/v1/experiment/assignments/student/list/`, {
       courseId,
       courseCaseId: params.courseCaseId,
       submissionUploader: currentUser.id,
@@ -153,7 +154,7 @@ const Lab = ({ props, labData = [], currentUser = [], courseId, dispatch = () =>
     console.log(params.courseCaseId)
     console.log(uploadFile)
     axios
-      .post(`http://localhost:${PORT}/api/v1/experiment/assignments/student/list/`, {
+      .post(`http://${fileUrl()}/api/v1/experiment/assignments/student/list/`, {
         courseId,
         courseCaseId: params.courseCaseId,
         // submissionFileName: uploadFile.name,

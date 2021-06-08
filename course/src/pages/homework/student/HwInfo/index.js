@@ -7,8 +7,7 @@ import onError from '@/utils/onError';
 import formatTime from '@/utils/formatTime'
 import axios from 'axios';
 import { UploadOutlined } from '@ant-design/icons';
-
-const PORT = SERVER_PORT
+import fileUrl from '@/utils/fileUrl';
 
 const mapStateToProps = ({ homework, Course, user, file }) => ({
   homeworkInfo: homework,
@@ -36,7 +35,7 @@ const HwInfo = ({ dispatch = () => {}, courseId = courseId, studentId = studentI
   const [ uploadDisable, setUploadDisable ] = useState(false)
   const [ uploadFile, setUploadFile ] = useState()
 
-  var addr=`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${homeworkInfo.hwFile.fileHomeworkId}`
+  var addr=`http://${fileUrl()}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file/${homeworkInfo.hwFile.fileHomeworkId}`
 
   //获得某作业信息
   const getHwInfo = () => {
@@ -91,7 +90,7 @@ const HwInfo = ({ dispatch = () => {}, courseId = courseId, studentId = studentI
   }
 
   const onFormFinish = (val) => {
-    axios.put(`http://localhost:${PORT}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file`, {
+    axios.put(`http://${fileUrl()}/api/v1/lecture/course-homework/${courseId}/homework/${homeworkId}/file`, {
         homeworkFileDisplayName: val,
         homeworkFileComment: "no comment",
     })

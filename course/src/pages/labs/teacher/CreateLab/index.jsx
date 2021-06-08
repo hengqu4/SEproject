@@ -11,6 +11,7 @@ import axios from 'axios';
 import { UploadOutlined } from '@ant-design/icons';
 // import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import fileUrl from '@/utils/fileUrl';
 
 const PORT = SERVER_PORT
 const FormItem = Form.Item
@@ -90,7 +91,7 @@ const CreateLab = (props) => {
 
   const onFinish = (labCase) => {
     console.log(labCase)
-    axios.post(`http://localhost:${PORT}/api/v1/experiment/experiment-database/list/` , 
+    axios.post(`http://${fileUrl()}/api/v1/experiment/experiment-database/list/` , 
     {
       experimentName: labCase.expName,
       experimentCaseName: labCase.caseName,

@@ -7,8 +7,7 @@ import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
 import axios from 'axios';
-
-const port = SERVER_PORT
+import fileUrl from '@/utils/fileUrl';
 
 const mapStateToProps = ({ file, Course, user }) => ({
   fileList: file.fileList,
@@ -44,8 +43,6 @@ const FileList = ({
   const ref = useRef()
   var fileName
   var binary
-
-  const host = 'localhost'
 
   //获得当前文件列表
   const getFileList = () => {
@@ -96,7 +93,7 @@ const FileList = ({
     event.preventDefault();
     var firstResponse
     var putUrl
-    axios.post(`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}`, {
+    axios.post(`http:///${fileUrl()}/api/v1/course-database/course-file-database/course/${courseId}`, {
         fileDisplayName: fileName,
         fileComment: "no comment",
         fileUploader: currentUser,
@@ -129,6 +126,7 @@ const FileList = ({
     if(courseId != -1){
       getFileList()
     }
+    console.log(fileUrl())
   })
   
   useEffect(() => {
@@ -141,7 +139,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file`
+        var addr=`http://${fileUrl()}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file`
         return <a href={addr}
         >{record.name}</a>
       },

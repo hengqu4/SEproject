@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom'
 import { useMount } from 'react-use';
 import onError from '@/utils/onError';
 import ProTable from '@ant-design/pro-table';
+import fileUrl from '@/utils/fileUrl';
 
 const port = SERVER_PORT
 
@@ -77,7 +78,7 @@ const FileList = ({
       dataIndex: 'name',
       width: '15%',
       render: (_, record) => {
-        var addr=`http://localhost:${port}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file'`
+        var addr=`http://${fileUrl()}/api/v1/course-database/course-file-database/course/${courseId}/${record.key}/file'`
         return <a href={addr}
         >{record.name}</a>
       },
