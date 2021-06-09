@@ -1,3 +1,3 @@
 export default function fileUrl() {
-  return 'see-toju.com';
+  return 'sx.see-toju.com';
 }
