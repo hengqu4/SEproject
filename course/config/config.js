@@ -181,12 +181,14 @@ export default defineConfig({
                       icon: 'smile',
                       path: '/grade/analysis',
                       component: './dashboard/teacherDashboard',
+                      authority: ['principal', 'teacher', 'teachingAssistant'],
                     },
                     {
                       name: '我的成绩',
                       icon: 'smile',
                       path: '/grade/mygrade',
                       component: './dashboard/studentDashboard',
+                      authority: ['student'],
                     },
                   ],
                 },
@@ -481,6 +483,6 @@ export default defineConfig({
   define: {
     SERVER_IP: ip,
     WEBSOCKET_PORT: process.env.WEBSOCKET_PORT,
-    SERVER_PORT: port
+    SERVER_PORT: port,
   },
 })
