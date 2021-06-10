@@ -33,7 +33,7 @@ const UserModel = {
         currentUser = {
           name: action.payload.data.realname,
           id: action.payload.data.userId,
-          avatar: {},
+          avatar: `https://source.boringavatars.com/beam/120/${action.payload.data.realname}?colors=BDA0A2,FFE6DB,D1EAEE,CBC8B5,EFB0A9`,
           character: action.payload.data.character,
         }
       }
