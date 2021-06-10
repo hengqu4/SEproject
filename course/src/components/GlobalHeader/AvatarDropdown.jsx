@@ -61,8 +61,9 @@ class AvatarDropdown extends React.Component {
           <Avatar
             size='small'
             className={styles.avatar}
-            src={currentUser.avatar.length ? currentUser.avatar: DefaultAvatar}
-            alt='avatar' />
+            src={currentUser.avatar.length ? currentUser.avatar : DefaultAvatar}
+            alt='avatar'
+          />
           <span className={`${styles.name} anticon`}>{currentUser.name}</span>
         </span>
       </HeaderDropdown>
