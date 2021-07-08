@@ -4,7 +4,6 @@ import React, { Component, Suspense } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { connect } from 'umi'
 import PageLoading from './components/PageLoading'
-import { getTimeDistance } from './utils/utils'
 import styles from './style.less'
 
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'))
@@ -16,8 +15,6 @@ const OfflineData = React.lazy(() => import('./components/OfflineData'))
 class Analysis extends Component {
   state = {
     salesType: 'all',
-    currentTabKey: '',
-    rangePickerValue: getTimeDistance('year'),
   }
 
   reqRef = 0
@@ -25,22 +22,36 @@ class Analysis extends Component {
   timeoutId = 0
 
   componentDidMount() {
-    const { dispatch } = this.props
     console.log(this.props, '*&*')
+    const { dispatch, Course, user } = this.props
+    let courseId = Course.currentCourseInfo.courseId
+    let userId = user.currentUser.id
+    console.log(courseId, userId, '*&*')
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
         type: 'studentDashboard/fetch',
+        payload: {
+          courseId,
+          userId
+        },
       })
     })
   }
 
   handleChangeSalesType = (e) => {
-    const { dispatch } = this.props
+    console.log(this.props, '*&*')
+    const { dispatch, Course, user } = this.props
+    let courseId = Course.currentCourseInfo.courseId
+    let userId = user.currentUser
     this.setState({
       salesType: e.target.value,
     })
     dispatch({
       type: 'studentDashboard/fetchSalesData',
+      payload: {
+        courseId,
+        userId
+      },
     })
   }
 
@@ -55,7 +66,6 @@ class Analysis extends Component {
     } else {
       salesPieData = salesType === 'online' ? studentGrade : studentGrade
     }
-    console.log(isReleased)
     const dropdownGroup = <span className={styles.iconGroup}></span>
     if (isReleased)
       return (
@@ -98,7 +108,9 @@ class Analysis extends Component {
   }
 }
 
-export default connect(({ studentDashboard, loading }) => ({
+export default connect(({ Course, user, studentDashboard, loading }) => ({
+  Course,
+  user,
   studentDashboard,
   loading: loading.effects['studentDashboard/fetch'],
 }))(Analysis)

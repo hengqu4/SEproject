@@ -19,8 +19,8 @@ const Model = {
   namespace: 'studentDashboard',
   state: initState,
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(GradeServices.fetchStudentGrade)
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(GradeServices.fetchStudentGrade, payload)
       console.log(response.isSuccess, '*&*')
       let gradeDict = response.data
       let studentGrade = []
@@ -40,8 +40,8 @@ const Model = {
       })
     },
 
-    *fetchSalesData(_, { call, put }) {
-      const response = yield call(GradeServices.fetchStudentGrade)
+    *fetchSalesData({ payload }, { call, put }) {
+      const response = yield call(GradeServices.fetchStudentGrade, payload)
       console.log('bbbbb', response.data)
       let gradeDict = response.data
       let studentGrade = []
