@@ -2,6 +2,7 @@ import * as GradeServices from './service'
 
 const initState = {
   studentGrade: [],
+  isReleased: false,
 }
 
 const keyDict = {
@@ -20,7 +21,7 @@ const Model = {
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(GradeServices.fetchStudentGrade)
-      console.log('bbbbb', response.data)
+      console.log(response.isSuccess, '*&*')
       let gradeDict = response.data
       let studentGrade = []
       for (let key in gradeDict)
@@ -34,6 +35,7 @@ const Model = {
         type: 'save',
         payload: {
           studentGrade: studentGrade,
+          isReleased: response.isSuccess
         },
       })
     },
@@ -47,7 +49,7 @@ const Model = {
         if (key != 'totalPoint') {
           studentGrade.push({
             x: keyDict[key],
-            y: Number(gradeDict[key]),
+            y: Number(gradeDict[key]) + 0.01,
           })
         }
       yield put({

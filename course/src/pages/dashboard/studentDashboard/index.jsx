@@ -1,5 +1,5 @@
 import { EllipsisOutlined } from '@ant-design/icons'
-import { Col, Dropdown, Menu, Row } from 'antd'
+import { Col, Result, Card } from 'antd'
 import React, { Component, Suspense } from 'react'
 import { GridContent } from '@ant-design/pro-layout'
 import { connect } from 'umi'
@@ -34,16 +34,6 @@ class Analysis extends Component {
     })
   }
 
-  componentWillUnmount() {
-    const { dispatch } = this.props
-    console.log(this.props, '*&*')
-    dispatch({
-      type: 'studentDashboard/clear',
-    })
-    cancelAnimationFrame(this.reqRef)
-    clearTimeout(this.timeoutId)
-  }
-
   handleChangeSalesType = (e) => {
     const { dispatch } = this.props
     this.setState({
@@ -52,60 +42,12 @@ class Analysis extends Component {
     dispatch({
       type: 'studentDashboard/fetchSalesData',
     })
-    console.log('aaaaaa')
-  }
-
-  handleTabChange = (key) => {
-    this.setState({
-      currentTabKey: key,
-    })
-  }
-
-
-  selectDate = (type) => {
-    const { dispatch } = this.props
-    console.log(this.props, '*&*')
-    this.setState({
-      rangePickerValue: getTimeDistance(type),
-    })
-    dispatch({
-      type: 'studentDashboard/fetchSalesData',
-    })
-  }
-
-  isActive = (type) => {
-    const { rangePickerValue } = this.state
-
-    if (!rangePickerValue) {
-      return ''
-    }
-
-    const value = getTimeDistance(type)
-
-    if (!value) {
-      return ''
-    }
-
-    if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return ''
-    }
-
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate
-    }
-
-    return ''
   }
 
   render() {
-    const { rangePickerValue, salesType, currentTabKey } = this.state
+    const { salesType } = this.state
     const { studentDashboard, loading } = this.props
-    const {
-      studentGrade
-    } = studentDashboard
+    const { studentGrade, isReleased } = studentDashboard
     let salesPieData
 
     if (salesType === 'all') {
@@ -113,28 +55,46 @@ class Analysis extends Component {
     } else {
       salesPieData = salesType === 'online' ? studentGrade : studentGrade
     }
-
-    const dropdownGroup = (
-      <span className={styles.iconGroup}>
-      </span>
-    )
-    return (
-      <GridContent>
-        <React.Fragment>
-          <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-            <Suspense fallback={null}>
-              <ProportionSales
-                dropdownGroup={dropdownGroup}
-                salesType={salesType}
+    console.log(isReleased)
+    const dropdownGroup = <span className={styles.iconGroup}></span>
+    if (isReleased)
+      return (
+        <GridContent>
+          <React.Fragment>
+            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+              <Suspense fallback={null}>
+                <ProportionSales
+                  dropdownGroup={dropdownGroup}
+                  salesType={salesType}
+                  loading={loading}
+                  salesPieData={studentGrade}
+                  handleChangeSalesType={this.handleChangeSalesType}
+                />
+              </Suspense>
+            </Col>
+          </React.Fragment>
+        </GridContent>
+      )
+    else
+      return (
+        <GridContent>
+          <React.Fragment>
+            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+              <Card
                 loading={loading}
-                salesPieData={studentGrade}
-                handleChangeSalesType={this.handleChangeSalesType}
-              />
-            </Suspense>
-          </Col>
-        </React.Fragment>
-      </GridContent>
-    )
+                bordered={false}
+                title='成绩构成'
+                style={{
+                  height: '100%',
+                  width: '120%',
+                }}
+              >
+                <Result status='warning' title='成绩尚未发布' />
+              </Card>
+            </Col>
+          </React.Fragment>
+        </GridContent>
+      )
   }
 }
 
