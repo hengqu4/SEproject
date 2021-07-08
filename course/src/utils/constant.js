@@ -13,7 +13,8 @@ const nicknames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 export const fakeUserInfoArr = new Array(nicknames.length).fill(null).map((_, index) => ({
   nickname: nicknames[index],
-  avatar: Mock.mock('@image'),
+  // avatar: Mock.mock('@image'),
+  avatar: `https://source.boringavatars.com/beam/120/${nicknames[index]}?colors=BDA0A2,FFE6DB,D1EAEE,CBC8B5,EFB0A9`,
 }))
 
 export const Roles = {

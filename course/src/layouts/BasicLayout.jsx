@@ -60,6 +60,12 @@ const defaultFooterDom = (
         href: 'https://sse.tongji.edu.cn/',
         blankTarget: true,
       },
+      {
+        key: 'ICP',
+        title: '沪ICP备2021010257号 ',
+        href: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021010257',
+        blankTarget: true,
+      },
     ]}
   />
 )

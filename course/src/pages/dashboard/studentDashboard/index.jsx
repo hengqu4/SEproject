@@ -45,9 +45,14 @@ class Analysis extends Component {
   }
 
   handleChangeSalesType = (e) => {
+    const { dispatch } = this.props
     this.setState({
       salesType: e.target.value,
     })
+    dispatch({
+      type: 'studentDashboard/fetchSalesData',
+    })
+    console.log('aaaaaa')
   }
 
   handleTabChange = (key) => {
@@ -56,16 +61,6 @@ class Analysis extends Component {
     })
   }
 
-  handleRangePickerChange = (rangePickerValue) => {
-    const { dispatch } = this.props
-    console.log(this.props, '*&*')
-    this.setState({
-      rangePickerValue,
-    })
-    dispatch({
-      type: 'studentDashboard/fetchSalesData',
-    })
-  }
 
   selectDate = (type) => {
     const { dispatch } = this.props
@@ -109,90 +104,30 @@ class Analysis extends Component {
     const { rangePickerValue, salesType, currentTabKey } = this.state
     const { studentDashboard, loading } = this.props
     const {
-      visitData,
-      visitData2,
-      salesData,
-      searchData,
-      offlineData,
-      offlineChartData,
-      salesTypeData,
-      salesTypeDataOnline,
-      salesTypeDataOffline,
+      studentGrade
     } = studentDashboard
     let salesPieData
 
     if (salesType === 'all') {
-      salesPieData = salesTypeData
+      salesPieData = studentGrade
     } else {
-      salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline
+      salesPieData = salesType === 'online' ? studentGrade : studentGrade
     }
 
-    const menu = (
-      <Menu>
-        <Menu.Item>操作一</Menu.Item>
-        <Menu.Item>操作二</Menu.Item>
-      </Menu>
-    )
     const dropdownGroup = (
       <span className={styles.iconGroup}>
-        <Dropdown overlay={menu} placement='bottomRight'>
-          <EllipsisOutlined />
-        </Dropdown>
       </span>
     )
-    const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name)
     return (
       <GridContent>
         <React.Fragment>
-          {/* <Suspense fallback={<PageLoading />}>
-            <IntroduceRow loading={loading} visitData={visitData} />
-          </Suspense> */}
-          {/* <Suspense fallback={null}>
-            <SalesCard
-              rangePickerValue={rangePickerValue}
-              salesData={salesData}
-              isActive={this.isActive}
-              handleRangePickerChange={this.handleRangePickerChange}
-              loading={loading}
-              selectDate={this.selectDate}
-            />
-          </Suspense> */}
-
-          {/* <Row
-            gutter={24}
-            style={{
-              marginTop: 24,
-            }}
-          >
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <TopSearch
-                  loading={loading}
-                  visitData2={visitData2}
-                  searchData={searchData}
-                  dropdownGroup={dropdownGroup}
-                />
-              </Suspense>
-            </Col>
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <ProportionSales
-                  dropdownGroup={dropdownGroup}
-                  salesType={salesType}
-                  loading={loading}
-                  salesPieData={salesPieData}
-                  handleChangeSalesType={this.handleChangeSalesType}
-                />
-              </Suspense>
-            </Col>
-          </Row> */}
           <Col xl={12} lg={24} md={24} sm={24} xs={24}>
             <Suspense fallback={null}>
               <ProportionSales
                 dropdownGroup={dropdownGroup}
                 salesType={salesType}
                 loading={loading}
-                salesPieData={salesPieData}
+                salesPieData={studentGrade}
                 handleChangeSalesType={this.handleChangeSalesType}
               />
             </Suspense>
