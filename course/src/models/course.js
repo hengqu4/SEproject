@@ -8,7 +8,7 @@ import moment from 'moment'
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
   courseId: -1,
-  courseName: null,
+  courseName: "软件项目与过程管理",
   courseCredit: null,
   courseStudyTimeNeeded: null,
   courseDescription: null,
