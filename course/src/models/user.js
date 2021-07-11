@@ -39,53 +39,7 @@ const UserModel = {
       }
       return { ...state, currentUser: currentUser || {} }
     },
-
-    // changeNotifyCount(
-    //   state = {
-    //     currentUser: {},
-    //   },
-    //   action,
-    // ) {
-    //   console.log('!!!!!4')
-    //   return {
-    //     ...state,
-    //     currentUser: {
-    //       ...state.currentUser,
-    //       notifyCount: action.payload.totalCount,
-    //       unreadCount: action.payload.unreadCount,
-    //     },
-    //   }
-    // },
   },
 }
 export default UserModel
 
-// import { queryCurrent, query as queryUsers } from '@/services/user'
-
-// const UserModel = {
-//   namespace: 'user',
-//   state: {
-//     currentUser: {},
-//   },
-//   effects: {
-//     *fetchCurrent(_, { call, put }) {
-//       const response = yield call(queryCurrent)
-//       console.log('!!!!!!!')
-//       console.log(response)
-//       yield put({
-//         type: 'saveCurrentUser',
-//         payload: response,
-//       })
-//     },
-//   },
-//   reducers: {
-//     saveCurrentUser(state, action) {
-//       let currentUser = {
-//         name: action.payload.data.realname,
-//         avatar: {},
-//       }
-//       return { ...state, currentUser: currentUser || {} }
-//     },
-//   },
-// }
-// export default UserModel

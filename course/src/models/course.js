@@ -8,7 +8,7 @@ import moment from 'moment'
 const defaultCourseInfo = {
   courseCreatorSchoolId: 'tongji',
   courseId: -1,
-  courseName: null,
+  courseName: "软件项目与过程管理",
   courseCredit: null,
   courseStudyTimeNeeded: null,
   courseDescription: null,
@@ -203,15 +203,17 @@ const courseTeachEffects = {
 }
 
 const courseStudentEffects = {
-  *fetchCourseStudentRelation(_, { call, put }) {
+  *fetchCourseStudentRelation({callback}, { call, put }) {
     const res = yield call(CourseServices.fetchStudentsOfAllCourses)
     console.log('effect', res)
     yield put({
       type: 'setCourseStudentMap',
       payload: res.data,
     })
+    if (callback) callback(res.data)
   },
 }
+
 
 const effects = {
   ...courseEffects,

@@ -16,10 +16,9 @@ const ENVTagColor = {
   pre: '#87d068',
 }
 
-
 const GlobalHeaderRight = (props) => {
   const { theme, layout } = props
-  const { courseList } = props
+  const { courseList, currentCourseInfo } = props
   const { courseId } = props
   let className = styles.right
 
@@ -28,12 +27,26 @@ const GlobalHeaderRight = (props) => {
   }
 
   useMount(() => {
-    const { dispatch } = props 
+    const { dispatch } = props
+    const { courseList } = props
     dispatch({
       type: 'Course/getCourseListAndSetFirstCourseInfo',
       onError,
     })
   })
+
+  const getDefaultValue = () => {
+    const { currentCourseInfo, courseList } = props
+    if (!currentCourseInfo) dispatch({
+      type: 'Course/getCourseListAndSetFirstCourseInfo',
+      onError,
+    })
+
+    console.log(currentCourseInfo.courseName, '!!!!!!!!!!')
+    return currentCourseInfo.courseName
+    // if (currentCourseInfo) return currentCourseInfo.courseName
+    // else if (length(courseList)) return courseList[0].courseName
+  }
 
   const handleSelectChange = (v) => {
     const { dispatch } = props
@@ -49,41 +62,31 @@ const GlobalHeaderRight = (props) => {
     const currentUserAuthority = getAuthority()[0]
     switch (currentUserAuthority) {
       case 'student':
-        return "学生"
+        return '学生'
       case 'principal':
-        return "责任教师"
+        return '责任教师'
       case 'teacher':
-        return "教师"
+        return '教师'
       case 'teachingAssistant':
-        return "助教"
+        return '助教'
       default:
-        return "error"
+        return 'error'
     }
   }
-
   return (
     <div className={className}>
-      <Form style={{paddingTop: '7.5px'}}>
-        <Form.Item
-          name="course"
-          label="当前课程"
-          style={{marginRight:'10px'}}
-        >
-          <Select
-            // defaultValue = { courseName }
-            onChange = {(v) => handleSelectChange(v)}
-          >
-          {
-            courseList.map((i) => (
-              <Option value={i.courseId} >{i.courseName}</Option>
-            ))
-          }
+      <Form style={{ paddingTop: '7.5px' }}>
+        <Form.Item name='course' label='当前课程' style={{ marginRight: '10px', width: '250px' }}>
+          <Select defaultValue={currentCourseInfo.courseName} onChange={(v) => handleSelectChange(v)}>
+            {courseList.map((i) => (
+              <Option value={i.courseId} key={i.courseId}>{i.courseName}</Option>
+            ))}
           </Select>
         </Form.Item>
       </Form>
-      
+
       <span> 您的身份为: {getUserAuthority()} </span>
-      <Divider type="vertical" />
+      <Divider type='vertical' />
       <Avatar menu />
       {REACT_APP_ENV && (
         <span>
@@ -99,4 +102,5 @@ export default connect(({ settings, Course }) => ({
   layout: settings.layout,
   courseList: Course.courseList,
   courseId: Course.currentCourseInfo.courseId,
+  currentCourseInfo: Course.currentCourseInfo,
 }))(GlobalHeaderRight)
