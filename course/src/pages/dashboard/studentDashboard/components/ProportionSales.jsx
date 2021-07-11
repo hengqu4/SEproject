@@ -1,8 +1,6 @@
 import { Card, Radio } from 'antd'
-import { FormattedMessage } from 'umi'
 import React from 'react'
 import { Pie } from './Charts'
-import Yuan from '../utils/Yuan'
 import styles from '../style.less'
 
 const ProportionSales = ({

@@ -26,8 +26,34 @@ export const updateStudentGradeWeight = (query) => {
       .toString(),
     {
       method: 'PUT',
-      data: pick(query, ['form']),
+      data: query['form'],
       prefix: API_GRADE_PREFIX,
+    },
+  )
+}
+
+export const fetchCourseGrade = (query) => {
+  return request(
+    SafeUrlAssembler('/grades/:courseId')
+      .param(pick(query, ['courseId']))
+      .toString(),
+    {
+      method: 'GET',
+      prefix: API_GRADE_PREFIX,
+    },
+  )
+}
+
+
+export const setBonus = (query) => {
+  return request(
+    SafeUrlAssembler('/bonus/:courseId/:studentId')
+      .param(pick(query, ['courseId', 'studentId']))
+      .toString(),
+    {
+      method: 'POST',
+      prefix: API_GRADE_PREFIX,
+      data: pick(query, ['bonus_point'])
     },
   )
 }

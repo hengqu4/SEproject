@@ -7,10 +7,10 @@ import onError from '@/utils/onError'
 
 const formItemLayout = {
   labelCol: {
-    span: 4,
+    span: 8,
   },
   wrapperCol: {
-    span: 8,
+    span: 12,
   },
 }
 const formTailLayout = {
@@ -18,8 +18,8 @@ const formTailLayout = {
     span: 4,
   },
   wrapperCol: {
-    span: 8,
-    offset: 4,
+    span: 15,
+    offset: 10,
   },
 }
 
@@ -65,9 +65,23 @@ const DynamicRule = (props) => {
     })
   })
 
+  useEffect(() => {
+    const { dispatch } = props
+    console.log(props.Course.currentCourseInfo)
+    dispatch({
+      type: 'teacherDashboard/fetch',
+      payload: { courseId: Course.currentCourseInfo.courseId },
+      onError,
+      callback: (res) => {
+        console.log(res)
+        form.setFieldsValue(res)
+      },
+    })
+  }, [props.Course.currentCourseInfo])
+
   return (
     <div className={styles.container}>
-      <div id='components-form-demo-dynamic-rule'>
+      <div id='components-form-demo-dynamic-rule' style={{ marginTop: '50px' }}>
         <Form form={form} name='dynamic_rule'>
           <Form.Item
             {...formItemLayout}

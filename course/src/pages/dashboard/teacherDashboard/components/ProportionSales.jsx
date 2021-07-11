@@ -16,22 +16,10 @@ const ProportionSales = ({
     loading={loading}
     className={styles.salesCard}
     bordered={false}
-    title='成绩分段占比'
+    title='成绩权重分配'
     style={{
       height: '100%',
     }}
-    extra={
-      <div className={styles.salesCardExtra}>
-        {dropdownGroup}
-        <div className={styles.salesTypeRadio}>
-          <Radio.Group value={salesType} onChange={handleChangeSalesType}>
-            <Radio.Button value='all'>总分</Radio.Button>
-            <Radio.Button value='online'>实验1</Radio.Button>
-            <Radio.Button value='stores'>对抗1</Radio.Button>
-          </Radio.Group>
-        </div>
-      </div>
-    }
   >
     <div>
       <h4
@@ -40,12 +28,10 @@ const ProportionSales = ({
           marginBottom: 32,
         }}
       >
-        得分
+        权重
       </h4>
       <Pie
         hasLegend
-        subTitle='平均分'
-        total={() => `${salesPieData.reduce((pre, now) => now.y + pre + 4, 0)}`}
         data={salesPieData}
         valueFormat={(value) => {
           return `${value.toString()}分`

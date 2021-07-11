@@ -58,7 +58,7 @@ class Analysis extends Component {
   render() {
     const { salesType } = this.state
     const { studentDashboard, loading } = this.props
-    const { studentGrade, isReleased } = studentDashboard
+    const { studentGrade, isReleased, gradeWeight } = studentDashboard
     let salesPieData
 
     if (salesType === 'all') {

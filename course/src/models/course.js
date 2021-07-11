@@ -203,15 +203,17 @@ const courseTeachEffects = {
 }
 
 const courseStudentEffects = {
-  *fetchCourseStudentRelation(_, { call, put }) {
+  *fetchCourseStudentRelation({callback}, { call, put }) {
     const res = yield call(CourseServices.fetchStudentsOfAllCourses)
     console.log('effect', res)
     yield put({
       type: 'setCourseStudentMap',
       payload: res.data,
     })
+    if (callback) callback(res.data)
   },
 }
+
 
 const effects = {
   ...courseEffects,
